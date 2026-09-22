@@ -8,21 +8,52 @@ import express from 'express';
 import { join } from 'node:path';
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
+const backendApiUrl = process.env['BACKEND_API_URL'] || 'http://127.0.0.1:3000';
 
 const app = express();
 const angularApp = new AngularNodeAppEngine();
 
 /**
- * Example Express Rest API endpoints can be defined here.
- * Uncomment and define endpoints as necessary.
- *
- * Example:
- * ```ts
- * app.get('/api/{*splat}', (req, res) => {
- *   // Handle API request
- * });
- * ```
+ * Proxy /api requests to Express Dashboard backend when running SSR / standalone Node server
  */
+app.use('/api', async (req, res) => {
+  try {
+    const targetUrl = `${backendApiUrl}/api${req.url}`;
+    const headers = new Headers();
+    for (const [key, value] of Object.entries(req.headers)) {
+      if (value && key !== 'host') {
+        headers.set(key, Array.isArray(value) ? value.join(', ') : value);
+      }
+    }
+
+    const init: RequestInit = {
+      method: req.method,
+      headers,
+    };
+
+    if (req.method !== 'GET' && req.method !== 'HEAD') {
+      const chunks: Uint8Array[] = [];
+      for await (const chunk of req) {
+        chunks.push(chunk);
+      }
+      init.body = Buffer.concat(chunks);
+    }
+
+    const response = await fetch(targetUrl, init);
+    res.status(response.status);
+    response.headers.forEach((val, key) => {
+      if (key !== 'transfer-encoding') {
+        res.setHeader(key, val);
+      }
+    });
+
+    const arrayBuffer = await response.arrayBuffer();
+    res.send(Buffer.from(arrayBuffer));
+  } catch (error) {
+    console.error('SSR API Proxy Error:', error);
+    res.status(502).json({ message: 'Backend service unavailable.' });
+  }
+});
 
 /**
  * Serve static files from /browser
@@ -58,7 +89,7 @@ if (isMainModule(import.meta.url) || process.env['pm_id']) {
       throw error;
     }
 
-    console.log(`Node Express server listening on http://localhost:${port}`);
+    console.log(`[ROYALRIDE SSR] Listening on http://localhost:${port}`);
   });
 }
 

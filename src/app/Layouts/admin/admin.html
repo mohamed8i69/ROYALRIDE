@@ -1,0 +1,386 @@
+<main dir="rtl" class="min-h-screen bg-[#0b0b0a] font-sans text-[#f5ead6]">
+  <header class="border-b border-[#3a3024] bg-[#11100e] px-5 py-4 sm:px-8">
+    <div class="mx-auto flex max-w-[1500px] items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <img class="h-10 w-20 object-contain mix-blend-screen" src="logo.png" alt="RoyalRide">
+        <div>
+          <p class="text-[10px] font-bold tracking-[0.18em] text-[#d8b66e]">ROYALRIDE CONTROL</p>
+          <h1 class="mt-1 text-lg font-black text-white sm:text-xl">لوحة التحكم الملكية</h1>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <a href="/" class="rounded-md border border-[#b48a45]/60 px-3 py-2 text-xs font-bold text-[#e7c77f] transition hover:bg-[#b48a45]/15">عرض الموقع</a>
+        <button type="button" (click)="logout()" class="rounded-md border border-red-900/70 px-3 py-2 text-xs font-bold text-red-300 hover:bg-red-950/40">خروج</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mx-auto grid max-w-[1500px] lg:grid-cols-[240px_1fr]">
+    <aside class="border-b border-[#3a3024] bg-[#11100e] p-4 lg:min-h-[calc(100vh-76px)] lg:border-b-0 lg:border-l">
+      <nav class="grid grid-cols-2 gap-2 lg:grid-cols-1">
+        <button type="button" (click)="setPanel('overview')" [class.bg-[#b48a45]/20]="activePanel() === 'overview'" class="flex items-center justify-between rounded-md px-3 py-3 text-right text-xs font-bold text-[#d9c8ab] hover:bg-[#b48a45]/15">
+          <span>📊 نظرة عامة</span>
+        </button>
+        <button type="button" (click)="setPanel('orders')" [class.bg-[#b48a45]/20]="activePanel() === 'orders'" class="flex items-center justify-between rounded-md px-3 py-3 text-right text-xs font-bold text-[#d9c8ab] hover:bg-[#b48a45]/15">
+          <span>📋 طلبات الحجز</span>
+          @if (pendingOrdersCount() > 0) {
+          <span class="rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-extrabold text-amber-400 border border-amber-500/40">{{ pendingOrdersCount() }} جديد</span>
+          }
+        </button>
+        <button type="button" (click)="setPanel('content')" [class.bg-[#b48a45]/20]="activePanel() === 'content'" class="rounded-md px-3 py-3 text-right text-xs font-bold text-[#d9c8ab] hover:bg-[#b48a45]/15">✍️ نصوص الصفحة</button>
+        <button type="button" (click)="setPanel('fleet')" [class.bg-[#b48a45]/20]="activePanel() === 'fleet'" class="rounded-md px-3 py-3 text-right text-xs font-bold text-[#d9c8ab] hover:bg-[#b48a45]/15">🚘 أسطول التأجير</button>
+        <button type="button" (click)="setPanel('transfer')" [class.bg-[#b48a45]/20]="activePanel() === 'transfer'" class="rounded-md px-3 py-3 text-right text-xs font-bold text-[#d9c8ab] hover:bg-[#b48a45]/15">🚐 أسعار التنقل</button>
+      </nav>
+      <div class="mt-6 hidden rounded-lg border border-[#4b3b27] bg-[#19150f] p-3 text-[10px] leading-5 text-[#a9987d] lg:block">يتم تحديث الطلبات والتغييرات مباشرة ومتزامنة مع MongoDB server.</div>
+    </aside>
+
+    <section class="min-w-0 p-5 sm:p-8">
+      <!-- OVERVIEW PANEL -->
+      @if (activePanel() === 'overview') {
+      <div>
+        <div class="mb-6 flex flex-wrap items-end justify-between gap-3">
+          <div><span class="text-[10px] font-bold tracking-[0.18em] text-[#d8b66e]">ROYAL DASHBOARD</span><h2 class="mt-2 text-2xl font-black text-white">ملخص النظام والطلبات</h2></div>
+          <div class="flex items-center gap-2">
+            <button type="button" (click)="refreshContent()" class="rounded-md border border-[#4b3b27] bg-[#1a1611] px-4 py-2.5 text-xs font-bold text-[#e7c77f] hover:bg-[#251f18]">🔄 مزامنة من الخادم</button>
+            <button type="button" (click)="save()" class="rounded-md bg-[#d4ad67] px-5 py-2.5 text-xs font-black text-[#21180d] hover:bg-[#edc77f]">حفظ إعدادات الموقع</button>
+          </div>
+        </div>
+        
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <article class="rounded-xl border border-[#4b3b27] bg-[#15130f] p-5">
+            <p class="text-xs text-[#a9987d]">إجمالي الحجوزات</p>
+            <strong class="mt-2 block text-3xl font-black text-[#e7c77f]">{{ totalOrdersCount() }}</strong>
+          </article>
+          <article class="rounded-xl border border-amber-900/50 bg-[#19140c] p-5">
+            <p class="text-xs text-amber-300/80">طلبات قيد الانتظار</p>
+            <strong class="mt-2 block text-3xl font-black text-amber-400">{{ pendingOrdersCount() }}</strong>
+          </article>
+          <article class="rounded-xl border border-emerald-900/50 bg-[#0d1611] p-5">
+            <p class="text-xs text-emerald-300/80">حجوزات مكتملة</p>
+            <strong class="mt-2 block text-3xl font-black text-emerald-400">{{ completedOrdersCount() }}</strong>
+          </article>
+          <article class="rounded-xl border border-[#4b3b27] bg-[#15130f] p-5">
+            <p class="text-xs text-[#a9987d]">إجمالي المبيعات (ريال)</p>
+            <strong class="mt-2 block text-2xl font-black text-[#e7c77f]">{{ totalRevenue() | number }} ر.س</strong>
+          </article>
+        </div>
+
+        <div class="mt-6 rounded-xl border border-[#4b3b27] bg-[#15130f] p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-[#e7c77f]">إدارة سريعة للطلبات والمحتوى</h3>
+            <button type="button" (click)="setPanel('orders')" class="rounded-md bg-[#d4ad67] px-4 py-2 text-xs font-bold text-[#1a140b] hover:bg-[#edc77f]">استعراض كل طلبات الحجز ←</button>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" (click)="setPanel('content')" class="rounded-md border border-[#b48a45]/60 px-4 py-2 text-xs font-bold text-[#e7c77f]">تعديل النصوص</button>
+            <button type="button" (click)="setPanel('fleet')" class="rounded-md border border-[#b48a45]/60 px-4 py-2 text-xs font-bold text-[#e7c77f]">إدارة أسطول التأجير</button>
+            <button type="button" (click)="reset()" class="rounded-md border border-red-900/70 px-4 py-2 text-xs font-bold text-red-300">إرجاع البيانات الافتراضية</button>
+          </div>
+        </div>
+      </div>
+      }
+
+      <!-- ORDERS MANAGEMENT PANEL -->
+      @if (activePanel() === 'orders') {
+      <div class="space-y-6">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <span class="text-[10px] font-bold tracking-[0.18em] text-[#d8b66e]">BOOKINGS & CLIENTS</span>
+            <h2 class="mt-1 text-2xl font-black text-white">إدارة طلبات الحجز</h2>
+          </div>
+          <button type="button" (click)="ordersService.loadOrders()" class="rounded-lg border border-[#4b3b27] bg-[#1a1611] px-4 py-2.5 text-xs font-bold text-[#e7c77f] hover:bg-[#251f18] transition flex items-center gap-2">
+            <span>🔄 تحديث القائمة</span>
+          </button>
+        </div>
+
+        <!-- Filters & Search Bar -->
+        <div class="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between bg-[#15130f] border border-[#3a3024] rounded-xl p-4">
+          <!-- Filter Tabs -->
+          <div class="flex flex-wrap gap-1">
+            <button type="button" (click)="orderFilter.set('all')" [class.bg-[#d4ad67]]="orderFilter() === 'all'" [class.text-[#120f0c]]="orderFilter() === 'all'" class="rounded-lg px-3 py-1.5 text-xs font-bold text-[#d9c8ab] hover:bg-[#3d3227] transition">
+              الكل ({{ totalOrdersCount() }})
+            </button>
+            <button type="button" (click)="orderFilter.set('pending')" [class.bg-amber-500]="orderFilter() === 'pending'" [class.text-black]="orderFilter() === 'pending'" class="rounded-lg px-3 py-1.5 text-xs font-bold text-[#d9c8ab] hover:bg-[#3d3227] transition">
+              قيد الانتظار ({{ pendingOrdersCount() }})
+            </button>
+            <button type="button" (click)="orderFilter.set('confirmed')" [class.bg-blue-600]="orderFilter() === 'confirmed'" [class.text-white]="orderFilter() === 'confirmed'" class="rounded-lg px-3 py-1.5 text-xs font-bold text-[#d9c8ab] hover:bg-[#3d3227] transition">
+              مؤكد ({{ confirmedOrdersCount() }})
+            </button>
+            <button type="button" (click)="orderFilter.set('completed')" [class.bg-emerald-600]="orderFilter() === 'completed'" [class.text-white]="orderFilter() === 'completed'" class="rounded-lg px-3 py-1.5 text-xs font-bold text-[#d9c8ab] hover:bg-[#3d3227] transition">
+              مكتمل ({{ completedOrdersCount() }})
+            </button>
+            <button type="button" (click)="orderFilter.set('cancelled')" [class.bg-red-700]="orderFilter() === 'cancelled'" [class.text-white]="orderFilter() === 'cancelled'" class="rounded-lg px-3 py-1.5 text-xs font-bold text-[#d9c8ab] hover:bg-[#3d3227] transition">
+              ملغى
+            </button>
+          </div>
+
+          <!-- Search Field -->
+          <div class="relative min-w-[240px]">
+            <input type="text" [ngModel]="orderSearch()" (ngModelChange)="orderSearch.set($event)" placeholder="بحث برقم الحجز، اسم العميل، الجوال..." class="w-full rounded-lg border border-[#4b3b27] bg-[#0d0b09] px-3.5 py-2 text-xs text-[#f3e7d0] placeholder-[#7d705c] outline-none focus:border-[#d4ad67]">
+          </div>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="rounded-xl border border-[#3a3024] bg-[#15130f] overflow-hidden shadow-2xl">
+          @if (ordersService.loading()) {
+          <div class="p-12 text-center text-xs text-[#a9987d]">جاري تحميل الحجوزات من الخادم...</div>
+          } @else if (filteredOrders().length === 0) {
+          <div class="p-12 text-center text-xs text-[#a9987d]">لا توجد طلبات حجز مطابقة للبحث أو الفلتر المحدد.</div>
+          } @else {
+          <div class="overflow-x-auto">
+            <table class="w-full text-right text-xs">
+              <thead class="bg-[#11100e] border-b border-[#3a3024] text-[#d8b66e] font-bold">
+                <tr>
+                  <th class="p-3.5">رقم الحجز والتاريخ</th>
+                  <th class="p-3.5">اسم العميل والجوال</th>
+                  <th class="p-3.5">السيارة والخدمة</th>
+                  <th class="p-3.5">المبلغ وطريقة الدفع</th>
+                  <th class="p-3.5">حالة الطلب (تعديل مباشر)</th>
+                  <th class="p-3.5 text-center">إجراءات</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-[#2a231b]">
+                @for (order of filteredOrders(); track order.bookingRef) {
+                <tr class="hover:bg-[#1a1712] transition">
+                  <td class="p-3.5">
+                    <span class="font-mono font-bold text-[#e7c77f] block">{{ order.bookingRef }}</span>
+                    <span class="text-[10px] text-[#8c7d6b] block mt-0.5">{{ order.createdAt | date:'yyyy/MM/dd HH:mm' }}</span>
+                    @if (order.channel === 'whatsapp') {
+                    <span class="inline-block mt-1 text-[9px] font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-800/50 rounded px-1.5 py-0.5">WhatsApp</span>
+                    }
+                  </td>
+                  <td class="p-3.5">
+                    <span class="font-bold text-[#f5ead6] block">{{ order.guestName || 'ضيف كريم' }}</span>
+                    <a [href]="getWhatsAppClientUrl(order)" target="_blank" rel="noopener noreferrer" class="text-[11px] text-[#25D366] hover:underline font-mono inline-flex items-center gap-1 mt-0.5">
+                      <span>📱 {{ order.guestPhone || 'بدون رقم' }}</span>
+                    </a>
+                  </td>
+                  <td class="p-3.5">
+                    <span class="font-bold text-[#e7c77f] block">{{ order.selectedCar?.name || 'مركبة ملغاة' }}</span>
+                    <span class="text-[10px] text-[#b9a88c] block">
+                      {{ order.serviceType === 'transfer' ? 'تنقل: ' + order.selectedCity : order.serviceType === 'hourly' ? 'بالساعة (' + order.selectedHours + 'h)' : 'جولة سياحية' }}
+                    </span>
+                  </td>
+                  <td class="p-3.5">
+                    <span class="font-black text-sm text-[#e7c77f] block">{{ order.pricing?.totalPrice }} ر.س</span>
+                    <span class="text-[10px] text-[#a9987d] block uppercase">{{ order.paymentMethod }}</span>
+                  </td>
+                  <td class="p-3.5">
+                    <select [ngModel]="order.status" (ngModelChange)="changeOrderStatus(order, $event)" class="rounded-lg border px-2.5 py-1.5 text-xs font-bold outline-none cursor-pointer" [ngClass]="getStatusBadgeClass(order.status)">
+                      <option value="pending" class="bg-[#15130f] text-amber-300">⏳ قيد الانتظار</option>
+                      <option value="confirmed" class="bg-[#15130f] text-blue-300">✅ مؤكد</option>
+                      <option value="in_progress" class="bg-[#15130f] text-purple-300">🚘 قيد التنفيذ</option>
+                      <option value="completed" class="bg-[#15130f] text-emerald-300">🏁 مكتمل</option>
+                      <option value="cancelled" class="bg-[#15130f] text-red-300">❌ ملغى</option>
+                    </select>
+                  </td>
+                  <td class="p-3.5 text-center">
+                    <div class="flex items-center justify-center gap-2">
+                      <button type="button" (click)="openOrderDetails(order)" class="rounded-lg border border-[#4b3b27] bg-[#221c15] px-2.5 py-1.5 text-[11px] font-bold text-[#e7c77f] hover:bg-[#332a1f] transition">
+                        التفاصيل VVIP
+                      </button>
+                      <button type="button" (click)="removeOrder(order)" class="rounded-lg border border-red-900/40 bg-red-950/20 px-2 py-1.5 text-[11px] font-bold text-red-400 hover:bg-red-950/60 transition">
+                        حذف
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          }
+        </div>
+      </div>
+      }
+
+      <!-- PAGE COPY EDIT PANEL -->
+      @if (activePanel() === 'content') {
+      <div class="max-w-4xl">
+        <div class="mb-6"><span class="text-[10px] font-bold tracking-[0.18em] text-[#d8b66e]">PAGE COPY</span><h2 class="mt-2 text-2xl font-black text-white">نصوص الصفحة</h2></div>
+        <div class="grid gap-4 md:grid-cols-2">
+          <label class="field">عنوان Hero<input [(ngModel)]="draft().heroTitle"></label>
+          <label class="field">العنوان الفرعي<input [(ngModel)]="draft().heroSubtitle"></label>
+          <label class="field">عنوان من نحن<input [(ngModel)]="draft().aboutTitle"></label>
+          <label class="field">عنوان التنقل<input [(ngModel)]="draft().transferTitle"></label>
+          <label class="field md:col-span-2">نص من نحن<textarea rows="3" [(ngModel)]="draft().aboutText"></textarea></label>
+          <label class="field md:col-span-2">النص الإضافي لمن نحن<textarea rows="3" [(ngModel)]="draft().aboutSecondaryText"></textarea></label>
+          <label class="field md:col-span-2">وصف التنقل<textarea rows="2" [(ngModel)]="draft().transferText"></textarea></label>
+          <label class="field">عنوان جولات أبها<input [(ngModel)]="draft().toursTitle"></label>
+          <label class="field">وصف جولات أبها<textarea rows="2" [(ngModel)]="draft().toursText"></textarea></label>
+        </div>
+        <button type="button" (click)="save()" class="save-button">حفظ النصوص</button>
+      </div>
+      }
+
+      <!-- RENTAL FLEET PANEL -->
+      @if (activePanel() === 'fleet') {
+      <div>
+        <div class="mb-6"><span class="text-[10px] font-bold tracking-[0.18em] text-[#d8b66e]">RENTAL FLEET</span><h2 class="mt-2 text-2xl font-black text-white">إدارة أسطول التأجير</h2></div>
+        <div class="grid gap-4 xl:grid-cols-2">
+          @for (car of draft().cars; track car.key; let i = $index) {
+          <article class="rounded-xl border border-[#4b3b27] bg-[#15130f] p-4">
+            <div class="mb-4 flex items-center gap-3">
+              <div class="h-28 w-44 rounded-lg bg-gradient-to-b from-[#241c14] to-[#0a0907] p-1 flex items-center justify-center border border-[#3d3227]">
+                <img class="h-full w-full object-contain object-center drop-shadow" [src]="car.image" [alt]="car.name">
+              </div>
+              <h3 class="font-black text-[#e7c77f] text-base">{{ car.name }}</h3>
+            </div>
+            <div class="grid gap-3 sm:grid-cols-2"><label class="field">اسم السيارة<input [(ngModel)]="car.name"></label><label class="field">السعر<input [(ngModel)]="car.price"></label><label class="field sm:col-span-2">الوصف المختصر<input [(ngModel)]="car.note"></label><label class="field sm:col-span-2">التفاصيل<textarea rows="2" [(ngModel)]="car.details"></textarea></label><label class="field sm:col-span-2">مسار الصورة<input [(ngModel)]="car.image"></label></div>
+          </article>
+          }
+        </div>
+        <button type="button" (click)="save()" class="save-button">حفظ أسطول التأجير</button>
+      </div>
+      }
+
+      <!-- TRANSFER FLEET PANEL -->
+      @if (activePanel() === 'transfer') {
+      <div>
+        <div class="mb-6"><span class="text-[10px] font-bold tracking-[0.18em] text-[#d8b66e]">TRANSFER PRICES</span><h2 class="mt-2 text-2xl font-black text-white">أسعار التنقل بين جدة ومكة</h2></div>
+        <div class="grid gap-4 xl:grid-cols-2">
+          @for (car of draft().transferCars; track car.key; let i = $index) {
+          <article class="rounded-xl border border-[#4b3b27] bg-[#15130f] p-4">
+            <div class="mb-4 flex items-center gap-3">
+              <div class="h-24 w-40 rounded-lg bg-gradient-to-b from-[#241c14] to-[#0a0907] p-1 flex items-center justify-center border border-[#3d3227]">
+                <img class="h-full w-full object-contain object-center drop-shadow" [src]="car.image" [alt]="car.name">
+              </div>
+              <h3 class="font-black text-[#e7c77f] text-base">{{ car.name }}</h3>
+            </div>
+            <div class="grid gap-3 sm:grid-cols-2"><label class="field">اسم السيارة<input [(ngModel)]="car.name"></label><label class="field">السعر<input [(ngModel)]="car.price"></label><label class="field">نوع الرحلة<input [(ngModel)]="car.note"></label><label class="field">مسار الصورة<input [(ngModel)]="car.image"></label></div>
+          </article>
+          }
+        </div>
+        <button type="button" (click)="save()" class="save-button">حفظ أسعار التنقل</button>
+      </div>
+      }
+
+      @if (saved()) { <div class="fixed bottom-5 left-5 rounded-lg border border-emerald-700/50 bg-emerald-950/90 px-4 py-3 text-xs font-bold text-emerald-200 shadow-xl">تم حفظ التعديلات بنجاح</div> }
+      @if (saveError()) { <div class="fixed bottom-5 left-5 rounded-lg border border-red-700/50 bg-red-950/90 px-4 py-3 text-xs font-bold text-red-200 shadow-xl">{{ saveError() }}</div> }
+    </section>
+  </div>
+</main>
+
+<!-- ORDER DETAILS VVIP MODAL -->
+@if (selectedOrderForModal(); as item) {
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm dir-rtl">
+  <div class="relative w-full max-w-2xl rounded-2xl border border-[#d4ad67]/50 bg-[#120f0c] p-6 text-[#f5ead6] shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
+    <div class="flex items-center justify-between border-b border-[#3a3024] pb-4">
+      <div>
+        <span class="text-[10px] font-bold text-[#d8b66e] tracking-widest block">FULL VVIP BOOKING DETAILS</span>
+        <h3 class="text-xl font-black text-white">تفاصيل الطلب: {{ item.bookingRef }}</h3>
+      </div>
+      <button type="button" (click)="closeOrderModal()" class="rounded-lg bg-[#251f18] border border-[#4b3b27] px-3 py-1.5 text-xs text-[#a9987d] hover:text-white">إغلاق ✕</button>
+    </div>
+
+    <!-- Status selector in modal -->
+    <div class="flex items-center justify-between bg-[#1a1611] p-3 rounded-xl border border-[#3a3024]">
+      <span class="text-xs font-bold text-[#d8b66e]">حالة الطلب الحالية:</span>
+      <select [ngModel]="item.status" (ngModelChange)="changeOrderStatus(item, $event)" class="rounded-lg border px-3 py-1.5 text-xs font-bold outline-none cursor-pointer" [ngClass]="getStatusBadgeClass(item.status)">
+        <option value="pending" class="bg-[#15130f] text-amber-300">⏳ قيد الانتظار</option>
+        <option value="confirmed" class="bg-[#15130f] text-blue-300">✅ مؤكد</option>
+        <option value="in_progress" class="bg-[#15130f] text-purple-300">🚘 قيد التنفيذ</option>
+        <option value="completed" class="bg-[#15130f] text-emerald-300">🏁 مكتمل</option>
+        <option value="cancelled" class="bg-[#15130f] text-red-300">❌ ملغى</option>
+      </select>
+    </div>
+
+    <!-- Client Info -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs bg-[#171410] p-4 rounded-xl border border-[#2e261e]">
+      <div>
+        <span class="text-[#a9987d] block">اسم الضيف:</span>
+        <strong class="text-white text-sm font-black">{{ item.guestName || 'غير محدد' }}</strong>
+      </div>
+      <div>
+        <span class="text-[#a9987d] block">رقم الجوال:</span>
+        <a [href]="getWhatsAppClientUrl(item)" target="_blank" class="text-[#25D366] font-bold text-sm font-mono hover:underline inline-flex items-center gap-1">
+          📱 {{ item.guestPhone || 'غير محدد' }}
+        </a>
+      </div>
+      <div>
+        <span class="text-[#a9987d] block">طريقة الدفع:</span>
+        <span class="font-bold text-[#e7c77f] uppercase">{{ item.paymentMethod }}</span>
+      </div>
+      <div>
+        <span class="text-[#a9987d] block">تاريخ الإنشاء:</span>
+        <span class="font-mono text-[#d9c8ab]">{{ item.createdAt | date:'yyyy/MM/dd HH:mm' }}</span>
+      </div>
+    </div>
+
+    <!-- Vehicle & Route -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs bg-[#171410] p-4 rounded-xl border border-[#2e261e]">
+      <div>
+        <span class="text-[#a9987d] block">السيارة المختارة:</span>
+        <strong class="text-[#e7c77f] text-sm">{{ item.selectedCar?.name }}</strong>
+      </div>
+      <div>
+        <span class="text-[#a9987d] block">المدينة والخدمة:</span>
+        <span class="text-white font-bold">{{ item.selectedCity }} ({{ item.serviceType }})</span>
+      </div>
+      <div>
+        <span class="text-[#a9987d] block">مكان الاستلام:</span>
+        <span class="text-white">{{ item.pickupLocation }}</span>
+      </div>
+      <div>
+        <span class="text-[#a9987d] block">مكان الوصول / التفاصيل:</span>
+        <span class="text-white">{{ item.dropoffLocation || item.selectedTour || item.selectedHours + ' hours' }}</span>
+      </div>
+      <div>
+        <span class="text-[#a9987d] block">تاريخ ووقت الرحلة:</span>
+        <span class="text-white font-bold">{{ item.pickupDate }} في {{ item.pickupTime }}</span>
+      </div>
+      <div>
+        <span class="text-[#a9987d] block">تتبع الطيران:</span>
+        <span class="text-white">{{ item.enableFlightTracking ? 'تتبع رحلة ' + item.flightNumber : 'غير مفعل' }}</span>
+      </div>
+    </div>
+
+    <!-- VIP Comfort Details -->
+    <div class="bg-[#171410] p-4 rounded-xl border border-[#2e261e] space-y-2 text-xs">
+      <h4 class="font-bold text-[#d8b66e] text-xs">🌿 تفاصيل الرفاهية والسرية VIP:</h4>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[#d9c8ab]">
+        <div>• معطر الكابينة: <strong class="text-white">{{ item.vipPreferences?.cabinScent || 'غير محدد' }}</strong></div>
+        <div>• الضيافة: <strong class="text-white">{{ item.vipPreferences?.refreshment || 'غير محدد' }}</strong></div>
+        <div>• لغة السائق: <strong class="text-white">{{ item.vipPreferences?.driverLanguage || 'غير محدد' }}</strong></div>
+        <div>• اسم اللوحة الترحيبية: <strong class="text-white">{{ item.vipPreferences?.welcomePlacardName || 'بدون' }}</strong></div>
+        <div>• حجز سري VVIP: <strong class="text-white">{{ item.vipPreferences?.isDiscreetBooking ? 'نعم (بدون شعارات)' : 'عادي' }}</strong></div>
+      </div>
+      @if (item.specialNotes) {
+      <div class="mt-2 pt-2 border-t border-[#3a3024]">
+        <span class="text-[#a9987d] block">ملاحظات خاصة:</span>
+        <p class="text-amber-200 italic mt-0.5">{{ item.specialNotes }}</p>
+      </div>
+      }
+    </div>
+
+    <!-- Pricing Summary -->
+    <div class="bg-[#1a1611] p-4 rounded-xl border border-[#4b3b27] space-y-1.5 text-xs">
+      <div class="flex justify-between text-[#a9987d]"><span>السعر الأساسي:</span><span>{{ item.pricing?.basePrice }} ر.س</span></div>
+      @if (item.pricing?.surgeAmount) {
+      <div class="flex justify-between text-[#e7c77f]"><span>رسوم الذروة:</span><span>+{{ item.pricing?.surgeAmount }} ر.س</span></div>
+      }
+      <div class="flex justify-between text-[#a9987d]"><span>ضريبة ZATCA (15%):</span><span>{{ item.pricing?.vatAmount }} ر.س</span></div>
+      <div class="flex justify-between pt-2 border-t border-[#3a3024] font-black text-base text-[#e7c77f]">
+        <span>الإجمالي النهائي المستحق:</span>
+        <span>{{ item.pricing?.totalPrice }} ر.س</span>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-between pt-2">
+      <a [href]="getWhatsAppClientUrl(item)" target="_blank" rel="noopener noreferrer" class="rounded-xl bg-[#25D366] px-5 py-2.5 text-xs font-black text-white hover:bg-[#20bd5a] transition flex items-center gap-2">
+        <span>📱 تواصل مع العميل عبر الواتساب</span>
+      </a>
+      <button type="button" (click)="closeOrderModal()" class="rounded-xl border border-[#4b3b27] bg-[#251f18] px-5 py-2.5 text-xs font-bold text-[#d9c8ab] hover:bg-[#332a1f]">
+        إغلاق النافذة
+      </button>
+    </div>
+  </div>
+</div>
+}
+
+<style>
+  .field { display: grid; gap: 0.45rem; color: #b9a88c; font-size: 0.7rem; font-weight: 700; }
+  .field input, .field textarea { width: 100%; border: 1px solid #4b3b27; border-radius: 0.45rem; background: #0f0e0c; color: #f3e7d0; padding: 0.65rem 0.75rem; outline: none; }
+  .field input:focus, .field textarea:focus { border-color: #d4ad67; box-shadow: 0 0 0 2px rgb(212 173 103 / 0.12); }
+  .save-button { margin-top: 1.5rem; border-radius: 0.45rem; background: #d4ad67; padding: 0.7rem 1.3rem; color: #21180d; font-size: 0.75rem; font-weight: 900; }
+  .save-button:hover { background: #edc77f; }
+</style>

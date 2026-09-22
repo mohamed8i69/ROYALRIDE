@@ -1,0 +1,137 @@
+import { inject, Injectable, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+
+export type OrderStatus = 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled';
+
+export interface OrderPricing {
+  basePrice: number;
+  surgeAmount: number;
+  subtotal: number;
+  vatAmount: number;
+  totalPrice: number;
+  peakSeason?: string;
+}
+
+export interface VipPreferences {
+  cabinScent?: string;
+  refreshment?: string;
+  driverLanguage?: string;
+  isDiscreetBooking?: boolean;
+  welcomePlacardName?: string;
+}
+
+export interface SelectedCarInfo {
+  key: string;
+  name: string;
+}
+
+export interface Order {
+  _id?: string;
+  bookingRef: string;
+  status: OrderStatus;
+  channel?: 'whatsapp' | 'direct';
+  guestName: string;
+  guestPhone: string;
+  specialNotes?: string;
+  paymentMethod: string;
+  serviceType: 'transfer' | 'hourly' | 'tour';
+  selectedCity: string;
+  pickupLocation: string;
+  dropoffLocation?: string;
+  selectedHours?: number;
+  selectedTour?: string;
+  pickupDate: string;
+  pickupTime: string;
+  enableFlightTracking?: boolean;
+  flightNumber?: string;
+  selectedCar: SelectedCarInfo;
+  pricing: OrderPricing;
+  vipPreferences: VipPreferences;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+@Injectable({ providedIn: 'root' })
+export class OrdersService {
+  private readonly http = inject(HttpClient);
+  readonly orders = signal<Order[]>([]);
+  readonly loading = signal<boolean>(false);
+  readonly error = signal<string | null>(null);
+
+  /**
+   * Save a new order directly to MongoDB via backend API.
+   */
+  async createOrder(orderData: Partial<Order>): Promise<Order | null> {
+    try {
+      const response = await firstValueFrom(
+        this.http.post<{ ok: boolean; order: Order }>('/api/orders', orderData)
+      );
+
+      if (response && response.order) {
+        return response.order;
+      }
+    } catch (err) {
+      console.error('Backend API order save error:', err);
+    }
+    return null;
+  }
+
+  /**
+   * Load all orders directly from MongoDB via backend API.
+   */
+  async loadOrders(): Promise<Order[]> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    try {
+      const remoteOrders = await firstValueFrom(this.http.get<Order[]>('/api/orders'));
+      const sorted = (remoteOrders || []).sort(
+        (a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+      );
+      this.orders.set(sorted);
+      return sorted;
+    } catch (err) {
+      this.error.set('تعذر جلب الطلبات من خادم MongoDB API.');
+      console.error('Failed to load orders from API:', err);
+      this.orders.set([]);
+      return [];
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  /**
+   * Update the status of an existing order in MongoDB.
+   */
+  async updateStatus(orderIdOrRef: string, newStatus: OrderStatus): Promise<boolean> {
+    try {
+      await firstValueFrom(
+        this.http.patch<{ ok: boolean }>(`/api/orders/${orderIdOrRef}/status`, { status: newStatus })
+      );
+
+      // Update in-memory signal
+      this.orders.update((list) =>
+        list.map((o) => (o._id === orderIdOrRef || o.bookingRef === orderIdOrRef ? { ...o, status: newStatus } : o))
+      );
+      return true;
+    } catch (err) {
+      console.error('API order status update failed:', err);
+      return false;
+    }
+  }
+
+  /**
+   * Delete an order from MongoDB.
+   */
+  async deleteOrder(orderIdOrRef: string): Promise<boolean> {
+    try {
+      await firstValueFrom(this.http.delete(`/api/orders/${orderIdOrRef}`));
+      this.orders.update((list) => list.filter((o) => o._id !== orderIdOrRef && o.bookingRef !== orderIdOrRef));
+      return true;
+    } catch (err) {
+      console.error('API order delete failed:', err);
+      return false;
+    }
+  }
+}
