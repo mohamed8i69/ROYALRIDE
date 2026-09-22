@@ -1,4 +1,5 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -66,6 +67,7 @@ const API_BASE = environment.apiUrl || 'https://dashboard-nine-flame-50.vercel.a
 @Injectable({ providedIn: 'root' })
 export class SiteContentService {
   private readonly http = inject(HttpClient);
+  private readonly platformId = inject(PLATFORM_ID);
 
   readonly content = signal<SiteContent>(structuredClone(defaultContent));
   readonly loading = signal(true);
@@ -91,6 +93,11 @@ export class SiteContentService {
   }
 
   private async load(): Promise<SiteContent> {
+    if (!isPlatformBrowser(this.platformId)) {
+      this.loading.set(false);
+      return this.content();
+    }
+
     this.loading.set(true);
 
     try {
