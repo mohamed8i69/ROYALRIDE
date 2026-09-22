@@ -22,8 +22,8 @@ export class AdminLogin {
     try {
       await this.auth.login(this.email(), this.password());
       await this.router.navigateByUrl('/admin');
-    } catch {
-      this.error.set('البريد الإلكتروني أو كلمة المرور غير صحيحة.');
+    } catch (err: any) {
+      this.error.set(err?.error?.message || err?.message || 'البريد الإلكتروني أو كلمة المرور غير صحيحة.');
     } finally {
       this.loading.set(false);
     }

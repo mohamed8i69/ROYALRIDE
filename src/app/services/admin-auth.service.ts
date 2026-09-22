@@ -22,9 +22,11 @@ export class AdminAuthService {
     const result = await firstValueFrom(
       this.http.post<LoginResponse>(`${API_BASE}/api/auth/login`, { email, password })
     );
-    if (!result.token) {
-      throw new Error('Authentication token was not returned.');
+
+    if (!result || !result.token) {
+      throw new Error('لم يتم إرجاع رمز المصادقة من الخادم.');
     }
+
     sessionStorage.setItem(this.tokenKey, result.token);
     this.isAuthenticated.set(true);
   }
@@ -51,7 +53,9 @@ export class AdminAuthService {
   }
 
   private clearSession(): void {
-    sessionStorage.removeItem(this.tokenKey);
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.removeItem(this.tokenKey);
+    }
     this.isAuthenticated.set(false);
   }
 
