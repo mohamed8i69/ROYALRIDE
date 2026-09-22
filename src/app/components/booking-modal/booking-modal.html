@@ -5,16 +5,16 @@
     <!-- Modal Header -->
     <div class="relative border-b border-[#3d3227] bg-[#14100c] px-6 py-5 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#d4ad67] to-[#8f6d33] text-[#120f0c] font-black text-lg shadow-lg">
-          👑
+        <div class="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#d4ad67] to-[#8f6d33] text-[#120f0c] shadow-lg">
+          <svg lucideCrown class="w-6 h-6 text-[#120f0c]"></svg>
         </div>
         <div>
           <span class="text-[10px] font-bold tracking-[0.2em] text-[#d8b66e] block">ROYALRIDE DYNAMIC ENGINE</span>
           <h2 class="text-xl font-black text-[#f7ead0] sm:text-2xl">محرك الحجز والتسعير الديناميكي</h2>
         </div>
       </div>
-      <button type="button" (click)="close()" class="flex size-9 items-center justify-center rounded-full border border-[#4d3f30] bg-[#221b14] text-lg text-[#d8b66e] hover:bg-[#d4ad67] hover:text-[#120f0c] transition">
-        ✕
+      <button type="button" (click)="close()" class="flex size-9 items-center justify-center rounded-full border border-[#4d3f30] bg-[#221b14] text-[#d8b66e] hover:bg-[#d4ad67] hover:text-[#120f0c] transition">
+        <svg lucideX class="w-4 h-4"></svg>
       </button>
     </div>
 
@@ -48,18 +48,18 @@
           <label class="block text-xs font-bold text-[#d8b66e] mb-2">1. حدد نوع الخدمة المطلوب:</label>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <button type="button" (click)="serviceType.set('transfer')" [class.border-[#d4ad67]]="serviceType() === 'transfer'" [class.bg-[#d4ad67]/15]="serviceType() === 'transfer'" class="rounded-xl border border-[#4d3f30] bg-[#17130f] p-3.5 text-right transition hover:border-[#d4ad67]/70">
-              <div class="text-xl">🚕</div>
-              <h3 class="font-black text-sm text-[#f7ead0] mt-1">حجز استقبال ووجهات</h3>
+              <div class="mb-1 text-[#d8b66e]"><svg lucideCarFront class="w-6 h-6"></svg></div>
+              <h3 class="font-black text-sm text-[#f7ead0]">حجز استقبال ووجهات</h3>
               <p class="text-[10px] text-[#bda98c] mt-1 leading-4">رحلة من نقطة لآخر مثل المطارات والفنادق</p>
             </button>
             <button type="button" (click)="serviceType.set('hourly')" [class.border-[#d4ad67]]="serviceType() === 'hourly'" [class.bg-[#d4ad67]/15]="serviceType() === 'hourly'" class="rounded-xl border border-[#4d3f30] bg-[#17130f] p-3.5 text-right transition hover:border-[#d4ad67]/70">
-              <div class="text-xl">⏱️</div>
-              <h3 class="font-black text-sm text-[#f7ead0] mt-1">بالساعة واليوم الكامل</h3>
+              <div class="mb-1 text-[#d8b66e]"><svg lucideClock3 class="w-6 h-6"></svg></div>
+              <h3 class="font-black text-sm text-[#f7ead0]">بالساعة واليوم الكامل</h3>
               <p class="text-[10px] text-[#bda98c] mt-1 leading-4">سائق خاص تحت تصرفك (4س / 8س / 12س)</p>
             </button>
             <button type="button" (click)="serviceType.set('tour')" [class.border-[#d4ad67]]="serviceType() === 'tour'" [class.bg-[#d4ad67]/15]="serviceType() === 'tour'" class="rounded-xl border border-[#4d3f30] bg-[#17130f] p-3.5 text-right transition hover:border-[#d4ad67]/70">
-              <div class="text-xl">🗺️</div>
-              <h3 class="font-black text-sm text-[#f7ead0] mt-1">الباقات والجولات السياحية</h3>
+              <div class="mb-1 text-[#d8b66e]"><svg lucideMap class="w-6 h-6"></svg></div>
+              <h3 class="font-black text-sm text-[#f7ead0]">الباقات والجولات السياحية</h3>
               <p class="text-[10px] text-[#bda98c] mt-1 leading-4">جولات أبها وعسير، العلا، باقة العمرة</p>
             </button>
           </div>
@@ -82,7 +82,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block text-xs font-bold text-[#c4b193] mb-1">نقطة الاستلام (Pickup):</label>
-            <input type="text" [(ngModel)]="pickupLocation" class="w-full rounded-lg border border-[#4d3f30] bg-[#0d0b09] px-3.5 py-2.5 text-xs text-[#f4ead8] focus:border-[#d4ad67] focus:outline-none">
+            <input type="text" [ngModel]="pickupLocation()" (ngModelChange)="setPickupLocation($event)" class="w-full rounded-lg border border-[#4d3f30] bg-[#0d0b09] px-3.5 py-2.5 text-xs text-[#f4ead8] focus:border-[#d4ad67] focus:outline-none">
             <div class="mt-1.5 flex flex-wrap gap-1">
               <button type="button" (click)="pickupLocation.set('مطار الملك عبد العزيز الدولي (JED)')" class="text-[9px] rounded bg-[#221b14] border border-[#4d3f30] px-2 py-0.5 text-[#d4ad67]">مطار جدة</button>
               <button type="button" (click)="pickupLocation.set('مطار الملك خالد الدولي (RUH)')" class="text-[9px] rounded bg-[#221b14] border border-[#4d3f30] px-2 py-0.5 text-[#d4ad67]">مطار الرياض</button>
@@ -91,7 +91,7 @@
           </div>
           <div>
             <label class="block text-xs font-bold text-[#c4b193] mb-1">نقطة الوصول (Dropoff):</label>
-            <input type="text" [(ngModel)]="dropoffLocation" class="w-full rounded-lg border border-[#4d3f30] bg-[#0d0b09] px-3.5 py-2.5 text-xs text-[#f4ead8] focus:border-[#d4ad67] focus:outline-none">
+            <input type="text" [ngModel]="dropoffLocation()" (ngModelChange)="setDropoffLocation($event)" class="w-full rounded-lg border border-[#4d3f30] bg-[#0d0b09] px-3.5 py-2.5 text-xs text-[#f4ead8] focus:border-[#d4ad67] focus:outline-none">
             <div class="mt-1.5 flex flex-wrap gap-1">
               <button type="button" (click)="dropoffLocation.set('فندق برج الساعة - مكة المكرمة')" class="text-[9px] rounded bg-[#221b14] border border-[#4d3f30] px-2 py-0.5 text-[#d4ad67]">فنادق مكة</button>
               <button type="button" (click)="dropoffLocation.set('منطقة العلا القديمة / منتجع الحجر')" class="text-[9px] rounded bg-[#221b14] border border-[#4d3f30] px-2 py-0.5 text-[#d4ad67]">العلا</button>
@@ -123,10 +123,10 @@
         @if (serviceType() === 'tour') {
         <div>
           <label class="block text-xs font-bold text-[#c4b193] mb-2">الباقة السياحية المختارة:</label>
-          <select [(ngModel)]="selectedTour" class="w-full rounded-lg border border-[#4d3f30] bg-[#0d0b09] px-3.5 py-2.5 text-xs text-[#f4ead8] focus:border-[#d4ad67] focus:outline-none">
-            <option value="جولة عسير وأبها (12 ساعة)">🌲 جولة عسير وأبها الملكية (12 ساعة) - 1500 ريال</option>
-            <option value="تجربة العلا الملكية VIP">🏛️ تجربة العلا الملكية (VIP Tour) - 2800 ريال</option>
-            <option value="باقة العمرة والزيارة الراقية">🕋 باقة العمرة والزيارة الراقية (مكة والمدينة) - 1200 ريال</option>
+          <select [ngModel]="selectedTour()" (ngModelChange)="setSelectedTour($event)" class="w-full rounded-lg border border-[#4d3f30] bg-[#0d0b09] px-3.5 py-2.5 text-xs text-[#f4ead8] focus:border-[#d4ad67] focus:outline-none">
+            <option value="جولة عسير وأبها (12 ساعة)">جولة عسير وأبها الملكية (12 ساعة) - 1500 ريال</option>
+            <option value="تجربة العلا الملكية VIP">تجربة العلا الملكية (VIP Tour) - 2800 ريال</option>
+            <option value="باقة العمرة والزيارة الراقية">باقة العمرة والزيارة الراقية (مكة والمدينة) - 1200 ريال</option>
           </select>
         </div>
         }
@@ -135,26 +135,29 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block text-xs font-bold text-[#c4b193] mb-1">تاريخ الاستلام:</label>
-            <input type="date" [(ngModel)]="pickupDate" class="w-full rounded-lg border border-[#4d3f30] bg-[#0d0b09] px-3.5 py-2.5 text-xs text-[#f4ead8] focus:border-[#d4ad67] focus:outline-none">
+            <input type="date" [ngModel]="pickupDate()" (ngModelChange)="setPickupDate($event)" class="w-full rounded-lg border border-[#4d3f30] bg-[#0d0b09] px-3.5 py-2.5 text-xs text-[#f4ead8] focus:border-[#d4ad67] focus:outline-none">
           </div>
           <div>
             <label class="block text-xs font-bold text-[#c4b193] mb-1">وقت الاستلام:</label>
-            <input type="time" [(ngModel)]="pickupTime" class="w-full rounded-lg border border-[#4d3f30] bg-[#0d0b09] px-3.5 py-2.5 text-xs text-[#f4ead8] focus:border-[#d4ad67] focus:outline-none">
+            <input type="time" [ngModel]="pickupTime()" (ngModelChange)="setPickupTime($event)" class="w-full rounded-lg border border-[#4d3f30] bg-[#0d0b09] px-3.5 py-2.5 text-xs text-[#f4ead8] focus:border-[#d4ad67] focus:outline-none">
           </div>
         </div>
 
         <!-- AeroDataBox Flight Tracking -->
         <div class="rounded-xl border border-[#d4ad67]/30 bg-[#16120e] p-4">
           <label class="flex items-center gap-2 text-xs font-bold text-[#e8d7ba] cursor-pointer">
-            <input type="checkbox" [(ngModel)]="enableFlightTracking" class="size-4 rounded accent-[#d4ad67]">
-            <span>✈️ تفعيل تتبع الطيران اللحظي (AeroDataBox Flight Tracking API)</span>
+            <input type="checkbox" [ngModel]="enableFlightTracking()" (ngModelChange)="setEnableFlightTracking($event)" class="size-4 rounded accent-[#d4ad67]">
+            <span class="flex items-center gap-1.5">
+              <svg lucidePlane class="w-4 h-4 text-[#d8b66e]"></svg>
+              <span>تفعيل تتبع الطيران اللحظي (AeroDataBox Flight Tracking API)</span>
+            </span>
           </label>
           <p class="text-[10px] text-[#a8977d] mt-1 mr-6">نضبط ميعاد وصول السائق آلياً حسب حركة الطيران لتفادي رسوم الانتظار.</p>
           
           @if (enableFlightTracking()) {
           <div class="mt-3 mr-6">
             <label class="block text-[11px] font-bold text-[#c4b193] mb-1">رقم الرحلة الجوية (Flight Number):</label>
-            <input type="text" [(ngModel)]="flightNumber" placeholder="مثلاً: SV 1020 أو EK 280" class="w-full max-w-xs rounded-lg border border-[#4d3f30] bg-[#0d0b09] px-3 py-2 text-xs text-[#f4ead8] focus:border-[#d4ad67] focus:outline-none">
+            <input type="text" [ngModel]="flightNumber()" (ngModelChange)="setFlightNumber($event)" placeholder="مثلاً: SV 1020 أو EK 280" class="w-full max-w-xs rounded-lg border border-[#4d3f30] bg-[#0d0b09] px-3 py-2 text-xs text-[#f4ead8] focus:border-[#d4ad67] focus:outline-none">
           </div>
           }
         </div>
@@ -239,7 +242,10 @@
       @if (currentStep() === 3) {
       <div class="space-y-6">
         <div>
-          <h3 class="text-sm font-black text-[#f7ead0] mb-1">🌿 تخصيص رفاهية الكابينة (In-Cabin VIP Personalization)</h3>
+          <h3 class="text-sm font-black text-[#f7ead0] mb-1 flex items-center gap-1.5">
+            <svg lucideSparkles class="w-4 h-4 text-[#d8b66e]"></svg>
+            <span>تخصيص رفاهية الكابينة (In-Cabin VIP Personalization)</span>
+          </h3>
           <p class="text-xs text-[#a8977d] mb-4">اضبط التفاصيل الدقيقة داخل السيارة قبل وصولها لضمان أقصى درجات الراحة والرفاهية.</p>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -248,16 +254,16 @@
               <label class="block text-xs font-bold text-[#d8b66e] mb-2">نوع المعطر المفضل:</label>
               <div class="space-y-2">
                 <label class="flex items-center gap-2 p-2.5 rounded-lg border border-[#4d3f30] bg-[#15120e] cursor-pointer text-xs text-[#e8d7ba]">
-                  <input type="radio" name="scent" value="royal_oud" [ngModel]="cabinScent()" (ngModelChange)="cabinScent.set($event)" class="accent-[#d4ad67]">
-                  <span>🪵 العود الملكي (Royal Oud)</span>
+                  <input type="radio" name="scent" value="royal_oud" [ngModel]="cabinScent()" (ngModelChange)="setCabinScent($event)" class="accent-[#d4ad67]">
+                  <span class="flex items-center gap-1.5"><svg lucideFlower2 class="w-3.5 h-3.5 text-[#d8b66e]"></svg> العود الملكي (Royal Oud)</span>
                 </label>
                 <label class="flex items-center gap-2 p-2.5 rounded-lg border border-[#4d3f30] bg-[#15120e] cursor-pointer text-xs text-[#e8d7ba]">
-                  <input type="radio" name="scent" value="musk" [ngModel]="cabinScent()" (ngModelChange)="cabinScent.set($event)" class="accent-[#d4ad67]">
-                  <span>🌸 المسك الأبيض (White Musk)</span>
+                  <input type="radio" name="scent" value="musk" [ngModel]="cabinScent()" (ngModelChange)="setCabinScent($event)" class="accent-[#d4ad67]">
+                  <span class="flex items-center gap-1.5"><svg lucideFlower2 class="w-3.5 h-3.5 text-[#d8b66e]"></svg> المسك الأبيض (White Musk)</span>
                 </label>
                 <label class="flex items-center gap-2 p-2.5 rounded-lg border border-[#4d3f30] bg-[#15120e] cursor-pointer text-xs text-[#e8d7ba]">
-                  <input type="radio" name="scent" value="amber" [ngModel]="cabinScent()" (ngModelChange)="cabinScent.set($event)" class="accent-[#d4ad67]">
-                  <span>🕯️ العنبر الفاخر (Luxurious Amber)</span>
+                  <input type="radio" name="scent" value="amber" [ngModel]="cabinScent()" (ngModelChange)="setCabinScent($event)" class="accent-[#d4ad67]">
+                  <span class="flex items-center gap-1.5"><svg lucideFlame class="w-3.5 h-3.5 text-[#d8b66e]"></svg> العنبر الفاخر (Luxurious Amber)</span>
                 </label>
               </div>
             </div>
@@ -267,16 +273,16 @@
               <label class="block text-xs font-bold text-[#d8b66e] mb-2">الضيافة والمشروبات:</label>
               <div class="space-y-2">
                 <label class="flex items-center gap-2 p-2.5 rounded-lg border border-[#4d3f30] bg-[#15120e] cursor-pointer text-xs text-[#e8d7ba]">
-                  <input type="radio" name="refresh" value="saudi_coffee" [ngModel]="refreshment()" (ngModelChange)="refreshment.set($event)" class="accent-[#d4ad67]">
-                  <span>☕ القهوة السعودية والتمور الفاخرة</span>
+                  <input type="radio" name="refresh" value="saudi_coffee" [ngModel]="refreshment()" (ngModelChange)="setRefreshment($event)" class="accent-[#d4ad67]">
+                  <span class="flex items-center gap-1.5"><svg lucideCoffee class="w-3.5 h-3.5 text-[#d8b66e]"></svg> القهوة السعودية والتمور الفاخرة</span>
                 </label>
                 <label class="flex items-center gap-2 p-2.5 rounded-lg border border-[#4d3f30] bg-[#15120e] cursor-pointer text-xs text-[#e8d7ba]">
-                  <input type="radio" name="refresh" value="sparkling_water" [ngModel]="refreshment()" (ngModelChange)="refreshment.set($event)" class="accent-[#d4ad67]">
-                  <span>🧊 ماء فوار بارد + مياه معدنية</span>
+                  <input type="radio" name="refresh" value="sparkling_water" [ngModel]="refreshment()" (ngModelChange)="setRefreshment($event)" class="accent-[#d4ad67]">
+                  <span class="flex items-center gap-1.5"><svg lucideGlassWater class="w-3.5 h-3.5 text-[#d8b66e]"></svg> ماء فوار بارد + مياه معدنية</span>
                 </label>
                 <label class="flex items-center gap-2 p-2.5 rounded-lg border border-[#4d3f30] bg-[#15120e] cursor-pointer text-xs text-[#e8d7ba]">
-                  <input type="radio" name="refresh" value="fresh_juices" [ngModel]="refreshment()" (ngModelChange)="refreshment.set($event)" class="accent-[#d4ad67]">
-                  <span>🍊 عصيرات طازجة فاخرة</span>
+                  <input type="radio" name="refresh" value="fresh_juices" [ngModel]="refreshment()" (ngModelChange)="setRefreshment($event)" class="accent-[#d4ad67]">
+                  <span class="flex items-center gap-1.5"><svg lucideCitrus class="w-3.5 h-3.5 text-[#d8b66e]"></svg> عصيرات طازجة فاخرة</span>
                 </label>
               </div>
             </div>
@@ -287,11 +293,13 @@
         <div>
           <label class="block text-xs font-bold text-[#d8b66e] mb-2">لغة السائق المفضلة (Chauffeur Language):</label>
           <div class="flex gap-3">
-            <button type="button" (click)="driverLanguage.set('ar')" [class.bg-[#d4ad67]]="driverLanguage() === 'ar'" [class.text-[#120f0c]]="driverLanguage() === 'ar'" [class.font-black]="driverLanguage() === 'ar'" class="rounded-lg border border-[#4d3f30] bg-[#15120e] px-4 py-2 text-xs text-[#e8d7ba] hover:border-[#d4ad67]">
-              🇸🇦 السائق عربي
+            <button type="button" (click)="setDriverLanguage('ar')" [class.bg-[#d4ad67]]="driverLanguage() === 'ar'" [class.text-[#120f0c]]="driverLanguage() === 'ar'" [class.font-black]="driverLanguage() === 'ar'" class="rounded-lg border border-[#4d3f30] bg-[#15120e] px-4 py-2 text-xs text-[#e8d7ba] hover:border-[#d4ad67] flex items-center gap-1.5">
+              <svg lucideBadge class="w-3.5 h-3.5 text-[#d8b66e]"></svg>
+              <span>السائق عربي</span>
             </button>
-            <button type="button" (click)="driverLanguage.set('en')" [class.bg-[#d4ad67]]="driverLanguage() === 'en'" [class.text-[#120f0c]]="driverLanguage() === 'en'" [class.font-black]="driverLanguage() === 'en'" class="rounded-lg border border-[#4d3f30] bg-[#15120e] px-4 py-2 text-xs text-[#e8d7ba] hover:border-[#d4ad67]">
-              🇬🇧 English Speaking
+            <button type="button" (click)="setDriverLanguage('en')" [class.bg-[#d4ad67]]="driverLanguage() === 'en'" [class.text-[#120f0c]]="driverLanguage() === 'en'" [class.font-black]="driverLanguage() === 'en'" class="rounded-lg border border-[#4d3f30] bg-[#15120e] px-4 py-2 text-xs text-[#e8d7ba] hover:border-[#d4ad67] flex items-center gap-1.5">
+              <svg lucideBadge class="w-3.5 h-3.5 text-[#d8b66e]"></svg>
+              <span>English Speaking</span>
             </button>
           </div>
         </div>
@@ -300,15 +308,21 @@
         <div class="rounded-xl border border-[#d4ad67]/30 bg-[#15120e] p-4 space-y-4">
           <div>
             <label class="flex items-center gap-2 text-xs font-bold text-[#e8d7ba] cursor-pointer">
-              <input type="checkbox" [(ngModel)]="isDiscreetBooking" class="size-4 rounded accent-[#d4ad67]">
-              <span>🛡️ نظام الحجز السري والخاص (VVIP Discreet Booking)</span>
+              <input type="checkbox" [ngModel]="isDiscreetBooking()" (ngModelChange)="setIsDiscreetBooking($event)" class="size-4 rounded accent-[#d4ad67]">
+              <span class="flex items-center gap-1.5">
+                <svg lucideShieldCheck class="w-4 h-4 text-[#d8b66e]"></svg>
+                <span>نظام الحجز السري والخاص (VVIP Discreet Booking)</span>
+              </span>
             </label>
             <p class="text-[10px] text-[#a8977d] mt-1 mr-6">حماية خصوصية الشخصيات الهامة، حيث يتم إخفاء أسماء الضيوف ورقم اللوحة وتوفير تواصل مشفر.</p>
           </div>
 
           <div class="border-t border-[#3d3227] pt-3">
-            <label class="block text-xs font-bold text-[#c4b193] mb-1">🪧 لوحة الاستقبال الترحيبية بالمطار (Airport Welcome Placard):</label>
-            <input type="text" [(ngModel)]="welcomePlacardName" placeholder="الاسم أو اللقب للوح جهاز iPad الخاص بالسائق" class="w-full rounded-lg border border-[#4d3f30] bg-[#0d0b09] px-3.5 py-2.5 text-xs text-[#f4ead8] focus:border-[#d4ad67] focus:outline-none">
+            <label class="block text-xs font-bold text-[#c4b193] mb-1 flex items-center gap-1.5">
+              <svg lucideBadge class="w-4 h-4 text-[#d8b66e]"></svg>
+              <span>لوحة الاستقبال الترحيبية بالمطار (Airport Welcome Placard):</span>
+            </label>
+            <input type="text" [ngModel]="welcomePlacardName()" (ngModelChange)="setWelcomePlacardName($event)" placeholder="الاسم أو اللقب للوح جهاز iPad الخاص بالسائق" class="w-full rounded-lg border border-[#4d3f30] bg-[#0d0b09] px-3.5 py-2.5 text-xs text-[#f4ead8] focus:border-[#d4ad67] focus:outline-none">
             <p class="text-[10px] text-[#9e8c74] mt-1">يتم عرض هذا الاسم برسوم فاخرة على جهاز iPad الخاص بالسائق في الصالة لتسهيل الترحيب.</p>
           </div>
         </div>
@@ -321,39 +335,39 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block text-xs font-bold text-[#c4b193] mb-1">اسم الضيف الكريم / المسؤول:</label>
-            <input type="text" [(ngModel)]="guestName" placeholder="أدخل اسمك الكريم" class="w-full rounded-lg border border-[#4d3f30] bg-[#0d0b09] px-3.5 py-2.5 text-xs text-[#f4ead8] focus:border-[#d4ad67] focus:outline-none">
+            <input type="text" [ngModel]="guestName()" (ngModelChange)="setGuestName($event)" placeholder="أدخل اسمك الكريم" class="w-full rounded-lg border border-[#4d3f30] bg-[#0d0b09] px-3.5 py-2.5 text-xs text-[#f4ead8] focus:border-[#d4ad67] focus:outline-none">
           </div>
           <div>
             <label class="block text-xs font-bold text-[#c4b193] mb-1">رقم الجوال / الواتساب:</label>
-            <input type="tel" [(ngModel)]="guestPhone" placeholder="05XXXXXXXX" class="w-full rounded-lg border border-[#4d3f30] bg-[#0d0b09] px-3.5 py-2.5 text-xs text-[#f4ead8] focus:border-[#d4ad67] focus:outline-none">
+            <input type="tel" [ngModel]="guestPhone()" (ngModelChange)="setGuestPhone($event)" placeholder="05XXXXXXXX" class="w-full rounded-lg border border-[#4d3f30] bg-[#0d0b09] px-3.5 py-2.5 text-xs text-[#f4ead8] focus:border-[#d4ad67] focus:outline-none">
           </div>
         </div>
 
         <div>
           <label class="block text-xs font-bold text-[#d8b66e] mb-2">اختر طريقة الدفع الفاخرة والتقسيط:</label>
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            <button type="button" (click)="paymentMethod.set('mada')" [class.border-[#d4ad67]]="paymentMethod() === 'mada'" [class.bg-[#d4ad67]/20]="paymentMethod() === 'mada'" class="rounded-xl border border-[#4d3f30] bg-[#15120e] p-3 text-right transition">
-              <span class="block font-black text-xs text-[#f7ead0]">💳 مدى Mada</span>
+            <button type="button" (click)="setPaymentMethod('mada')" [class.border-[#d4ad67]]="paymentMethod() === 'mada'" [class.bg-[#d4ad67]/20]="paymentMethod() === 'mada'" class="rounded-xl border border-[#4d3f30] bg-[#15120e] p-3 text-right transition">
+              <span class="font-black text-xs text-[#f7ead0] flex items-center gap-1.5"><svg lucideCreditCard class="w-3.5 h-3.5 text-[#d8b66e]"></svg> مدى Mada</span>
               <span class="text-[9px] text-[#bda98c]">بطاقة مدى المحلية</span>
             </button>
-            <button type="button" (click)="paymentMethod.set('apple_pay')" [class.border-[#d4ad67]]="paymentMethod() === 'apple_pay'" [class.bg-[#d4ad67]/20]="paymentMethod() === 'apple_pay'" class="rounded-xl border border-[#4d3f30] bg-[#15120e] p-3 text-right transition">
-              <span class="block font-black text-xs text-[#f7ead0]">🍏 Apple Pay</span>
+            <button type="button" (click)="setPaymentMethod('apple_pay')" [class.border-[#d4ad67]]="paymentMethod() === 'apple_pay'" [class.bg-[#d4ad67]/20]="paymentMethod() === 'apple_pay'" class="rounded-xl border border-[#4d3f30] bg-[#15120e] p-3 text-right transition">
+              <span class="font-black text-xs text-[#f7ead0] flex items-center gap-1.5"><svg lucideSmartphone class="w-3.5 h-3.5 text-[#d8b66e]"></svg> Apple Pay</span>
               <span class="text-[9px] text-[#bda98c]">الدفع السريع الآمن</span>
             </button>
-            <button type="button" (click)="paymentMethod.set('credit_card')" [class.border-[#d4ad67]]="paymentMethod() === 'credit_card'" [class.bg-[#d4ad67]/20]="paymentMethod() === 'credit_card'" class="rounded-xl border border-[#4d3f30] bg-[#15120e] p-3 text-right transition">
-              <span class="block font-black text-xs text-[#f7ead0]">💳 فيزا / ماستركارد</span>
+            <button type="button" (click)="setPaymentMethod('credit_card')" [class.border-[#d4ad67]]="paymentMethod() === 'credit_card'" [class.bg-[#d4ad67]/20]="paymentMethod() === 'credit_card'" class="rounded-xl border border-[#4d3f30] bg-[#15120e] p-3 text-right transition">
+              <span class="font-black text-xs text-[#f7ead0] flex items-center gap-1.5"><svg lucideCreditCard class="w-3.5 h-3.5 text-[#d8b66e]"></svg> فيزا / ماستركارد</span>
               <span class="text-[9px] text-[#bda98c]">بطاقات الائتمان</span>
             </button>
-            <button type="button" (click)="paymentMethod.set('stc_pay')" [class.border-[#d4ad67]]="paymentMethod() === 'stc_pay'" [class.bg-[#d4ad67]/20]="paymentMethod() === 'stc_pay'" class="rounded-xl border border-[#4d3f30] bg-[#15120e] p-3 text-right transition">
-              <span class="block font-black text-xs text-[#f7ead0]">📱 STC Pay</span>
+            <button type="button" (click)="setPaymentMethod('stc_pay')" [class.border-[#d4ad67]]="paymentMethod() === 'stc_pay'" [class.bg-[#d4ad67]/20]="paymentMethod() === 'stc_pay'" class="rounded-xl border border-[#4d3f30] bg-[#15120e] p-3 text-right transition">
+              <span class="font-black text-xs text-[#f7ead0] flex items-center gap-1.5"><svg lucideSmartphone class="w-3.5 h-3.5 text-[#d8b66e]"></svg> STC Pay</span>
               <span class="text-[9px] text-[#bda98c]">محفظة STC الرقمية</span>
             </button>
-            <button type="button" (click)="paymentMethod.set('tabby_tamara')" [class.border-[#d4ad67]]="paymentMethod() === 'tabby_tamara'" [class.bg-[#d4ad67]/20]="paymentMethod() === 'tabby_tamara'" class="rounded-xl border border-[#4d3f30] bg-[#15120e] p-3 text-right transition">
-              <span class="block font-black text-xs text-[#f7ead0]">🛍️ Tabby / Tamara</span>
+            <button type="button" (click)="setPaymentMethod('tabby_tamara')" [class.border-[#d4ad67]]="paymentMethod() === 'tabby_tamara'" [class.bg-[#d4ad67]/20]="paymentMethod() === 'tabby_tamara'" class="rounded-xl border border-[#4d3f30] bg-[#15120e] p-3 text-right transition">
+              <span class="font-black text-xs text-[#f7ead0] flex items-center gap-1.5"><svg lucideShoppingBag class="w-3.5 h-3.5 text-[#d8b66e]"></svg> Tabby / Tamara</span>
               <span class="text-[9px] text-[#d4ad67] font-bold">تقسيط 4 دفعات مريحة</span>
             </button>
-            <button type="button" (click)="paymentMethod.set('corporate_b2b')" [class.border-[#d4ad67]]="paymentMethod() === 'corporate_b2b'" [class.bg-[#d4ad67]/20]="paymentMethod() === 'corporate_b2b'" class="rounded-xl border border-[#4d3f30] bg-[#15120e] p-3 text-right transition">
-              <span class="block font-black text-xs text-[#f7ead0]">🏢 حسابات الشركات B2B</span>
+            <button type="button" (click)="setPaymentMethod('corporate_b2b')" [class.border-[#d4ad67]]="paymentMethod() === 'corporate_b2b'" [class.bg-[#d4ad67]/20]="paymentMethod() === 'corporate_b2b'" class="rounded-xl border border-[#4d3f30] bg-[#15120e] p-3 text-right transition">
+              <span class="font-black text-xs text-[#f7ead0] flex items-center gap-1.5"><svg lucideBuilding2 class="w-3.5 h-3.5 text-[#d8b66e]"></svg> حسابات الشركات B2B</span>
               <span class="text-[9px] text-[#bda98c]">فواتير ضريبية مؤجلة</span>
             </button>
           </div>
@@ -361,7 +375,7 @@
 
         <div>
           <label class="block text-xs font-bold text-[#c4b193] mb-1">ملاحظات إضافية للرحلة:</label>
-          <textarea rows="2" [(ngModel)]="specialNotes" placeholder="أي طلبات خاصة للسائق أو المسار..." class="w-full rounded-lg border border-[#4d3f30] bg-[#0d0b09] p-3 text-xs text-[#f4ead8] focus:border-[#d4ad67] focus:outline-none"></textarea>
+          <textarea rows="2" [ngModel]="specialNotes()" (ngModelChange)="setSpecialNotes($event)" placeholder="أي طلبات خاصة للسائق أو المسار..." class="w-full rounded-lg border border-[#4d3f30] bg-[#0d0b09] p-3 text-xs text-[#f4ead8] focus:border-[#d4ad67] focus:outline-none"></textarea>
         </div>
       </div>
       }
@@ -424,11 +438,13 @@
 
           <div class="mt-5 text-center space-y-3">
             <a [href]="getWhatsAppBookingUrl()" (click)="onWhatsAppClick()" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#25D366] to-[#128C7E] px-6 py-3.5 text-xs font-black text-white shadow-[0_8px_20px_rgba(37,211,102,0.3)] transition hover:scale-105 active:scale-95">
-              <span>📱 تأكيد الحجز وإرسال الفاتورة عبر الواتساب المباشر</span>
+              <svg lucideSmartphone class="w-4 h-4"></svg>
+              <span>تأكيد الحجز وإرسال الفاتورة عبر الواتساب المباشر</span>
             </a>
             @if (orderSavedSuccess()) {
             <div class="flex items-center justify-center gap-1.5 text-[11px] font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 rounded-lg py-2 px-3">
-              <span>✓ تم تسجيل طلب الحجز في لوحة الإدارة بنجاح (رقم: {{ bookingRef() }})</span>
+              <svg lucideCheck class="w-4 h-4 text-emerald-400"></svg>
+              <span>تم تسجيل طلب الحجز في لوحة الإدارة بنجاح (رقم: {{ bookingRef() }})</span>
             </div>
             }
           </div>
@@ -453,8 +469,9 @@
         المتابعة للخطوة التالية ←
       </button>
       } @else if (currentStep() === 4) {
-      <button type="button" (click)="nextStep()" class="rounded-xl bg-[#d4ad67] px-6 py-2.5 text-xs font-black text-[#120f0c] hover:bg-[#edc77f] transition shadow-lg">
-        تأكيد الطلب واستعراض الفاتورة 📄
+      <button type="button" (click)="nextStep()" class="rounded-xl bg-[#d4ad67] px-6 py-2.5 text-xs font-black text-[#120f0c] hover:bg-[#edc77f] transition shadow-lg flex items-center gap-1.5">
+        <span>تأكيد الطلب واستعراض الفاتورة</span>
+        <svg lucideFileText class="w-4 h-4"></svg>
       </button>
       } @else {
       <button type="button" (click)="close()" class="rounded-xl border border-[#4d3f30] bg-[#221b14] px-6 py-2.5 text-xs font-bold text-[#d8b66e] hover:bg-[#d4ad67] hover:text-[#120f0c] transition">

@@ -10,11 +10,57 @@ export type ScentChoice = 'royal_oud' | 'musk' | 'amber' | 'none';
 export type RefreshmentChoice = 'saudi_coffee' | 'sparkling_water' | 'fresh_juices' | 'water';
 export type DriverLangChoice = 'ar' | 'en' | 'both';
 export type PaymentMethod = 'mada' | 'apple_pay' | 'credit_card' | 'stc_pay' | 'tabby_tamara' | 'corporate_b2b';
-
+import {
+  LucideCrown,
+  LucideX,
+  LucideCarFront,
+  LucideClock3,
+  LucideMap,
+  LucidePlane,
+  LucideSparkles,
+  LucideFlower2,
+  LucideFlame,
+  LucideCoffee,
+  LucideGlassWater,
+  LucideCitrus,
+  LucideShieldCheck,
+  LucideBadge,
+  LucideCreditCard,
+  LucideSmartphone,
+  LucideShoppingBag,
+  LucideBuilding2,
+  LucideFileText,
+  LucideCheck,
+  LucideStar
+} from '@lucide/angular';
 @Component({
   selector: 'app-booking-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    LucideCrown,
+    LucideX,
+    LucideCarFront,
+    LucideClock3,
+    LucideMap,
+    LucidePlane,
+    LucideSparkles,
+    LucideFlower2,
+    LucideFlame,
+    LucideCoffee,
+    LucideGlassWater,
+    LucideCitrus,
+    LucideShieldCheck,
+    LucideBadge,
+    LucideCreditCard,
+    LucideSmartphone,
+    LucideShoppingBag,
+    LucideBuilding2,
+    LucideFileText,
+    LucideCheck,
+    LucideStar
+  ],
   templateUrl: './booking-modal.html',
 })
 export class BookingModal {
@@ -71,9 +117,27 @@ export class BookingModal {
   readonly specialNotes = signal<string>('');
   readonly paymentMethod = signal<PaymentMethod>('mada');
 
+  // Setters for Template Signal Binding
+  setCabinScent(val: ScentChoice): void { this.cabinScent.set(val); }
+  setRefreshment(val: RefreshmentChoice): void { this.refreshment.set(val); }
+  setDriverLanguage(val: DriverLangChoice): void { this.driverLanguage.set(val); }
+  setPaymentMethod(val: PaymentMethod): void { this.paymentMethod.set(val); }
+  setPickupLocation(val: string): void { this.pickupLocation.set(val); }
+  setDropoffLocation(val: string): void { this.dropoffLocation.set(val); }
+  setFlightNumber(val: string): void { this.flightNumber.set(val); }
+  setWelcomePlacardName(val: string): void { this.welcomePlacardName.set(val); }
+  setGuestName(val: string): void { this.guestName.set(val); }
+  setGuestPhone(val: string): void { this.guestPhone.set(val); }
+  setSpecialNotes(val: string): void { this.specialNotes.set(val); }
+  setIsDiscreetBooking(val: boolean): void { this.isDiscreetBooking.set(val); }
+  setEnableFlightTracking(val: boolean): void { this.enableFlightTracking.set(val); }
+  setPickupDate(val: string): void { this.pickupDate.set(val); }
+  setPickupTime(val: string): void { this.pickupTime.set(val); }
+  setSelectedTour(val: string): void { this.selectedTour.set(val); }
+
   // Computed data
   readonly carsList = computed(() => this.siteContent.content().cars);
-  
+
   readonly selectedCarObj = computed(() => {
     const list = this.carsList();
     const key = this.selectedCarKey();
@@ -217,8 +281,8 @@ export class BookingModal {
       this.serviceType() === 'transfer'
         ? 'من نقطة إلى نقطة'
         : this.serviceType() === 'hourly'
-        ? `بالساعة (${this.selectedHours()} ساعة)`
-        : `باقة سياحية (${this.selectedTour()})`;
+          ? `بالساعة (${this.selectedHours()} ساعة)`
+          : `باقة سياحية (${this.selectedTour()})`;
 
     const text = `👑 *طلب حجز جديد عبر ROYALRIDE*
 ----------------------------------------
