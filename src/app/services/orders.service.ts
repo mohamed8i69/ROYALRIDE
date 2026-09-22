@@ -1,6 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export type OrderStatus = 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled';
 
@@ -52,6 +53,8 @@ export interface Order {
   updatedAt?: string;
 }
 
+const API_BASE = environment.apiUrl || 'https://dashboard-nine-flame-50.vercel.app';
+
 @Injectable({ providedIn: 'root' })
 export class OrdersService {
   private readonly http = inject(HttpClient);
@@ -60,12 +63,12 @@ export class OrdersService {
   readonly error = signal<string | null>(null);
 
   /**
-   * Save a new order directly to MongoDB via backend API.
+   * Save a new order directly to MongoDB via Vercel backend API.
    */
   async createOrder(orderData: Partial<Order>): Promise<Order | null> {
     try {
       const response = await firstValueFrom(
-        this.http.post<{ ok: boolean; order: Order }>('/api/orders', orderData)
+        this.http.post<{ ok: boolean; order: Order }>(`${API_BASE}/api/orders`, orderData)
       );
 
       if (response && response.order) {
@@ -78,14 +81,14 @@ export class OrdersService {
   }
 
   /**
-   * Load all orders directly from MongoDB via backend API.
+   * Load all orders directly from MongoDB via Vercel backend API.
    */
   async loadOrders(): Promise<Order[]> {
     this.loading.set(true);
     this.error.set(null);
 
     try {
-      const remoteOrders = await firstValueFrom(this.http.get<Order[]>('/api/orders'));
+      const remoteOrders = await firstValueFrom(this.http.get<Order[]>(`${API_BASE}/api/orders`));
       const sorted = (remoteOrders || []).sort(
         (a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
       );
@@ -107,7 +110,7 @@ export class OrdersService {
   async updateStatus(orderIdOrRef: string, newStatus: OrderStatus): Promise<boolean> {
     try {
       await firstValueFrom(
-        this.http.patch<{ ok: boolean }>(`/api/orders/${orderIdOrRef}/status`, { status: newStatus })
+        this.http.patch<{ ok: boolean }>(`${API_BASE}/api/orders/${orderIdOrRef}/status`, { status: newStatus })
       );
 
       // Update in-memory signal
@@ -126,7 +129,7 @@ export class OrdersService {
    */
   async deleteOrder(orderIdOrRef: string): Promise<boolean> {
     try {
-      await firstValueFrom(this.http.delete(`/api/orders/${orderIdOrRef}`));
+      await firstValueFrom(this.http.delete(`${API_BASE}/api/orders/${orderIdOrRef}`));
       this.orders.update((list) => list.filter((o) => o._id !== orderIdOrRef && o.bookingRef !== orderIdOrRef));
       return true;
     } catch (err) {

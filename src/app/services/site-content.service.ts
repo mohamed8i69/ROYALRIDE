@@ -1,7 +1,7 @@
-import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface FleetCar {
   key: string;
@@ -61,10 +61,11 @@ const defaultContent: SiteContent = {
   ],
 };
 
+const API_BASE = environment.apiUrl || 'https://dashboard-nine-flame-50.vercel.app';
+
 @Injectable({ providedIn: 'root' })
 export class SiteContentService {
   private readonly http = inject(HttpClient);
-  private readonly platformId = inject(PLATFORM_ID);
 
   readonly content = signal<SiteContent>(structuredClone(defaultContent));
   readonly loading = signal(true);
@@ -80,11 +81,7 @@ export class SiteContentService {
 
   async save(nextContent: SiteContent): Promise<void> {
     const next = structuredClone(nextContent);
-    const url = isPlatformBrowser(this.platformId)
-      ? '/api/site-content'
-      : 'http://127.0.0.1:3000/api/site-content';
-
-    await firstValueFrom(this.http.put<SiteContent>(url, next));
+    await firstValueFrom(this.http.put<SiteContent>(`${API_BASE}/api/site-content`, next));
     this.content.set(next);
     this.error.set(null);
   }
@@ -97,11 +94,7 @@ export class SiteContentService {
     this.loading.set(true);
 
     try {
-      const url = isPlatformBrowser(this.platformId)
-        ? '/api/site-content'
-        : 'http://127.0.0.1:3000/api/site-content';
-
-      const remote = await firstValueFrom(this.http.get<SiteContent>(url));
+      const remote = await firstValueFrom(this.http.get<SiteContent>(`${API_BASE}/api/site-content`));
       if (remote && typeof remote === 'object') {
         const merged: SiteContent = {
           ...structuredClone(defaultContent),

@@ -8,7 +8,7 @@ import express from 'express';
 import { join } from 'node:path';
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
-const backendApiUrl = process.env['BACKEND_API_URL'] || 'http://127.0.0.1:3000';
+const backendApiUrl = process.env['BACKEND_API_URL'] || 'https://dashboard-nine-flame-50.vercel.app';
 
 const app = express();
 const angularApp = new AngularNodeAppEngine();

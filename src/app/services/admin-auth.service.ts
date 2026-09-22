@@ -2,11 +2,14 @@ import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 interface LoginResponse {
   token: string;
   admin: { email: string; role: string };
 }
+
+const API_BASE = environment.apiUrl || 'https://dashboard-nine-flame-50.vercel.app';
 
 @Injectable({ providedIn: 'root' })
 export class AdminAuthService {
@@ -16,7 +19,9 @@ export class AdminAuthService {
   readonly isAuthenticated = signal(this.hasToken());
 
   async login(email: string, password: string): Promise<void> {
-    const result = await firstValueFrom(this.http.post<LoginResponse>('/api/auth/login', { email, password }));
+    const result = await firstValueFrom(
+      this.http.post<LoginResponse>(`${API_BASE}/api/auth/login`, { email, password })
+    );
     if (!result.token) {
       throw new Error('Authentication token was not returned.');
     }
@@ -31,7 +36,7 @@ export class AdminAuthService {
     }
 
     try {
-      await firstValueFrom(this.http.get('/api/auth/me'));
+      await firstValueFrom(this.http.get(`${API_BASE}/api/auth/me`));
       this.isAuthenticated.set(true);
       return true;
     } catch {
