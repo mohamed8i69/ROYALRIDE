@@ -59,7 +59,7 @@ import {
     LucideBuilding2,
     LucideFileText,
     LucideCheck,
-    LucideStar
+    // LucideStar
   ],
   templateUrl: './booking-modal.html',
 })
