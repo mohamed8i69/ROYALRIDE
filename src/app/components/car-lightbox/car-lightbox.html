@@ -1,0 +1,33 @@
+@if (image(); as lb) {
+<!-- Overlay: use solid opacity instead of backdrop-blur to avoid expensive GPU compositing -->
+<div
+    class="fixed inset-0 z-[999] flex items-center justify-center bg-black/95 p-4"
+    role="dialog" aria-modal="true" [attr.aria-label]="lb.name"
+    (click)="dismiss()" (keydown.escape)="dismiss()">
+
+    <div class="relative flex max-h-[90vh] max-w-3xl w-full flex-col items-center gap-4"
+        (click)="$event.stopPropagation()">
+
+        <!-- Close button -->
+        <button type="button" (click)="dismiss()" aria-label="إغلاق"
+            class="absolute -top-3 -left-3 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-[#4b3b27] bg-[#1a1611] text-lg text-[#e7c77f] shadow-xl transition hover:bg-[#d4ad67] hover:text-[#1a1611]">
+            ✕
+        </button>
+
+        <!-- Car name badge -->
+        <span class="rounded-full border border-[#d4ad67]/50 bg-[#1a1611]/90 px-4 py-1.5 text-xs font-black text-[#e7c77f] shadow">
+            {{ lb.name }}
+        </span>
+
+        <!-- The image — object-contain so the WHOLE car is visible, no heavy filters -->
+        <div class="flex max-h-[75vh] w-full items-center justify-center overflow-hidden rounded-2xl border border-[#4b3b27] bg-gradient-to-b from-[#1a1510] to-[#0a0807] p-4 shadow-2xl sm:p-6">
+            <img [src]="lb.src" [alt]="lb.name"
+                class="max-h-[68vh] w-full object-contain transition-transform duration-300"
+                loading="eager">
+        </div>
+
+        <!-- Hint text -->
+        <p class="text-[10px] text-[#7d705c]">انقر خارج الصورة للإغلاق</p>
+    </div>
+</div>
+}

@@ -36,6 +36,9 @@
         <button type="button" (click)="setPanel('transfer')" [class.bg-[#b48a45]/20]="activePanel() === 'transfer'" class="flex items-center gap-2 rounded-md px-3 py-3 text-right text-xs font-bold text-[#d9c8ab] hover:bg-[#b48a45]/15">
           <svg lucideTruck class="w-4 h-4 text-[#d8b66e]"></svg> أسعار التنقل
         </button>
+        <button type="button" (click)="setPanel('layout')" [class.bg-[#b48a45]/20]="activePanel() === 'layout'" class="flex items-center gap-2 rounded-md px-3 py-3 text-right text-xs font-bold text-[#d9c8ab] hover:bg-[#b48a45]/15">
+          <svg lucideLayoutDashboard class="w-4 h-4 text-[#d8b66e]"></svg> ترتيب الأقسام
+        </button>
       </nav>
       <div class="mt-6 hidden rounded-lg border border-[#4b3b27] bg-[#19150f] p-3 text-[10px] leading-5 text-[#a9987d] lg:block">يتم تحديث الطلبات والتغييرات مباشرة ومتزامنة مع MongoDB server.</div>
     </aside>
@@ -263,6 +266,64 @@
           }
         </div>
         <button type="button" (click)="save()" class="save-button">حفظ أسعار التنقل</button>
+      </div>
+      }
+
+      <!-- SECTION ORDER / LAYOUT PANEL -->
+      @if (activePanel() === 'layout') {
+      <div class="max-w-2xl">
+        <div class="mb-6">
+          <span class="text-[10px] font-bold tracking-[0.18em] text-[#d8b66e]">PAGE LAYOUT</span>
+          <h2 class="mt-2 text-2xl font-black text-white">ترتيب أقسام الصفحة الرئيسية</h2>
+          <p class="mt-1 text-xs text-[#a9987d]">يمكنك إعادة ترتيب الأقسام كما تشاء. يُطبّق الترتيب فور الحفظ على الموقع مباشرة.</p>
+        </div>
+
+        <div class="space-y-3">
+          @for (section of draft().sectionOrder; track section; let i = $index) {
+          <div class="flex items-center gap-4 rounded-xl border border-[#4b3b27] bg-[#15130f] p-4 transition hover:border-[#d4ad67]/50">
+            <!-- Rank Badge -->
+            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#d4ad67]/15 text-base font-black text-[#d4ad67] border border-[#d4ad67]/30">
+              {{ i + 1 }}
+            </span>
+
+            <!-- Icon + Label -->
+            <div class="flex flex-1 items-center gap-3 min-w-0">
+              <span class="text-xl leading-none">{{ getSectionIcon(section) }}</span>
+              <div class="min-w-0">
+                <p class="truncate text-sm font-black text-[#f5ead6]">{{ getSectionLabel(section) }}</p>
+                <p class="text-[10px] text-[#7d705c] font-mono mt-0.5">{{ section }}</p>
+              </div>
+            </div>
+
+            <!-- Up / Down Controls -->
+            <div class="flex flex-col gap-1">
+              <button type="button" (click)="moveSectionUp(i)"
+                [disabled]="i === 0"
+                [class.opacity-25]="i === 0"
+                [class.cursor-not-allowed]="i === 0"
+                title="تحريك للأعلى"
+                class="flex h-7 w-7 items-center justify-center rounded-md border border-[#4b3b27] bg-[#1a1611] text-[#e7c77f] hover:bg-[#332a1f] hover:border-[#d4ad67] transition disabled:pointer-events-none">
+                ▲
+              </button>
+              <button type="button" (click)="moveSectionDown(i)"
+                [disabled]="i === draft().sectionOrder.length - 1"
+                [class.opacity-25]="i === draft().sectionOrder.length - 1"
+                [class.cursor-not-allowed]="i === draft().sectionOrder.length - 1"
+                title="تحريك للأسفل"
+                class="flex h-7 w-7 items-center justify-center rounded-md border border-[#4b3b27] bg-[#1a1611] text-[#e7c77f] hover:bg-[#332a1f] hover:border-[#d4ad67] transition disabled:pointer-events-none">
+                ▼
+              </button>
+            </div>
+          </div>
+          }
+        </div>
+
+        <div class="mt-6 rounded-xl border border-[#3a3024] bg-[#0f0d0b] p-4 text-[10px] leading-5 text-[#8c7d6b]">
+          <strong class="text-[#d8b66e] block mb-1">ملاحظة:</strong>
+          القسم الرئيسي (hero) يحتوي على شريط التصفح والصورة الرئيسية. يُنصح بإبقائه في المرتبة الأولى دائماً.
+        </div>
+
+        <button type="button" (click)="save()" class="save-button mt-6">حفظ الترتيب الجديد</button>
       </div>
       }
 

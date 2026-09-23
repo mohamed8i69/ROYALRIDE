@@ -61,7 +61,7 @@ export class Admin implements OnInit {
   private readonly auth = inject(AdminAuthService);
   readonly ordersService = inject(OrdersService);
 
-  readonly activePanel = signal<'overview' | 'orders' | 'content' | 'fleet' | 'transfer'>('overview');
+  readonly activePanel = signal<'overview' | 'orders' | 'content' | 'fleet' | 'transfer' | 'layout'>('overview');
   readonly saved = signal(false);
   readonly saveError = signal<string | null>(null);
   readonly draft: ReturnType<typeof signal<SiteContent>>;
@@ -113,7 +113,7 @@ export class Admin implements OnInit {
     this.draft.set(structuredClone(latest));
   }
 
-  setPanel(panel: 'overview' | 'orders' | 'content' | 'fleet' | 'transfer'): void {
+  setPanel(panel: 'overview' | 'orders' | 'content' | 'fleet' | 'transfer' | 'layout'): void {
     this.activePanel.set(panel);
     if (panel === 'orders') {
       void this.ordersService.loadOrders();
@@ -170,6 +170,40 @@ export class Admin implements OnInit {
 
   closeOrderModal(): void {
     this.selectedOrderForModal.set(null);
+  }
+
+  moveSectionUp(index: number): void {
+    if (index === 0) return;
+    const order = [...this.draft().sectionOrder];
+    [order[index - 1], order[index]] = [order[index], order[index - 1]];
+    this.draft.update(d => ({ ...d, sectionOrder: order as typeof d.sectionOrder }));
+  }
+
+  moveSectionDown(index: number): void {
+    const order = [...this.draft().sectionOrder];
+    if (index >= order.length - 1) return;
+    [order[index], order[index + 1]] = [order[index + 1], order[index]];
+    this.draft.update(d => ({ ...d, sectionOrder: order as typeof d.sectionOrder }));
+  }
+
+  getSectionLabel(id: string): string {
+    const labels: Record<string, string> = {
+      hero: 'القسم الرئيسي (Hero + من نحن)',
+      transfer: 'التنقل بين جدة ومكة',
+      fleet: 'أسطول التأجير بالساعة / اليوم',
+      tours: 'جولات أبها السياحية',
+    };
+    return labels[id] ?? id;
+  }
+
+  getSectionIcon(id: string): string {
+    const icons: Record<string, string> = {
+      hero: '🏠',
+      transfer: '🚗',
+      fleet: '🚙',
+      tours: '🏔️',
+    };
+    return icons[id] ?? '📄';
   }
 
   getWhatsAppClientUrl(order: Order): string {

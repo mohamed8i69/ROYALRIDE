@@ -22,6 +22,8 @@ export interface TransferCar {
   image: string;
 }
 
+export type SectionId = 'hero' | 'transfer' | 'fleet' | 'tours';
+
 export interface SiteContent {
   heroTitle: string;
   heroSubtitle: string;
@@ -34,6 +36,7 @@ export interface SiteContent {
   toursText: string;
   cars: FleetCar[];
   transferCars: TransferCar[];
+  sectionOrder: SectionId[];
 }
 
 const defaultContent: SiteContent = {
@@ -46,6 +49,7 @@ const defaultContent: SiteContent = {
   transferText: 'الاستقبال والتنقل من جدة إلى مكة والعكس من مكة إلى جدة',
   toursTitle: 'أبها: الجولات السياحية والخدمات الخاصة',
   toursText: 'بكجات خاصة يتم ترتيبها بناءً على جدول رحلاتكم لخدمتكم، تواصلوا معنا.',
+  sectionOrder: ['hero', 'transfer', 'fleet', 'tours'],
   cars: [
     { key: 'taurus', name: 'فورد تورس', number: 4, price: '1000', note: 'اليوم الكامل · 12 ساعة مع السائق', details: 'خيار أنيق ومريح للتنقلات اليومية والرحلات الخاصة.', image: 'photo_2026-09-19_14-27-45.jpg' },
     { key: 'gmc', name: 'جمس (GMC)', number: 6, price: '1100', note: 'اليوم الكامل · 12 ساعة مع السائق', details: 'مساحة واسعة وخدمة مثالية للعائلات والوفود الصغيرة.', image: 'photo_2026-09-19_14-27-39.jpg' },
@@ -108,6 +112,7 @@ export class SiteContentService {
           ...remote,
           cars: remote.cars && remote.cars.length > 0 ? remote.cars : defaultContent.cars,
           transferCars: remote.transferCars && remote.transferCars.length > 0 ? remote.transferCars : defaultContent.transferCars,
+          sectionOrder: remote.sectionOrder && remote.sectionOrder.length === 4 ? remote.sectionOrder : defaultContent.sectionOrder,
         };
         this.content.set(merged);
       }
