@@ -60,12 +60,18 @@ export class OrdersService {
   private readonly http = inject(HttpClient);
   readonly orders = signal<Order[]>([]);
   readonly loading = signal<boolean>(false);
+  readonly submitting = signal<boolean>(false);
+  readonly updatingId = signal<string | null>(null);
+  readonly deletingId = signal<string | null>(null);
   readonly error = signal<string | null>(null);
 
   /**
    * Save a new order directly to MongoDB via Vercel backend API.
    */
   async createOrder(orderData: Partial<Order>): Promise<Order | null> {
+    this.submitting.set(true);
+    this.error.set(null);
+
     try {
       const response = await firstValueFrom(
         this.http.post<{ ok: boolean; order: Order }>(`${API_BASE}/api/orders`, orderData)
@@ -74,8 +80,11 @@ export class OrdersService {
       if (response && response.order) {
         return response.order;
       }
-    } catch (err) {
+    } catch (err: any) {
+      this.error.set(err?.error?.message || err?.message || 'تعذر حفظ الطلب في خادم API.');
       console.error('Backend API order save error:', err);
+    } finally {
+      this.submitting.set(false);
     }
     return null;
   }
@@ -94,8 +103,8 @@ export class OrdersService {
       );
       this.orders.set(sorted);
       return sorted;
-    } catch (err) {
-      this.error.set('تعذر جلب الطلبات من خادم MongoDB API.');
+    } catch (err: any) {
+      this.error.set(err?.error?.message || err?.message || 'تعذر جلب الطلبات من خادم MongoDB API.');
       console.error('Failed to load orders from API:', err);
       this.orders.set([]);
       return [];
@@ -108,6 +117,9 @@ export class OrdersService {
    * Update the status of an existing order in MongoDB.
    */
   async updateStatus(orderIdOrRef: string, newStatus: OrderStatus): Promise<boolean> {
+    this.updatingId.set(orderIdOrRef);
+    this.error.set(null);
+
     try {
       await firstValueFrom(
         this.http.patch<{ ok: boolean }>(`${API_BASE}/api/orders/${orderIdOrRef}/status`, { status: newStatus })
@@ -118,9 +130,12 @@ export class OrdersService {
         list.map((o) => (o._id === orderIdOrRef || o.bookingRef === orderIdOrRef ? { ...o, status: newStatus } : o))
       );
       return true;
-    } catch (err) {
+    } catch (err: any) {
+      this.error.set(err?.error?.message || err?.message || 'تحديث حالة الطلب فشل.');
       console.error('API order status update failed:', err);
       return false;
+    } finally {
+      this.updatingId.set(null);
     }
   }
 
@@ -128,13 +143,19 @@ export class OrdersService {
    * Delete an order from MongoDB.
    */
   async deleteOrder(orderIdOrRef: string): Promise<boolean> {
+    this.deletingId.set(orderIdOrRef);
+    this.error.set(null);
+
     try {
       await firstValueFrom(this.http.delete(`${API_BASE}/api/orders/${orderIdOrRef}`));
       this.orders.update((list) => list.filter((o) => o._id !== orderIdOrRef && o.bookingRef !== orderIdOrRef));
       return true;
-    } catch (err) {
+    } catch (err: any) {
+      this.error.set(err?.error?.message || err?.message || 'حذف الطلب فشل.');
       console.error('API order delete failed:', err);
       return false;
+    } finally {
+      this.deletingId.set(null);
     }
   }
 }

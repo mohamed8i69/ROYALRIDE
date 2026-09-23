@@ -469,9 +469,9 @@
         المتابعة للخطوة التالية ←
       </button>
       } @else if (currentStep() === 4) {
-      <button type="button" (click)="nextStep()" class="rounded-xl bg-[#d4ad67] px-6 py-2.5 text-xs font-black text-[#120f0c] hover:bg-[#edc77f] transition shadow-lg flex items-center gap-1.5">
-        <span>تأكيد الطلب واستعراض الفاتورة</span>
-        <svg lucideFileText class="w-4 h-4"></svg>
+      <button type="button" (click)="nextStep()" [disabled]="isSavingOrder()" class="rounded-xl bg-[#d4ad67] px-6 py-2.5 text-xs font-black text-[#120f0c] hover:bg-[#edc77f] transition shadow-lg flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-wait">
+        <span>{{ isSavingOrder() ? 'جارٍ تسجيل الحجز...' : 'تأكيد الطلب واستعراض الفاتورة' }}</span>
+        <svg lucideFileText class="w-4 h-4" [class.animate-spin]="isSavingOrder()"></svg>
       </button>
       } @else {
       <button type="button" (click)="close()" class="rounded-xl border border-[#4d3f30] bg-[#221b14] px-6 py-2.5 text-xs font-bold text-[#d8b66e] hover:bg-[#d4ad67] hover:text-[#120f0c] transition">

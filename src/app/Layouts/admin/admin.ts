@@ -98,6 +98,10 @@ export class Admin implements OnInit {
     this.ordersService.orders().reduce((sum, o) => sum + (o.pricing?.totalPrice || 0), 0)
   );
 
+  readonly isSaving = signal<boolean>(false);
+  readonly isResetting = signal<boolean>(false);
+  readonly isRefreshing = signal<boolean>(false);
+
   constructor() {
     this.draft = signal<SiteContent>(structuredClone(this.siteContent.content()));
   }
@@ -109,8 +113,13 @@ export class Admin implements OnInit {
   }
 
   async refreshContent(): Promise<void> {
-    const latest = await this.siteContent.reload();
-    this.draft.set(structuredClone(latest));
+    this.isRefreshing.set(true);
+    try {
+      const latest = await this.siteContent.reload();
+      this.draft.set(structuredClone(latest));
+    } finally {
+      this.isRefreshing.set(false);
+    }
   }
 
   setPanel(panel: 'overview' | 'orders' | 'content' | 'fleet' | 'transfer' | 'layout'): void {
@@ -125,24 +134,30 @@ export class Admin implements OnInit {
   }
 
   async save(): Promise<void> {
+    this.isSaving.set(true);
+    this.saveError.set(null);
     try {
       await this.siteContent.save(this.draft());
       this.draft.set(structuredClone(this.siteContent.content()));
       this.saved.set(true);
-      this.saveError.set(null);
       window.setTimeout(() => this.saved.set(false), 2500);
-    } catch {
-      this.saveError.set('تعذر حفظ التعديلات. تحقق من تشغيل خادم Dashboard API (Port 3000).');
+    } catch (err: any) {
+      this.saveError.set(err?.error?.message || err?.message || 'تعذر حفظ التعديلات. تحقق من تشغيل خادم Dashboard API.');
+    } finally {
+      this.isSaving.set(false);
     }
   }
 
   async reset(): Promise<void> {
+    this.isResetting.set(true);
+    this.saveError.set(null);
     try {
       await this.siteContent.reset();
       this.draft.set(structuredClone(this.siteContent.content()));
-      this.saveError.set(null);
-    } catch {
-      this.saveError.set('تعذر إعادة البيانات الافتراضية من الخادم.');
+    } catch (err: any) {
+      this.saveError.set(err?.error?.message || err?.message || 'تعذر إعادة البيانات الافتراضية من الخادم.');
+    } finally {
+      this.isResetting.set(false);
     }
   }
 
