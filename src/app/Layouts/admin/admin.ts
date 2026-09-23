@@ -192,6 +192,7 @@ export class Admin implements OnInit {
       transfer: 'التنقل بين جدة ومكة',
       fleet: 'أسطول التأجير بالساعة / اليوم',
       tours: 'جولات أبها السياحية',
+      contact: 'الاستشارات والتواصل المباشر (الواتساب والهاتف)',
     };
     return labels[id] ?? id;
   }
@@ -202,6 +203,7 @@ export class Admin implements OnInit {
       transfer: '🚗',
       fleet: '🚙',
       tours: '🏔️',
+      contact: '📞',
     };
     return icons[id] ?? '📄';
   }

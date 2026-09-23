@@ -54,9 +54,9 @@ export class Home {
     return `https://wa.me/966569038515?text=${encodeURIComponent(message)}`;
   }
 
-  /** Returns the 1-based position (1–4) of a section for Tailwind order-N class binding. */
+  /** Returns the 1-based position (1–5) of a section for Tailwind order-N class binding. */
   sectionPos(id: SectionId): number {
     const idx = this.content().sectionOrder.indexOf(id);
-    return idx === -1 ? 4 : idx + 1;
+    return idx === -1 ? 5 : idx + 1;
   }
 }

@@ -49,7 +49,7 @@ const defaultContent: SiteContent = {
   transferText: 'الاستقبال والتنقل من جدة إلى مكة والعكس من مكة إلى جدة',
   toursTitle: 'أبها: الجولات السياحية والخدمات الخاصة',
   toursText: 'بكجات خاصة يتم ترتيبها بناءً على جدول رحلاتكم لخدمتكم، تواصلوا معنا.',
-  sectionOrder: ['hero', 'transfer', 'fleet', 'tours'],
+  sectionOrder: ['hero', 'transfer', 'fleet', 'tours', 'contact'],
   cars: [
     { key: 'taurus', name: 'فورد تورس', number: 4, price: '1000', note: 'اليوم الكامل · 12 ساعة مع السائق', details: 'خيار أنيق ومريح للتنقلات اليومية والرحلات الخاصة.', image: 'photo_2026-09-19_14-27-45.jpg' },
     { key: 'gmc', name: 'جمس (GMC)', number: 6, price: '1100', note: 'اليوم الكامل · 12 ساعة مع السائق', details: 'مساحة واسعة وخدمة مثالية للعائلات والوفود الصغيرة.', image: 'photo_2026-09-19_14-27-39.jpg' },
@@ -107,12 +107,19 @@ export class SiteContentService {
     try {
       const remote = await firstValueFrom(this.http.get<SiteContent>(`${API_BASE}/api/site-content`));
       if (remote && typeof remote === 'object') {
+        let mergedSectionOrder = defaultContent.sectionOrder;
+        if (remote.sectionOrder && Array.isArray(remote.sectionOrder) && remote.sectionOrder.length > 0) {
+          mergedSectionOrder = remote.sectionOrder.includes('contact')
+            ? remote.sectionOrder
+            : [...remote.sectionOrder, 'contact'];
+        }
+
         const merged: SiteContent = {
           ...structuredClone(defaultContent),
           ...remote,
           cars: remote.cars && remote.cars.length > 0 ? remote.cars : defaultContent.cars,
           transferCars: remote.transferCars && remote.transferCars.length > 0 ? remote.transferCars : defaultContent.transferCars,
-          sectionOrder: remote.sectionOrder && remote.sectionOrder.length === 4 ? remote.sectionOrder : defaultContent.sectionOrder,
+          sectionOrder: mergedSectionOrder,
         };
         this.content.set(merged);
       }
