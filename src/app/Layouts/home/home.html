@@ -2,10 +2,8 @@
 <main dir="rtl" class="flex min-h-screen flex-col bg-[#080808] font-sans text-[#f4ead8]">
 
     <!-- ══════════ HERO + ABOUT ══════════ -->
-    <section id="home" class="w-full bg-[#090909]"
-        [class.order-1]="sectionPos('hero') === 1"
-        [class.order-2]="sectionPos('hero') === 2"
-        [class.order-3]="sectionPos('hero') === 3"
+    <section id="home" class="w-full bg-[#090909]" [class.order-1]="sectionPos('hero') === 1"
+        [class.order-2]="sectionPos('hero') === 2" [class.order-3]="sectionPos('hero') === 3"
         [class.order-4]="sectionPos('hero') === 4">
 
         <article id="hero"
@@ -28,10 +26,10 @@
             </header>
             <div
                 class="relative flex min-h-[600px] flex-col items-center justify-center px-4 pb-6 pt-16 text-center sm:min-h-[680px] sm:px-6 sm:pb-8 sm:pt-20">
-                <span
-                    class="rounded-full bg-[#c7a261] px-3 py-1 text-[10px] font-bold text-[#21180d] shadow">الحجز
+                <span class="rounded-full bg-[#c7a261] px-3 py-1 text-[10px] font-bold text-[#21180d] shadow">الحجز
                     متاح الآن 24/7</span>
-                <h1 class="mt-3 max-w-xs text-2xl font-black leading-tight text-[#e4c38c] sm:mt-4 sm:max-w-3xl sm:text-5xl">
+                <h1
+                    class="mt-3 max-w-xs text-2xl font-black leading-tight text-[#e4c38c] sm:mt-4 sm:max-w-3xl sm:text-5xl">
                     {{ content().heroTitle }}</h1>
                 <p class="mt-2 text-base font-bold tracking-wide text-white sm:text-xl">{{ content().heroSubtitle }}</p>
                 <p class="mt-1 text-[10px] text-[#e7d4b1] sm:text-xs">مؤسسة مرون خالد عبدالله محمد لخدمات النقل</p>
@@ -46,9 +44,9 @@
                 <div
                     class="mt-auto grid w-full max-w-xs grid-cols-2 overflow-hidden rounded-xl border border-[#b38c4c]/40 bg-[#17120d]/90 text-[9px] text-[#ead7b0] shadow-2xl backdrop-blur-sm sm:max-w-3xl sm:grid-cols-4 sm:text-[10px]">
                     <span class="flex items-center justify-center gap-1 px-2 py-2.5 sm:gap-1.5 sm:px-3 sm:py-3"><img
-                            class="h-4 w-auto object-contain sm:h-5" src="ZATCA.png"
-                            alt="ZATCA"><b>ZATCA</b></span>
-                    <span class="flex items-center justify-center py-2.5 text-center leading-4 sm:py-3">مدى / Apple Pay / Tabby</span>
+                            class="h-4 w-auto object-contain sm:h-5" src="ZATCA.png" alt="ZATCA"><b>ZATCA</b></span>
+                    <span class="flex items-center justify-center py-2.5 text-center leading-4 sm:py-3">مدى / Apple Pay
+                        / Tabby</span>
                     <span class="flex items-center justify-center px-2 py-2.5 sm:px-3 sm:py-3">نقطة 7 من 7</span>
                     <span class="flex items-center justify-center px-2 py-2.5 sm:px-3 sm:py-3">مرخصة سعودية</span>
                 </div>
@@ -56,13 +54,15 @@
         </article>
 
         <!-- About strip — stacked on mobile, side-by-side on desktop -->
-        <section class="flex flex-col gap-0 overflow-hidden sm:grid sm:min-h-[420px] sm:grid-cols-2 sm:gap-10 sm:px-12 sm:py-8">
+        <section
+            class="flex flex-col gap-0 overflow-hidden sm:grid sm:min-h-[420px] sm:grid-cols-2 sm:gap-10 sm:px-12 sm:py-8">
             <img class="h-[220px] w-full object-cover object-center opacity-90 sm:h-[420px]
                         [mask-image:linear-gradient(to_bottom,#000_60%,transparent)] sm:[mask-image:linear-gradient(to_left,#000_40%,transparent)]"
                 src="photo_2026-09-19_14-27-48.jpg" alt="RoyalRide chauffeur and luxury car">
             <div class="px-5 py-6 text-right sm:flex sm:flex-col sm:justify-center sm:px-0 sm:py-0">
                 <p class="text-3xl font-black text-[#dab878] sm:text-4xl">{{ content().aboutTitle }}</p>
-                <div class="mt-3 h-1 w-20 rounded-full bg-gradient-to-l from-[#dcb469] to-transparent sm:mt-4 sm:w-24"></div>
+                <div class="mt-3 h-1 w-20 rounded-full bg-gradient-to-l from-[#dcb469] to-transparent sm:mt-4 sm:w-24">
+                </div>
                 <p class="mt-3 text-sm leading-7 text-[#e6d6bc] sm:mt-4">{{ content().aboutText }}</p>
                 <p class="mt-2 text-sm leading-7 text-[#bba789] sm:mt-3">{{ content().aboutSecondaryText }}</p>
             </div>
@@ -71,10 +71,8 @@
 
     <!-- ══════════ TRANSFER ══════════ -->
     <section id="transfer" class="relative isolate w-full overflow-hidden bg-[#0b0c0d] p-3 sm:p-8"
-        [class.order-1]="sectionPos('transfer') === 1"
-        [class.order-2]="sectionPos('transfer') === 2"
-        [class.order-3]="sectionPos('transfer') === 3"
-        [class.order-4]="sectionPos('transfer') === 4">
+        [class.order-1]="sectionPos('transfer') === 1" [class.order-2]="sectionPos('transfer') === 2"
+        [class.order-3]="sectionPos('transfer') === 3" [class.order-4]="sectionPos('transfer') === 4">
 
         <div class="relative isolate min-h-[420px] overflow-hidden rounded-2xl sm:min-h-[550px]">
             <img class="absolute inset-0 -z-20 h-full w-full object-cover object-center"
@@ -83,7 +81,9 @@
             <div class="relative z-10 mb-4 pt-6 text-center sm:pt-8">
                 <span class="text-[10px] font-bold tracking-[0.18em] text-[#d8b66e]">JEDDAH · MAKKAH</span>
                 <h2 class="mt-2 text-2xl font-black text-[#dab878] sm:text-4xl">التنقل بين جدة ومكة</h2>
-                <div class="mx-auto mt-3 h-1 w-20 rounded-full bg-gradient-to-l from-[#dcb469] to-transparent sm:mt-4 sm:w-24"></div>
+                <div
+                    class="mx-auto mt-3 h-1 w-20 rounded-full bg-gradient-to-l from-[#dcb469] to-transparent sm:mt-4 sm:w-24">
+                </div>
             </div>
             <div
                 class="relative z-10 mx-auto max-w-sm overflow-hidden rounded-xl border border-[#b48a45]/70 bg-[#17120d]/85 px-4 py-5 text-center shadow-2xl backdrop-blur-sm sm:max-w-3xl sm:px-5 sm:py-6">
@@ -105,12 +105,15 @@
                     [attr.aria-label]="'عرض صورة ' + car.name">
                     <img class="h-full w-full object-cover object-center transition duration-500 group-hover:scale-105"
                         [src]="car.image" [alt]="car.name">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none">
+                    </div>
                     <!-- Zoom hint icon -->
-                    <span class="absolute bottom-1.5 left-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition group-hover:opacity-100 text-[10px]">⛶</span>
+                    <span
+                        class="absolute bottom-1.5 left-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition group-hover:opacity-100 text-[10px]">⛶</span>
                 </button>
                 <h3 class="mt-1 truncate text-xs font-black text-[#fff3d8]">{{ car.name }}</h3>
-                <p class="mt-1 text-[10px] font-bold text-[#e7c77f]"><strong class="text-base">{{ car.price }}</strong> ريال</p>
+                <p class="mt-1 text-[10px] font-bold text-[#e7c77f]"><strong class="text-base">{{ car.price }}</strong>
+                    ريال</p>
                 <p class="text-[9px] text-[#bbaa8d]">{{ car.note }}</p>
                 @if (activeTransfer() === car.key) {
                 <div class="mt-2 border-t border-[#a78045]/30 pt-1.5 text-[9px] leading-4 text-[#eadcc4]">
@@ -140,16 +143,16 @@
     <!-- ══════════ FLEET ══════════ -->
     <section id="fleet"
         class="relative isolate w-full overflow-hidden bg-gradient-to-b from-[#11100d] to-[#090909] p-3 sm:p-8"
-        [class.order-1]="sectionPos('fleet') === 1"
-        [class.order-2]="sectionPos('fleet') === 2"
-        [class.order-3]="sectionPos('fleet') === 3"
-        [class.order-4]="sectionPos('fleet') === 4">
+        [class.order-1]="sectionPos('fleet') === 1" [class.order-2]="sectionPos('fleet') === 2"
+        [class.order-3]="sectionPos('fleet') === 3" [class.order-4]="sectionPos('fleet') === 4">
 
         <div class="mb-5 text-center sm:mb-6">
             <span class="text-[10px] font-bold tracking-[0.18em] text-[#d8b66e]">ROYALRIDE SERVICES</span>
             <h1 class="mt-2 text-2xl font-black text-[#dab878] sm:text-4xl">التأجير بالساعة / اليوم الكامل</h1>
             <p class="mt-2 text-xs font-bold text-[#bfad91]">خدمة التأجير مع سائق خاص (بالساعة / يوم كامل 12 ساعة)</p>
-            <div class="mx-auto mt-3 h-1 w-20 rounded-full bg-gradient-to-l from-[#dcb469] to-transparent sm:mt-4 sm:w-24"></div>
+            <div
+                class="mx-auto mt-3 h-1 w-20 rounded-full bg-gradient-to-l from-[#dcb469] to-transparent sm:mt-4 sm:w-24">
+            </div>
         </div>
 
         <div class="grid grid-cols-1 items-start gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
@@ -162,13 +165,16 @@
                     [attr.aria-label]="'عرض صورة ' + car.name">
                     <img class="h-full w-full object-cover object-center transition duration-500 group-hover:scale-105 drop-shadow-[0_12px_24px_rgba(0,0,0,0.85)]"
                         [src]="car.image" [alt]="car.name">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none"></div>
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none">
+                    </div>
                     <span
                         class="absolute top-2.5 right-2.5 rounded-full border border-[#d4ad67]/50 bg-black/80 px-2.5 py-0.5 text-[10px] font-bold text-[#e7c77f] shadow-lg backdrop-blur-sm sm:top-3 sm:right-3 sm:px-3 sm:py-1">
                         {{ car.number }} مقاعد VIP
                     </span>
                     <!-- Zoom hint icon -->
-                    <span class="absolute bottom-2 left-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-white opacity-0 transition group-hover:opacity-100 text-xs">⛶</span>
+                    <span
+                        class="absolute bottom-2 left-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-white opacity-0 transition group-hover:opacity-100 text-xs">⛶</span>
                 </button>
 
                 <div class="flex flex-1 flex-col p-3 text-center sm:p-3.5">
@@ -207,20 +213,22 @@
 
     <!-- ══════════ TOURS ══════════ -->
     <section id="tours" class="relative isolate w-full overflow-hidden border-t border-[#3d3227] bg-[#090909]"
-        [class.order-1]="sectionPos('tours') === 1"
-        [class.order-2]="sectionPos('tours') === 2"
-        [class.order-3]="sectionPos('tours') === 3"
-        [class.order-4]="sectionPos('tours') === 4">
+        [class.order-1]="sectionPos('tours') === 1" [class.order-2]="sectionPos('tours') === 2"
+        [class.order-3]="sectionPos('tours') === 3" [class.order-4]="sectionPos('tours') === 4">
 
         <div class="relative min-h-[340px] overflow-hidden sm:min-h-[390px]">
-            <img class="absolute inset-0 h-full w-full object-cover"
-                src="WhatsApp Image 2026-09-20 at 1.58.34 PM.jpeg" alt="الجولات السياحية في أبها">
+            <img class="absolute inset-0 h-full w-full object-cover" src="WhatsApp Image 2026-09-20 at 1.58.34 PM.jpeg"
+                alt="الجولات السياحية في أبها">
             <div class="absolute inset-0 bg-gradient-to-b from-black/65 via-black/30 to-[#090909]"></div>
-            <div class="relative flex min-h-[340px] flex-col items-center justify-center px-4 py-8 text-center sm:min-h-[390px] sm:px-6">
+            <div
+                class="relative flex min-h-[340px] flex-col items-center justify-center px-4 py-8 text-center sm:min-h-[390px] sm:px-6">
                 <span class="text-[10px] font-bold tracking-[0.2em] text-[#e3bd73]">ABHA TOURS</span>
                 <h2 class="mt-3 text-2xl font-black text-[#dab878] sm:text-4xl">{{ content().toursTitle }}</h2>
-                <div class="mx-auto mt-3 h-1 w-20 rounded-full bg-gradient-to-l from-[#dcb469] to-transparent sm:mt-4 sm:w-24"></div>
-                <p class="mt-5 max-w-xs rounded-lg border border-[#d4ae64] bg-[#1b1610]/85 px-4 py-3 text-sm font-bold leading-7 text-[#f7ead0] sm:mt-6 sm:max-w-sm sm:px-5 sm:py-4">
+                <div
+                    class="mx-auto mt-3 h-1 w-20 rounded-full bg-gradient-to-l from-[#dcb469] to-transparent sm:mt-4 sm:w-24">
+                </div>
+                <p
+                    class="mt-5 max-w-xs rounded-lg border border-[#d4ae64] bg-[#1b1610]/85 px-4 py-3 text-sm font-bold leading-7 text-[#f7ead0] sm:mt-6 sm:max-w-sm sm:px-5 sm:py-4">
                     {{ content().toursText }}</p>
                 <button type="button" (click)="openBookingModal(undefined, 'tour')"
                     class="mt-4 rounded-md bg-[#d4ad67] px-5 py-2 text-xs font-black text-[#21180d] hover:bg-[#f0cc84] transition shadow-lg sm:mt-5 sm:px-6 sm:py-2.5">احجز
@@ -229,6 +237,48 @@
         </div>
     </section>
 
+    <!-- ══════════ CONSULTATION & DIRECT CONTACT ══════════ -->
+    <section id="contact" class="relative isolate w-full overflow-hidden border-t border-[#3d3227] bg-gradient-to-b from-[#090909] via-[#16120d] to-[#080808] py-12 px-4 sm:py-16 sm:px-8">
+        <!-- Ambient background glow -->
+        <div class="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[300px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#c7a261]/10 blur-[100px]"></div>
+
+        <div class="mx-auto max-w-4xl text-center" dir="rtl">
+            <span class="inline-block rounded-full border border-[#d4ad67]/40 bg-[#d4ad67]/10 px-3 py-1 text-[10px] font-bold text-[#e7c77f] shadow-sm mb-3">
+                خدمة عملاء VIP متواجدون 24/7
+            </span>
+            <h2 class="text-2xl font-black leading-tight text-[#f4ead8] sm:text-4xl">
+                استشارات مجانية <span class="bg-gradient-to-l from-[#f0cc84] via-[#d4ad67] to-[#b88f42] bg-clip-text text-transparent underline decoration-[#d4ad67]/50 underline-offset-8">لرحلتك المباشرة</span>
+            </h2>
+            <p class="mx-auto mt-3 max-w-xl text-xs text-[#c4b394] sm:text-sm">
+                تواصل معنا مباشرة للتنسيق واستفسارات الحجوزات الخاصة للجولات، التنقلات، وحجوزات كبار الشخصيات.
+            </p>
+
+            <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:mt-10 sm:flex-row sm:gap-6">
+                <!-- WhatsApp Button -->
+                <a href="https://wa.me/966569038515?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%B9%D9%8BD8%AE%D8%AF%D9%85%D8%A7%D8%AA%20%D8%A7%D9%84%D8%AA%D9%86%D9%82%D9%84%20%D9%88%D8%A7%D9%84%D8%AD%D8%AC%D8%B2" 
+                   target="_blank" rel="noopener noreferrer" 
+                   class="group inline-flex w-full items-center justify-center gap-3 rounded-full bg-gradient-to-r from-[#25D366] to-[#1da851] px-7 py-3.5 text-xs font-black text-[#072412] shadow-[0_4px_20px_rgba(37,211,102,0.3)] transition duration-300 hover:scale-105 hover:shadow-[0_6px_28px_rgba(37,211,102,0.45)] sm:w-auto sm:text-sm">
+                    <svg class="h-5 w-5 fill-current transition duration-300 group-hover:scale-110" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                    </svg>
+                    <span>التواصل المباشر عبر الواتساب</span>
+                </a>
+
+                <!-- Direct Phone Numbers Card -->
+                <div class="flex w-full items-center justify-center gap-3 rounded-full border border-[#4f4130] bg-[#1a150f]/80 px-6 py-3 shadow-lg backdrop-blur-md transition duration-300 hover:border-[#c7a261]/60 sm:w-auto">
+                    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#c7a261]/20 text-[#e7c77f]">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                        </svg>
+                    </span>
+                    <div class="flex flex-col gap-0.5 text-right font-sans text-xs font-bold text-[#f4ead8]" dir="ltr">
+                        <a href="tel:0569038515" class="transition hover:text-[#e7c77f]">+966 56 903 8515</a>
+                        <a href="tel:0540047550" class="text-[11px] text-[#c4b394] transition hover:text-[#e7c77f]">+966 54 004 7550</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </main>
 <app-footer></app-footer>
 
