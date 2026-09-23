@@ -1,5 +1,5 @@
 <!-- flex flex-col makes Tailwind order-N classes work on direct children -->
-<main dir="rtl" class="flex min-h-screen flex-col bg-[#080808] font-sans text-[#f4ead8]">
+<main dir="rtl" class="flex min-h-screen flex-col gap-8 sm:gap-14 pb-12 bg-[#080808] font-sans text-[#f4ead8]">
 
     <!-- ══════════ HERO + ABOUT ══════════ -->
     <section id="home" class="w-full bg-[#090909]" [class.order-1]="sectionPos('hero') === 1"
@@ -87,7 +87,7 @@
                 </div>
             </div>
             <div
-                class="relative z-10 mx-auto max-w-sm overflow-hidden rounded-xl border border-[#b48a45]/70 bg-[#17120d]/85 px-4 py-5 text-center shadow-2xl backdrop-blur-sm sm:max-w-3xl sm:px-5 sm:py-6">
+                class="relative z-10 mx-auto max-w-sm overflow-hidden rounded-xl border border-[#b48a45]/70 bg-[#17120d]/50 px-3 py-4 text-center shadow-2xl  sm:max-w-3xl sm:px-5 sm:py-6">
                 <h3 class="text-sm font-black text-white sm:text-base">{{ content().transferText }}</h3>
                 <button type="button" (click)="openBookingModal(undefined, 'transfer')"
                     class="mt-3 rounded-full bg-[#e5b860] px-5 py-2 text-xs font-black text-[#21180d] hover:bg-[#f2d28d] transition shadow-lg sm:px-6 sm:py-2.5">احجز
@@ -219,8 +219,8 @@
         [class.order-3]="sectionPos('tours') === 3" [class.order-4]="sectionPos('tours') === 4"
         [class.order-5]="sectionPos('tours') === 5">
 
-        <div class="relative min-h-[340px] overflow-hidden sm:min-h-[390px]">
-            <img class="absolute inset-0 h-full w-full object-cover" src="WhatsApp Image 2026-09-20 at 1.58.34 PM.jpeg"
+        <div class="relative min-h-[340px] overflow-hidden sm:min-h-[430px]">
+            <img class="absolute inset-0 h-full w-full object-cover" src="70772683470.png"
                 alt="الجولات السياحية في أبها">
             <div class="absolute inset-0 bg-gradient-to-b from-black/65 via-black/30 to-[#090909]"></div>
             <div
@@ -231,7 +231,7 @@
                     class="mx-auto mt-3 h-1 w-20 rounded-full bg-gradient-to-l from-[#dcb469] to-transparent sm:mt-4 sm:w-24">
                 </div>
                 <p
-                    class="mt-5 max-w-xs rounded-lg border border-[#d4ae64] bg-[#1b1610]/85 px-4 py-3 text-sm font-bold leading-7 text-[#f7ead0] sm:mt-6 sm:max-w-sm sm:px-5 sm:py-4">
+                    class="mt-5 max-w-xs rounded-lg border border-[#d4ae64] bg-[#1b1610]/50 px-4 py-3 text-sm font-bold leading-7 text-[#f7ead0] sm:mt-6 sm:max-w-sm sm:px-5 sm:py-4">
                     {{ content().toursText }}</p>
                 <button type="button" (click)="openBookingModal(undefined, 'tour')"
                     class="mt-4 rounded-md bg-[#d4ad67] px-5 py-2 text-xs font-black text-[#21180d] hover:bg-[#f0cc84] transition shadow-lg sm:mt-5 sm:px-6 sm:py-2.5">احجز
