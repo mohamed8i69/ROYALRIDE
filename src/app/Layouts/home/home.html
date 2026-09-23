@@ -238,7 +238,8 @@
     </section>
 
     <!-- ══════════ CONSULTATION & DIRECT CONTACT ══════════ -->
-    <section id="contact" class="relative isolate w-full overflow-hidden border-t border-[#3d3227] bg-gradient-to-b from-[#090909] via-[#16120d] to-[#080808] py-12 px-4 sm:py-16 sm:px-8">
+    <section id="contact" class="relative isolate w-full overflow-hidden border-t border-[#3d3227] bg-gradient-to-b from-[#090909] via-[#16120d] to-[#080808] py-12 px-4 sm:py-16 sm:px-8"[class.order-1]="sectionPos('tours') === 1" [class.order-2]="sectionPos('contact') === 2"
+        [class.order-3]="sectionPos('contact') === 3" [class.order-4]="sectionPos('contact') === 4" [class.order-5]="sectionPos('contact')">
         <!-- Ambient background glow -->
         <div class="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[300px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#c7a261]/10 blur-[100px]"></div>
 
@@ -255,7 +256,7 @@
 
             <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:mt-10 sm:flex-row sm:gap-6">
                 <!-- WhatsApp Button -->
-                <a href="https://wa.me/966569038515?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%B9%D9%8BD8%AE%D8%AF%D9%85%D8%A7%D8%AA%20%D8%A7%D9%84%D8%AA%D9%86%D9%82%D9%84%20%D9%88%D8%A7%D9%84%D8%AD%D8%AC%D8%B2" 
+                <a href="https://wa.me/966569038515" 
                    target="_blank" rel="noopener noreferrer" 
                    class="group inline-flex w-full items-center justify-center gap-3 rounded-full bg-gradient-to-r from-[#25D366] to-[#1da851] px-7 py-3.5 text-xs font-black text-[#072412] shadow-[0_4px_20px_rgba(37,211,102,0.3)] transition duration-300 hover:scale-105 hover:shadow-[0_6px_28px_rgba(37,211,102,0.45)] sm:w-auto sm:text-sm">
                     <svg class="h-5 w-5 fill-current transition duration-300 group-hover:scale-110" viewBox="0 0 24 24" aria-hidden="true">

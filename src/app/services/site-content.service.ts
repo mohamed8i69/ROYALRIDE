@@ -22,7 +22,7 @@ export interface TransferCar {
   image: string;
 }
 
-export type SectionId = 'hero' | 'transfer' | 'fleet' | 'tours';
+export type SectionId = 'hero' | 'transfer' | 'fleet' | 'tours'|'contact';
 
 export interface SiteContent {
   heroTitle: string;
