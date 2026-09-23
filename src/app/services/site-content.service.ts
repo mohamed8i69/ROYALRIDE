@@ -92,6 +92,20 @@ export class SiteContentService {
     this.error.set(null);
   }
 
+  async saveSectionOrder(sectionOrder: SectionId[]): Promise<void> {
+    const res = await firstValueFrom(
+      this.http.patch<{ ok: boolean; sectionOrder: SectionId[] }>(
+        `${API_BASE}/api/site-content/section-order`,
+        { sectionOrder }
+      )
+    );
+    this.content.update((prev) => ({
+      ...prev,
+      sectionOrder: res?.sectionOrder || sectionOrder,
+    }));
+    this.error.set(null);
+  }
+
   async reset(): Promise<void> {
     await this.save(defaultContent);
   }
