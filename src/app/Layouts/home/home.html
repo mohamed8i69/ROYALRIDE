@@ -4,7 +4,7 @@
     <!-- ══════════ HERO + ABOUT ══════════ -->
     <section id="home" class="w-full bg-[#090909]" [class.order-1]="sectionPos('hero') === 1"
         [class.order-2]="sectionPos('hero') === 2" [class.order-3]="sectionPos('hero') === 3"
-        [class.order-4]="sectionPos('hero') === 4" [class.order-5]="sectionPos('hero') === 5">
+        [class.order-4]="sectionPos('hero') === 4">
 
         <article id="hero"
             class="relative left-1/2 right-1/2 -mt-4 -ml-[50vw] -mr-[50vw] min-h-[600px] w-screen overflow-hidden sm:min-h-[680px]">
@@ -16,9 +16,9 @@
                 <img class="h-10 w-16 object-contain mix-blend-screen sm:h-12 sm:w-18" src="logo.png" alt="RoyalRide">
                 <nav class="hidden items-center gap-7 md:flex">
                     <a class="transition hover:text-white" href="#home">الرئيسية</a>
-                    <a class="transition hover:text-white" href="#fleet">الأسطول</a>
-                    <a class="transition hover:text-white" href="#transfer">الخدمات</a>
+                    <a class="transition hover:text-white" href="#cities">المدن</a>
                     <a class="transition hover:text-white" href="#tours">الجولات</a>
+                    <a class="transition hover:text-white" href="#contact">تواصل</a>
                 </nav>
                 <button type="button" (click)="openBookingModal()"
                     class="rounded-lg bg-[#d4ad67] px-3 py-1.5 text-xs font-black text-[#1e160b] hover:bg-[#edc77f] transition shadow sm:px-4 sm:py-2">احجز
@@ -37,9 +37,9 @@
                     <button type="button" (click)="openBookingModal()"
                         class="rounded-full bg-gradient-to-r from-[#c7a261] to-[#f0cc84] px-5 py-2 font-black text-[#21180d] transition hover:scale-105 shadow-xl sm:px-6 sm:py-2.5">احجز
                         رحلتك الملكية</button>
-                    <a href="#fleet"
+                    <a href="#cities"
                         class="rounded-full border border-[#d5b77e] bg-black/40 px-5 py-2 font-bold text-[#f2ddb7] transition hover:bg-[#d5b77e]/20 sm:px-6 sm:py-2.5">استعرض
-                        الأسطول</a>
+                        الخدمات</a>
                 </div>
                 <div
                     class="mt-auto grid w-full max-w-xs grid-cols-2 overflow-hidden rounded-xl border border-[#b38c4c]/40 bg-[#17120d]/90 text-[9px] text-[#ead7b0] shadow-2xl backdrop-blur-sm sm:max-w-3xl sm:grid-cols-4 sm:text-[10px]">
@@ -53,7 +53,6 @@
             </div>
         </article>
 
-        <!-- About strip — stacked on mobile, side-by-side on desktop -->
         <section
             class="flex flex-col gap-0 overflow-hidden sm:grid sm:min-h-[420px] sm:grid-cols-2 sm:gap-10 sm:px-12 sm:py-8">
             <img class="h-[220px] w-full object-cover object-center opacity-90 sm:h-[420px]
@@ -69,185 +68,338 @@
         </section>
     </section>
 
-    <!-- ══════════ TRANSFER ══════════ -->
-    <section id="transfer" class="relative isolate w-full overflow-hidden bg-[#0b0c0d] p-3 sm:p-8"
-        [class.order-1]="sectionPos('transfer') === 1" [class.order-2]="sectionPos('transfer') === 2"
-        [class.order-3]="sectionPos('transfer') === 3" [class.order-4]="sectionPos('transfer') === 4"
-        [class.order-5]="sectionPos('transfer') === 5">
+    <!-- ══════════ CITIES (Jeddah / Makkah) — before Tours ══════════ -->
+    <section id="cities" class="relative isolate w-full overflow-hidden bg-[#0a0a0a] px-3 py-6 sm:px-8 sm:py-10"
+        [class.order-1]="sectionPos('cities') === 1" [class.order-2]="sectionPos('cities') === 2"
+        [class.order-3]="sectionPos('cities') === 3" [class.order-4]="sectionPos('cities') === 4">
 
-        <div class="relative isolate min-h-[420px] overflow-hidden rounded-2xl sm:min-h-[550px]">
-            <img class="absolute inset-0 -z-20 h-full w-full object-cover object-center"
-                src="Gemini_Generated_Image_qs51tfqs51tfqs51.jpg" alt="">
-            <div class="absolute inset-0 -z-10 bg-[#080808]/50"></div>
-            <div class="relative z-10 mb-4 pt-6 text-center sm:pt-8">
-                <span class="text-[10px] font-bold tracking-[0.18em] text-[#d8b66e]">JEDDAH · MAKKAH</span>
-                <h2 class="mt-2 text-2xl font-black text-[#dab878] sm:text-4xl">التنقل بين جدة ومكة</h2>
-                <div
-                    class="mx-auto mt-3 h-1 w-20 rounded-full bg-gradient-to-l from-[#dcb469] to-transparent sm:mt-4 sm:w-24">
-                </div>
-            </div>
-            <div
-                class="relative z-10 mx-auto max-w-sm overflow-hidden rounded-xl border border-[#b48a45]/70 bg-[#17120d]/50 px-3 py-4 text-center shadow-2xl  sm:max-w-3xl sm:px-5 sm:py-6">
-                <h3 class="text-sm font-black text-white sm:text-base">{{ content().transferText }}</h3>
-                <button type="button" (click)="openBookingModal(undefined, 'transfer')"
-                    class="mt-3 rounded-full bg-[#e5b860] px-5 py-2 text-xs font-black text-[#21180d] hover:bg-[#f2d28d] transition shadow-lg sm:px-6 sm:py-2.5">احجز
-                    رحلة تنقل الآن</button>
+        <div class="mb-5 text-center sm:mb-8">
+            <span class="text-[10px] font-bold tracking-[0.2em] text-[#d8b66e]">CITY SERVICES</span>
+            <h2 class="mt-2 text-2xl font-black text-[#f4ead8] sm:text-4xl">{{ content().citiesTitle }}</h2>
+            <div class="mx-auto mt-3 h-1 w-20 rounded-full bg-gradient-to-l from-[#dcb469] to-transparent sm:w-24"></div>
+        </div>
+
+        <!-- Jeddah / Makkah city banner -->
+        <div class="relative mb-5 overflow-hidden rounded-2xl border border-[#4f4130]/80 sm:mb-7">
+            <img class="absolute inset-0 h-full w-full object-cover object-center"
+                [src]="content().citiesJeddahImage" [alt]="content().citiesJeddahTitle">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/55 to-black/30"></div>
+            <div class="relative flex min-h-[140px] flex-col items-center justify-center px-4 py-8 text-center sm:min-h-[180px] sm:py-10">
+                <span class="mb-2 rounded-full border border-[#d4ad67]/50 bg-black/50 px-3 py-1 text-[10px] font-bold text-[#e7c77f] backdrop-blur-sm">خدمات المدن</span>
+                <h3 class="text-2xl font-black text-[#e7c77f] sm:text-3xl">{{ content().citiesJeddahTitle }}</h3>
+                <p class="mt-2 max-w-md text-xs text-[#e6d6bc] sm:text-sm">{{ content().citiesJeddahText }}</p>
             </div>
         </div>
 
-        <!-- Transfer Car Cards -->
-        <div class="mt-4 grid grid-cols-1 gap-3 sm:mt-6 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+        <!-- Tabs -->
+        <div class="mx-auto mb-5 flex max-w-lg overflow-hidden rounded-xl border border-[#3d3227] bg-[#14110e] p-1 sm:mb-6">
+            <button type="button" (click)="setCitiesTab('transfer')"
+                class="flex-1 rounded-lg px-3 py-2.5 text-[11px] font-black transition sm:text-xs"
+                [class.bg-[#2a231a]]="citiesTab() === 'transfer'"
+                [class.text-[#f4ead8]]="citiesTab() === 'transfer'"
+                [class.shadow]="citiesTab() === 'transfer'"
+                [class.text-[#8a7d6a]]="citiesTab() !== 'transfer'">
+                {{ content().transferTabLabel }}
+            </button>
+            <button type="button" (click)="setCitiesTab('fleet')"
+                class="flex-1 rounded-lg px-3 py-2.5 text-[11px] font-black transition sm:text-xs"
+                [class.bg-[#2a231a]]="citiesTab() === 'fleet'"
+                [class.text-[#f4ead8]]="citiesTab() === 'fleet'"
+                [class.shadow]="citiesTab() === 'fleet'"
+                [class.text-[#8a7d6a]]="citiesTab() !== 'fleet'">
+                {{ content().fleetTabLabel }}
+            </button>
+        </div>
+
+        <!-- Transfer cars -->
+        @if (citiesTab() === 'transfer') {
+        <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
             @for (car of content().transferCars; track car.key) {
             <article
-                class="group flex flex-col overflow-hidden rounded-xl border border-[#4f4130] bg-gradient-to-b from-[#282119] to-[#13110e] p-3 text-center transition duration-300 hover:-translate-y-1 hover:border-[#c9a05a]">
-                <!-- Clickable image → lightbox carousel -->
-                <button type="button" (click)="openLightbox(car.images || car.image, car.name)"
-                    class="relative h-36 w-full overflow-hidden rounded-lg bg-gradient-to-b from-[#241c14] via-[#14110d] to-[#0a0907] border border-[#3d3227] mb-2 cursor-zoom-in focus:outline-none sm:h-44"
-                    [attr.aria-label]="'عرض صور ' + car.name">
-                    <img class="h-full w-full object-cover object-center transition duration-500 group-hover:scale-105"
-                        [src]="car.image" [alt]="car.name">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none">
-                    </div>
-                    @if ((car.images?.length || 0) > 1) {
-                    <span
-                        class="absolute top-1.5 right-1.5 rounded-full border border-[#d4ad67]/50 bg-black/80 px-2 py-0.5 text-[9px] font-bold text-[#e7c77f] shadow backdrop-blur-sm">
-                        {{ car.images!.length }} صور
+                class="group flex flex-col overflow-hidden rounded-2xl border border-[#3d3227] bg-[#12100d] shadow-[0_10px_28px_rgba(0,0,0,.45)] transition duration-300 hover:border-[#c9a05a]/70">
+                <div class="relative aspect-[4/3] overflow-hidden bg-[#1a1510]">
+                    <button type="button" (click)="openLightbox(car)"
+                        class="absolute inset-0 z-0 cursor-zoom-in focus:outline-none"
+                        [attr.aria-label]="'عرض صور ' + car.name">
+                        <img class="h-full w-full object-cover object-center transition duration-500 group-hover:scale-105"
+                            [src]="currentCardImage(car)" [alt]="car.name">
+                    </button>
+                    <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10"></div>
+
+                    @if (car.badge) {
+                    <span class="absolute top-2 right-2 z-10 rounded-md bg-gradient-to-l from-[#c5a059] to-[#e8d09a] px-2 py-0.5 text-[9px] font-black text-[#1c1409] shadow">
+                        {{ car.badge }}
                     </span>
                     }
-                    <!-- Zoom hint icon -->
-                    <span
-                        class="absolute bottom-1.5 left-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition group-hover:opacity-100 text-[10px]">⛶</span>
-                </button>
-                <h3 class="mt-1 truncate text-xs font-black text-[#fff3d8]">{{ car.name }}</h3>
-                <p class="mt-1 text-[10px] font-bold text-[#e7c77f]"><strong class="text-base">{{ car.price }}</strong>
-                    ريال</p>
-                <p class="text-[9px] text-[#bbaa8d]">{{ car.note }}</p>
-                @if (activeTransfer() === car.key) {
-                <div class="mt-2 border-t border-[#a78045]/30 pt-1.5 text-[9px] leading-4 text-[#eadcc4]">
-                    <p>رحلة خاصة مع سائق محترف، {{ car.note }}.</p>
-                    <p class="font-bold text-[#e7c77f]">السعر: {{ car.price }} ريال</p>
+
+                    @if (carGallery(car).length > 1) {
+                    <button type="button" (click)="prevCardImage(car, $event)"
+                        class="absolute top-1/2 right-1.5 z-10 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/55 text-xs text-white opacity-80 transition hover:opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+                        aria-label="الصورة السابقة">❮</button>
+                    <button type="button" (click)="nextCardImage(car, $event)"
+                        class="absolute top-1/2 left-1.5 z-10 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/55 text-xs text-white opacity-80 transition hover:opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+                        aria-label="الصورة التالية">❯</button>
+                    <span class="absolute bottom-2 left-1/2 z-10 -translate-x-1/2 rounded-full bg-black/70 px-2 py-0.5 text-[9px] font-bold text-[#e7c77f]">
+                        {{ (cardImageIndex()[car.key] || 0) + 1 }} / {{ carGallery(car).length }}
+                    </span>
+                    }
                 </div>
-                } @else {
-                <div class="min-h-[32px]"></div>
-                }
-                <div class="mt-auto flex gap-2 border-t border-white/10 pt-2.5">
-                    <button type="button" (click)="toggleTransferDetails(car.key)"
-                        [attr.aria-expanded]="activeTransfer() === car.key"
-                        class="flex-1 rounded-lg border border-[#b48a45]/70 bg-[#b48a45]/10 px-2 py-2 text-[9px] font-bold text-[#f0cf8a] transition hover:bg-[#b48a45]/25">
-                        {{ activeTransfer() === car.key ? 'إخفاء' : 'التفاصيل' }}
-                    </button>
-                    <button type="button" (click)="openBookingModal(car.key, 'transfer')"
-                        [attr.aria-label]="'احجز ' + car.name"
-                        class="flex-1 rounded-lg bg-gradient-to-r from-[#d4ad67] to-[#e7c77f] px-2 py-2 text-[9px] font-black text-[#21180d] transition hover:brightness-110 shadow">
+
+                <div class="flex flex-1 flex-col gap-1.5 p-3 text-center">
+                    <h3 class="truncate text-sm font-black text-white">{{ car.name }}</h3>
+                    <p class="text-xs font-bold text-[#e7c77f]">
+                        <strong class="text-base">{{ car.price }}</strong> ريال
+                    </p>
+                    <p class="text-[10px] text-[#9a8b74]">{{ car.note }}</p>
+                    <a [href]="whatsAppBookLink(car, 'transfer', 'jeddah')" target="_blank" rel="noopener noreferrer"
+                        class="mt-auto inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-l from-[#c5a059] to-[#f0d9a0] px-3 py-2.5 text-[11px] font-black text-[#1c1409] shadow transition hover:brightness-110">
+                        <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                        </svg>
                         احجز الآن
-                    </button>
+                    </a>
                 </div>
             </article>
             }
         </div>
-    </section>
+        }
 
-    <!-- ══════════ FLEET ══════════ -->
-    <section id="fleet"
-        class="relative isolate w-full overflow-hidden bg-gradient-to-b from-[#11100d] to-[#090909] p-3 sm:p-8"
-        [class.order-1]="sectionPos('fleet') === 1" [class.order-2]="sectionPos('fleet') === 2"
-        [class.order-3]="sectionPos('fleet') === 3" [class.order-4]="sectionPos('fleet') === 4"
-        [class.order-5]="sectionPos('fleet') === 5">
+        <!-- Fleet / hourly cars -->
+        @if (citiesTab() === 'fleet') {
+        <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
+            @for (car of content().cars; track car.key) {
+            <article
+                class="group flex flex-col overflow-hidden rounded-2xl border border-[#3d3227] bg-[#12100d] shadow-[0_10px_28px_rgba(0,0,0,.45)] transition duration-300 hover:border-[#c9a05a]/70">
+                <div class="relative aspect-[4/3] overflow-hidden bg-[#1a1510]">
+                    <button type="button" (click)="openLightbox(car)"
+                        class="absolute inset-0 z-0 cursor-zoom-in focus:outline-none"
+                        [attr.aria-label]="'عرض صور ' + car.name">
+                        <img class="h-full w-full object-cover object-center transition duration-500 group-hover:scale-105"
+                            [src]="currentCardImage(car)" [alt]="car.name">
+                    </button>
+                    <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10"></div>
 
-        <div class="mb-5 text-center sm:mb-6">
-            <span class="text-[10px] font-bold tracking-[0.18em] text-[#d8b66e]">ROYALRIDE SERVICES</span>
-            <h1 class="mt-2 text-2xl font-black text-[#dab878] sm:text-4xl">التأجير بالساعة / اليوم الكامل</h1>
-            <p class="mt-2 text-xs font-bold text-[#bfad91]">خدمة التأجير مع سائق خاص (بالساعة / يوم كامل 12 ساعة)</p>
-            <div
-                class="mx-auto mt-3 h-1 w-20 rounded-full bg-gradient-to-l from-[#dcb469] to-transparent sm:mt-4 sm:w-24">
+                    @if (car.badge) {
+                    <span class="absolute top-2 right-2 z-10 rounded-md bg-gradient-to-l from-[#c5a059] to-[#e8d09a] px-2 py-0.5 text-[9px] font-black text-[#1c1409] shadow">
+                        {{ car.badge }}
+                    </span>
+                    } @else {
+                    <span class="absolute top-2 right-2 z-10 rounded-md border border-[#d4ad67]/40 bg-black/70 px-2 py-0.5 text-[9px] font-bold text-[#e7c77f]">
+                        {{ car.number }} مقاعد
+                    </span>
+                    }
+
+                    @if (carGallery(car).length > 1) {
+                    <button type="button" (click)="prevCardImage(car, $event)"
+                        class="absolute top-1/2 right-1.5 z-10 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/55 text-xs text-white opacity-80 transition hover:opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+                        aria-label="الصورة السابقة">❮</button>
+                    <button type="button" (click)="nextCardImage(car, $event)"
+                        class="absolute top-1/2 left-1.5 z-10 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/55 text-xs text-white opacity-80 transition hover:opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+                        aria-label="الصورة التالية">❯</button>
+                    <span class="absolute bottom-2 left-1/2 z-10 -translate-x-1/2 rounded-full bg-black/70 px-2 py-0.5 text-[9px] font-bold text-[#e7c77f]">
+                        {{ (cardImageIndex()[car.key] || 0) + 1 }} / {{ carGallery(car).length }}
+                    </span>
+                    }
+                </div>
+
+                <div class="flex flex-1 flex-col gap-1.5 p-3 text-center">
+                    <h3 class="truncate text-sm font-black text-white">{{ car.name }}</h3>
+                    <p class="text-xs font-bold text-[#e7c77f]">
+                        <strong class="text-base">{{ car.price }}</strong> ريال
+                    </p>
+                    <p class="line-clamp-2 text-[10px] text-[#9a8b74]">{{ car.note }}</p>
+                    <a [href]="whatsAppBookLink(car, 'fleet', 'jeddah')" target="_blank" rel="noopener noreferrer"
+                        class="mt-auto inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-l from-[#c5a059] to-[#f0d9a0] px-3 py-2.5 text-[11px] font-black text-[#1c1409] shadow transition hover:brightness-110">
+                        <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                        </svg>
+                        احجز الآن
+                    </a>
+                </div>
+            </article>
+            }
+        </div>
+        }
+
+        <!-- ──── Riyadh city block (before Tours) ──── -->
+        <div class="relative mt-10 mb-5 overflow-hidden rounded-2xl border border-[#4f4130]/80 sm:mt-14 sm:mb-7">
+            <img class="absolute inset-0 h-full w-full object-cover object-center"
+                [src]="content().citiesRiyadhImage" [alt]="content().citiesRiyadhTitle">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/55 to-black/30"></div>
+            <div class="relative flex min-h-[140px] flex-col items-center justify-center px-4 py-8 text-center sm:min-h-[180px] sm:py-10">
+                <span class="mb-2 rounded-full border border-[#d4ad67]/50 bg-black/50 px-3 py-1 text-[10px] font-bold text-[#e7c77f] backdrop-blur-sm">خدمات المدن</span>
+                <h3 class="text-2xl font-black text-[#e7c77f] sm:text-3xl">{{ content().citiesRiyadhTitle }}</h3>
+                <p class="mt-2 max-w-md text-xs text-[#e6d6bc] sm:text-sm">{{ content().citiesRiyadhText }}</p>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 items-start gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
-            @for (car of content().cars; track car.key) {
-            <article
-                class="group flex self-start flex-col overflow-hidden rounded-xl border border-[#4f4130] bg-gradient-to-b from-[#292219] to-[#13110e] shadow-[0_12px_28px_rgba(0,0,0,.5)] transition duration-300 hover:border-[#d4ad67]">
-                <!-- Clickable image → lightbox carousel -->
-                <button type="button" (click)="openLightbox(car.images || car.image, car.name)"
-                    class="relative h-44 w-full overflow-hidden rounded-t-lg bg-gradient-to-b from-[#241c14] via-[#14110d] to-[#0a0907] border-b border-[#3d3227] cursor-zoom-in focus:outline-none sm:h-52 md:h-60"
-                    [attr.aria-label]="'عرض صور ' + car.name">
-                    <img class="h-full w-full object-cover object-center transition duration-500 group-hover:scale-105 drop-shadow-[0_12px_24px_rgba(0,0,0,0.85)]"
-                        [src]="car.image" [alt]="car.name">
-                    <div
-                        class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none">
-                    </div>
-                    <span
-                        class="absolute top-2.5 right-2.5 rounded-full border border-[#d4ad67]/50 bg-black/80 px-2.5 py-0.5 text-[10px] font-bold text-[#e7c77f] shadow-lg backdrop-blur-sm sm:top-3 sm:right-3 sm:px-3 sm:py-1">
-                        {{ car.number }} مقاعد VIP
-                    </span>
-                    @if ((car.images?.length || 0) > 1) {
-                    <span
-                        class="absolute top-2.5 left-2.5 rounded-full border border-[#d4ad67]/50 bg-black/80 px-2.5 py-0.5 text-[10px] font-bold text-[#e7c77f] shadow-lg backdrop-blur-sm sm:top-3 sm:left-3 sm:px-3 sm:py-1">
-                        {{ car.images!.length }} صور
-                    </span>
-                    }
-                    <!-- Zoom hint icon -->
-                    <span
-                        class="absolute bottom-2 left-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-white opacity-0 transition group-hover:opacity-100 text-xs">⛶</span>
-                </button>
+        <div class="mx-auto mb-5 flex max-w-lg overflow-hidden rounded-xl border border-[#3d3227] bg-[#14110e] p-1 sm:mb-6">
+            <button type="button" (click)="setRiyadhTab('transfer')"
+                class="flex-1 rounded-lg px-3 py-2.5 text-[11px] font-black transition sm:text-xs"
+                [class.bg-[#2a231a]]="riyadhTab() === 'transfer'"
+                [class.text-[#f4ead8]]="riyadhTab() === 'transfer'"
+                [class.shadow]="riyadhTab() === 'transfer'"
+                [class.text-[#8a7d6a]]="riyadhTab() !== 'transfer'">
+                {{ content().transferTabLabel }}
+            </button>
+            <button type="button" (click)="setRiyadhTab('fleet')"
+                class="flex-1 rounded-lg px-3 py-2.5 text-[11px] font-black transition sm:text-xs"
+                [class.bg-[#2a231a]]="riyadhTab() === 'fleet'"
+                [class.text-[#f4ead8]]="riyadhTab() === 'fleet'"
+                [class.shadow]="riyadhTab() === 'fleet'"
+                [class.text-[#8a7d6a]]="riyadhTab() !== 'fleet'">
+                {{ content().fleetTabLabel }}
+            </button>
+        </div>
 
-                <div class="flex flex-1 flex-col p-3 text-center sm:p-3.5">
-                    <h2 class="truncate text-sm font-black text-[#fff3d8]">{{ car.name }}</h2>
-                    <p class="mt-1 text-[10px] text-[#c9b998]">{{ car.note }}</p>
-                    <p class="mt-2 text-xs font-black text-[#e7c77f]"><strong class="text-lg text-[#f4d89a]">{{
-                            car.price }}</strong> ريال</p>
-                    @if (activeCar() === car.key) {
-                    <div class="min-h-[56px] border-t border-[#a78045]/30 pt-2 text-[10px] leading-5 text-[#eadcc4]">
-                        <p>{{ car.details }}</p>
-                        <p class="mt-1 font-bold text-[#e7c77f]">اليوم الكامل: {{ car.price }} ريال</p>
-                        @if (car.key === 'staria') {
-                        <p class="font-bold text-[#e7c77f]">بالساعة داخل جدة: 100 ريال</p>
-                        }
-                    </div>
-                    } @else {
-                    <div class="min-h-[56px]"></div>
+        @if (riyadhTab() === 'transfer') {
+        <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
+            @for (car of content().riyadhTransferCars; track car.key) {
+            <article
+                class="group flex flex-col overflow-hidden rounded-2xl border border-[#3d3227] bg-[#12100d] shadow-[0_10px_28px_rgba(0,0,0,.45)] transition duration-300 hover:border-[#c9a05a]/70">
+                <div class="relative aspect-[4/3] overflow-hidden bg-[#1a1510]">
+                    <button type="button" (click)="openLightbox(car)"
+                        class="absolute inset-0 z-0 cursor-zoom-in focus:outline-none"
+                        [attr.aria-label]="'عرض صور ' + car.name">
+                        <img class="h-full w-full object-cover object-center transition duration-500 group-hover:scale-105"
+                            [src]="currentCardImage(car)" [alt]="car.name">
+                    </button>
+                    <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10"></div>
+
+                    @if (car.badge) {
+                    <span class="absolute top-2 right-2 z-10 rounded-md bg-gradient-to-l from-[#c5a059] to-[#e8d09a] px-2 py-0.5 text-[9px] font-black text-[#1c1409] shadow">
+                        {{ car.badge }}
+                    </span>
                     }
-                    <div class="mt-auto flex justify-center gap-2 border-t border-white/10 pt-2.5">
-                        <button type="button" (click)="toggleDetails(car.key)"
-                            [attr.aria-expanded]="activeCar() === car.key"
-                            class="flex-1 rounded-lg border border-[#b48a45]/70 bg-[#b48a45]/10 px-3 py-2 text-[10px] font-bold text-[#f0cf8a] transition hover:border-[#e7c77f] hover:bg-[#b48a45]/25 active:scale-95">
-                            {{ activeCar() === car.key ? 'إخفاء' : 'التفاصيل' }}
-                        </button>
-                        <button type="button" (click)="openBookingModal(car.key, 'hourly')"
-                            [attr.aria-label]="'احجز ' + car.name"
-                            class="flex-1 rounded-lg bg-gradient-to-r from-[#d4ad67] to-[#e7c77f] px-3 py-2 text-[10px] font-black text-[#1c1409] shadow-[0_4px_14px_rgba(212,173,103,.3)] transition hover:brightness-110 active:scale-95">
-                            احجز الآن
-                        </button>
-                    </div>
+
+                    @if (carGallery(car).length > 1) {
+                    <button type="button" (click)="prevCardImage(car, $event)"
+                        class="absolute top-1/2 right-1.5 z-10 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/55 text-xs text-white opacity-80 transition hover:opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+                        aria-label="الصورة السابقة">❮</button>
+                    <button type="button" (click)="nextCardImage(car, $event)"
+                        class="absolute top-1/2 left-1.5 z-10 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/55 text-xs text-white opacity-80 transition hover:opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+                        aria-label="الصورة التالية">❯</button>
+                    <span class="absolute bottom-2 left-1/2 z-10 -translate-x-1/2 rounded-full bg-black/70 px-2 py-0.5 text-[9px] font-bold text-[#e7c77f]">
+                        {{ (cardImageIndex()[car.key] || 0) + 1 }} / {{ carGallery(car).length }}
+                    </span>
+                    }
+                </div>
+
+                <div class="flex flex-1 flex-col gap-1.5 p-3 text-center">
+                    <h3 class="truncate text-sm font-black text-white">{{ car.name }}</h3>
+                    <p class="text-xs font-bold text-[#e7c77f]">
+                        <strong class="text-base">{{ car.price }}</strong> ريال
+                    </p>
+                    <p class="text-[10px] text-[#9a8b74]">{{ car.note }}</p>
+                    <a [href]="whatsAppBookLink(car, 'transfer', 'riyadh')" target="_blank" rel="noopener noreferrer"
+                        class="mt-auto inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-l from-[#c5a059] to-[#f0d9a0] px-3 py-2.5 text-[11px] font-black text-[#1c1409] shadow transition hover:brightness-110">
+                        <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                        </svg>
+                        احجز الآن
+                    </a>
                 </div>
             </article>
             }
         </div>
+        }
+
+        @if (riyadhTab() === 'fleet') {
+        <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
+            @for (car of content().riyadhCars; track car.key) {
+            <article
+                class="group flex flex-col overflow-hidden rounded-2xl border border-[#3d3227] bg-[#12100d] shadow-[0_10px_28px_rgba(0,0,0,.45)] transition duration-300 hover:border-[#c9a05a]/70">
+                <div class="relative aspect-[4/3] overflow-hidden bg-[#1a1510]">
+                    <button type="button" (click)="openLightbox(car)"
+                        class="absolute inset-0 z-0 cursor-zoom-in focus:outline-none"
+                        [attr.aria-label]="'عرض صور ' + car.name">
+                        <img class="h-full w-full object-cover object-center transition duration-500 group-hover:scale-105"
+                            [src]="currentCardImage(car)" [alt]="car.name">
+                    </button>
+                    <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10"></div>
+
+                    @if (car.badge) {
+                    <span class="absolute top-2 right-2 z-10 rounded-md bg-gradient-to-l from-[#c5a059] to-[#e8d09a] px-2 py-0.5 text-[9px] font-black text-[#1c1409] shadow">
+                        {{ car.badge }}
+                    </span>
+                    } @else {
+                    <span class="absolute top-2 right-2 z-10 rounded-md border border-[#d4ad67]/40 bg-black/70 px-2 py-0.5 text-[9px] font-bold text-[#e7c77f]">
+                        {{ car.number }} مقاعد
+                    </span>
+                    }
+
+                    @if (carGallery(car).length > 1) {
+                    <button type="button" (click)="prevCardImage(car, $event)"
+                        class="absolute top-1/2 right-1.5 z-10 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/55 text-xs text-white opacity-80 transition hover:opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+                        aria-label="الصورة السابقة">❮</button>
+                    <button type="button" (click)="nextCardImage(car, $event)"
+                        class="absolute top-1/2 left-1.5 z-10 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/55 text-xs text-white opacity-80 transition hover:opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+                        aria-label="الصورة التالية">❯</button>
+                    <span class="absolute bottom-2 left-1/2 z-10 -translate-x-1/2 rounded-full bg-black/70 px-2 py-0.5 text-[9px] font-bold text-[#e7c77f]">
+                        {{ (cardImageIndex()[car.key] || 0) + 1 }} / {{ carGallery(car).length }}
+                    </span>
+                    }
+                </div>
+
+                <div class="flex flex-1 flex-col gap-1.5 p-3 text-center">
+                    <h3 class="truncate text-sm font-black text-white">{{ car.name }}</h3>
+                    <p class="text-xs font-bold text-[#e7c77f]">
+                        <strong class="text-base">{{ car.price }}</strong> ريال
+                    </p>
+                    <p class="line-clamp-2 text-[10px] text-[#9a8b74]">{{ car.note }}</p>
+                    <a [href]="whatsAppBookLink(car, 'fleet', 'riyadh')" target="_blank" rel="noopener noreferrer"
+                        class="mt-auto inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-l from-[#c5a059] to-[#f0d9a0] px-3 py-2.5 text-[11px] font-black text-[#1c1409] shadow transition hover:brightness-110">
+                        <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                        </svg>
+                        احجز الآن
+                    </a>
+                </div>
+            </article>
+            }
+        </div>
+        }
     </section>
 
-    <!-- ══════════ TOURS ══════════ -->
-    <section id="tours" class="relative isolate w-full overflow-hidden border-t border-[#3d3227] bg-[#090909]"
+    <!-- ══════════ TOURS (Abha) ══════════ -->
+    <section id="tours" class="relative isolate w-full overflow-hidden border-t border-[#3d3227] bg-[#090909] px-3 py-8 sm:px-8 sm:py-12"
         [class.order-1]="sectionPos('tours') === 1" [class.order-2]="sectionPos('tours') === 2"
-        [class.order-3]="sectionPos('tours') === 3" [class.order-4]="sectionPos('tours') === 4"
-        [class.order-5]="sectionPos('tours') === 5">
+        [class.order-3]="sectionPos('tours') === 3" [class.order-4]="sectionPos('tours') === 4">
 
-        <div class="relative min-h-[340px] overflow-hidden sm:min-h-[430px]">
+        <div class="mb-5 text-center sm:mb-8">
+            <h2 class="text-2xl font-black text-[#dab878] sm:text-4xl">{{ content().toursTitle }}</h2>
+            <p class="mt-2 text-sm font-bold text-[#c9b998] sm:text-base">{{ content().toursSubtitle }}</p>
+            <div class="mx-auto mt-3 h-1 w-20 rounded-full bg-gradient-to-l from-[#dcb469] to-transparent sm:w-24"></div>
+        </div>
+
+        <div class="relative overflow-hidden rounded-2xl border border-[#4f4130]/60">
             <img class="absolute inset-0 h-full w-full object-cover" src="70772683470.png"
                 alt="الجولات السياحية في أبها">
-            <div class="absolute inset-0 bg-gradient-to-b from-black/65 via-black/30 to-[#090909]"></div>
-            <div
-                class="relative flex min-h-[340px] flex-col items-center justify-center px-4 py-8 text-center sm:min-h-[390px] sm:px-6">
-                <span class="text-[10px] font-bold tracking-[0.2em] text-[#e3bd73]">ABHA TOURS</span>
-                <h2 class="mt-3 text-2xl font-black text-[#dab878] sm:text-4xl">{{ content().toursTitle }}</h2>
-                <div
-                    class="mx-auto mt-3 h-1 w-20 rounded-full bg-gradient-to-l from-[#dcb469] to-transparent sm:mt-4 sm:w-24">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/45 to-black/85"></div>
+
+            <div class="relative grid gap-5 p-4 sm:grid-cols-2 sm:gap-8 sm:p-8 lg:p-10">
+                <div class="rounded-2xl border border-[#d4ad67]/50 bg-[#12100d]/75 p-4 backdrop-blur-md sm:p-6">
+                    <p class="text-sm leading-7 text-[#f7ead0] sm:text-base">{{ content().toursText }}</p>
                 </div>
-                <p
-                    class="mt-5 max-w-xs rounded-lg border border-[#d4ae64] bg-[#1b1610]/50 px-4 py-3 text-sm font-bold leading-7 text-[#f7ead0] sm:mt-6 sm:max-w-sm sm:px-5 sm:py-4">
-                    {{ content().toursText }}</p>
-                <button type="button" (click)="openBookingModal(undefined, 'tour')"
-                    class="mt-4 rounded-md bg-[#d4ad67] px-5 py-2 text-xs font-black text-[#21180d] hover:bg-[#f0cc84] transition shadow-lg sm:mt-5 sm:px-6 sm:py-2.5">احجز
-                    باقة سياحية الآن</button>
+
+                <ul class="flex flex-col justify-center gap-3 sm:gap-4">
+                    @for (feature of content().toursFeatures; track feature) {
+                    <li class="flex items-center gap-3 text-sm font-bold text-[#f4ead8] sm:text-base">
+                        <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#c5a059] to-[#e8d09a] text-[11px] font-black text-[#1c1409]">✓</span>
+                        {{ feature }}
+                    </li>
+                    }
+                </ul>
+            </div>
+
+            <div class="relative px-4 pb-6 sm:px-8 sm:pb-8">
+                <a [href]="toursWhatsAppLink()" target="_blank" rel="noopener noreferrer"
+                    class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-l from-[#c5a059] to-[#f0d9a0] px-5 py-3.5 text-sm font-black text-[#1c1409] shadow-[0_8px_24px_rgba(197,160,89,.35)] transition hover:brightness-110 sm:text-base">
+                    <svg class="h-5 w-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                    </svg>
+                    تواصل معنا لترتيب رحلتك
+                </a>
             </div>
         </div>
     </section>
@@ -257,9 +409,7 @@
         [class.order-1]="sectionPos('contact') === 1"
         [class.order-2]="sectionPos('contact') === 2"
         [class.order-3]="sectionPos('contact') === 3"
-        [class.order-4]="sectionPos('contact') === 4"
-        [class.order-5]="sectionPos('contact') === 5">
-        <!-- Ambient background glow -->
+        [class.order-4]="sectionPos('contact') === 4">
         <div class="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[300px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#c7a261]/10 blur-[100px]"></div>
 
         <div class="mx-auto max-w-4xl text-center" dir="rtl">
@@ -274,9 +424,8 @@
             </p>
 
             <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:mt-10 sm:flex-row sm:gap-6">
-                <!-- WhatsApp Button -->
-                <a href="https://wa.me/966569038515" 
-                   target="_blank" rel="noopener noreferrer" 
+                <a href="https://wa.me/966569038515"
+                   target="_blank" rel="noopener noreferrer"
                    class="group inline-flex w-full items-center justify-center gap-3 rounded-full bg-gradient-to-r from-[#25D366] to-[#1da851] px-7 py-3.5 text-xs font-black text-[#072412] shadow-[0_4px_20px_rgba(37,211,102,0.3)] transition duration-300 hover:scale-105 hover:shadow-[0_6px_28px_rgba(37,211,102,0.45)] sm:w-auto sm:text-sm">
                     <svg class="h-5 w-5 fill-current transition duration-300 group-hover:scale-110" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
@@ -284,7 +433,6 @@
                     <span>التواصل المباشر عبر الواتساب</span>
                 </a>
 
-                <!-- Direct Phone Numbers Card -->
                 <div class="flex w-full items-center justify-center gap-3 rounded-full border border-[#4f4130] bg-[#1a150f]/80 px-6 py-3 shadow-lg backdrop-blur-md transition duration-300 hover:border-[#c7a261]/60 sm:w-auto">
                     <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#c7a261]/20 text-[#e7c77f]">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
@@ -306,5 +454,4 @@
     [initialServiceType]="selectedServiceType()" (closeModal)="closeBookingModal()">
 </app-booking-modal>
 
-<!-- ══════════ CAR IMAGE LIGHTBOX CAROUSEL ══════════ -->
 <app-car-lightbox [data]="lightboxData()" (close)="closeLightbox()"></app-car-lightbox>

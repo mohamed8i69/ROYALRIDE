@@ -34,7 +34,10 @@
           <svg lucideCar class="w-4 h-4 text-[#d8b66e]"></svg> أسطول التأجير
         </button>
         <button type="button" (click)="setPanel('transfer')" [class.bg-[#b48a45]/20]="activePanel() === 'transfer'" class="flex items-center gap-2 rounded-md px-3 py-3 text-right text-xs font-bold text-[#d9c8ab] hover:bg-[#b48a45]/15">
-          <svg lucideTruck class="w-4 h-4 text-[#d8b66e]"></svg> أسعار التنقل
+          <svg lucideTruck class="w-4 h-4 text-[#d8b66e]"></svg> أسعار التنقل (جدة)
+        </button>
+        <button type="button" (click)="setPanel('riyadh')" [class.bg-[#b48a45]/20]="activePanel() === 'riyadh'" class="flex items-center gap-2 rounded-md px-3 py-3 text-right text-xs font-bold text-[#d9c8ab] hover:bg-[#b48a45]/15">
+          <svg lucideBuilding2 class="w-4 h-4 text-[#d8b66e]"></svg> خدمات الرياض
         </button>
         <button type="button" (click)="setPanel('layout')" [class.bg-[#b48a45]/20]="activePanel() === 'layout'" class="flex items-center gap-2 rounded-md px-3 py-3 text-right text-xs font-bold text-[#d9c8ab] hover:bg-[#b48a45]/15">
           <svg lucideLayoutDashboard class="w-4 h-4 text-[#d8b66e]"></svg> ترتيب الأقسام
@@ -216,14 +219,44 @@
           <label class="field">عنوان Hero<input [(ngModel)]="draft().heroTitle"></label>
           <label class="field">العنوان الفرعي<input [(ngModel)]="draft().heroSubtitle"></label>
           <label class="field">عنوان من نحن<input [(ngModel)]="draft().aboutTitle"></label>
-          <label class="field">عنوان التنقل<input [(ngModel)]="draft().transferTitle"></label>
+          <label class="field">عنوان خدمات المدن<input [(ngModel)]="draft().citiesTitle"></label>
           <label class="field md:col-span-2">نص من نحن<textarea rows="3" [(ngModel)]="draft().aboutText"></textarea></label>
           <label class="field md:col-span-2">النص الإضافي لمن نحن<textarea rows="3" [(ngModel)]="draft().aboutSecondaryText"></textarea></label>
-          <label class="field md:col-span-2">وصف التنقل<textarea rows="2" [(ngModel)]="draft().transferText"></textarea></label>
-          <label class="field">عنوان جولات أبها<input [(ngModel)]="draft().toursTitle"></label>
-          <label class="field">وصف جولات أبها<textarea rows="2" [(ngModel)]="draft().toursText"></textarea></label>
+
+          <label class="field">عنوان جدة ومكة<input [(ngModel)]="draft().citiesJeddahTitle"></label>
+          <label class="field">صورة بانر جدة<input [(ngModel)]="draft().citiesJeddahImage"></label>
+          <label class="field md:col-span-2">وصف جدة ومكة<input [(ngModel)]="draft().citiesJeddahText"></label>
+
+          <label class="field">عنوان الرياض<input [(ngModel)]="draft().citiesRiyadhTitle"></label>
+          <label class="field">صورة بانر الرياض<input [(ngModel)]="draft().citiesRiyadhImage"></label>
+          <label class="field md:col-span-2">وصف الرياض<input [(ngModel)]="draft().citiesRiyadhText"></label>
+
+          <label class="field">تبويب الاستقبال / تنقل<input [(ngModel)]="draft().transferTabLabel"></label>
+          <label class="field">تبويب التأجير<input [(ngModel)]="draft().fleetTabLabel"></label>
+
+          <label class="field">عنوان أبها<input [(ngModel)]="draft().toursTitle"></label>
+          <label class="field">العنوان الفرعي لأبها<input [(ngModel)]="draft().toursSubtitle"></label>
+          <label class="field md:col-span-2">وصف جولات أبها<textarea rows="2" [(ngModel)]="draft().toursText"></textarea></label>
         </div>
-        <button type="button" (click)="save()" [disabled]="isSaving()" class="save-button">{{ isSaving() ? 'جارٍ الحفظ...' : 'حفظ النصوص' }}</button>
+
+        <div class="mt-5 rounded-xl border border-[#3d3227] bg-[#0d0b08] p-4">
+          <div class="mb-3 flex items-center justify-between">
+            <span class="text-[10px] font-bold tracking-widest text-[#d8b66e]">مميزات جولات أبها</span>
+            <button type="button" (click)="addToursFeature()" class="text-[10px] font-bold text-[#d4ad67]">+ إضافة</button>
+          </div>
+          <div class="space-y-2">
+            @for (feature of draft().toursFeatures; track $index; let i = $index) {
+            <div class="flex items-center gap-2">
+              <input class="field-input flex-1" [value]="feature" (input)="updateToursFeature(i, $any($event.target).value)">
+              <button type="button" (click)="removeToursFeature(i)" class="shrink-0 flex h-7 w-7 items-center justify-center rounded-lg bg-red-900/30 text-red-400">
+                <svg lucideTrash2 class="w-3 h-3"></svg>
+              </button>
+            </div>
+            }
+          </div>
+        </div>
+
+        <button type="button" (click)="save()" [disabled]="isSaving()" class="save-button mt-5">{{ isSaving() ? 'جارٍ الحفظ...' : 'حفظ النصوص' }}</button>
       </div>
       }
 
@@ -425,6 +458,122 @@
           }
         </div>
         <button type="button" (click)="save()" [disabled]="isSaving()" class="save-button">{{ isSaving() ? 'جارٍ الحفظ...' : 'حفظ أسعار التنقل' }}</button>
+      </div>
+      }
+
+      <!-- RIYADH SERVICES PANEL -->
+      @if (activePanel() === 'riyadh') {
+      <div>
+        <div class="mb-6">
+          <span class="text-[10px] font-bold tracking-[0.18em] text-[#d8b66e]">RIYADH SERVICES</span>
+          <h2 class="mt-2 text-2xl font-black text-white">خدمات الرياض</h2>
+          <p class="mt-1 text-xs text-[#a9987d]">يظهر هذا القسم داخل خدمات المدن قبل جولات أبها. يمكنك إدارة صور كل سيارة وعددها.</p>
+        </div>
+
+        <h3 class="mb-3 text-sm font-black text-[#e7c77f]">تأجير بالساعة / اليوم — الرياض</h3>
+        <div class="mb-8 grid gap-6 xl:grid-cols-2">
+          @for (car of draft().riyadhCars; track car.key) {
+          <article class="rounded-xl border border-[#4b3b27] bg-[#15130f] p-5">
+            <div class="mb-4 flex items-center gap-3">
+              <div class="h-24 w-36 shrink-0 rounded-lg border border-[#3d3227] bg-[#0a0907] p-1">
+                <img class="h-full w-full object-contain" [src]="car.image" [alt]="car.name" (error)="onImgError($event)">
+              </div>
+              <div>
+                <h3 class="text-base font-black text-[#e7c77f]">{{ car.name }}</h3>
+                <p class="mt-0.5 text-[10px] text-[#7d705c]">{{ car.images?.length || 0 }} صور</p>
+              </div>
+            </div>
+            <div class="mb-5 grid gap-3 sm:grid-cols-2">
+              <label class="field">اسم السيارة<input [(ngModel)]="car.name"></label>
+              <label class="field">السعر<input [(ngModel)]="car.price"></label>
+              <label class="field">الوصف المختصر<input [(ngModel)]="car.note"></label>
+              <label class="field">الشارة (Badge)<input [(ngModel)]="car.badge" placeholder="مثال: فئة ملكية"></label>
+              <label class="field sm:col-span-2">التفاصيل<textarea rows="2" [(ngModel)]="car.details"></textarea></label>
+            </div>
+            <div class="rounded-lg border border-[#3d3227] bg-[#0d0b08] p-3">
+              <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+                <span class="text-[10px] font-bold tracking-widest text-[#d8b66e]">معرض الصور</span>
+                <label class="flex items-center gap-2 text-[10px] text-[#a9987d]">
+                  <span>عدد الصور</span>
+                  <input type="number" min="1" max="20" class="field-input w-16 py-1 text-center"
+                         [value]="car.images?.length || 1"
+                         (change)="onImageCountInput(car.key, 'riyadhCars', $event)">
+                </label>
+              </div>
+              <div class="space-y-2">
+                @for (img of car.images; track $index; let imgIdx = $index) {
+                <div class="flex items-center gap-2">
+                  <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#d4ad67]/20 text-[10px] font-black text-[#d4ad67]">{{ imgIdx + 1 }}</span>
+                  <input class="field-input min-w-0 flex-1" [value]="img"
+                         (input)="updateImageUrl(car.key, 'riyadhCars', imgIdx, $any($event.target).value)">
+                  <button type="button" (click)="removeImageFromCar(car.key, 'riyadhCars', imgIdx)"
+                          class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-red-900/30 text-red-400">
+                    <svg lucideTrash2 class="w-3 h-3"></svg>
+                  </button>
+                </div>
+                }
+              </div>
+              <button type="button" (click)="addImageToCar(car.key, 'riyadhCars')"
+                      class="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-[#d4ad67]/40 py-2 text-xs font-bold text-[#d4ad67]/70">
+                + إضافة صورة
+              </button>
+            </div>
+          </article>
+          }
+        </div>
+
+        <h3 class="mb-3 text-sm font-black text-[#e7c77f]">استقبال / تنقل — الرياض</h3>
+        <div class="grid gap-6 xl:grid-cols-2">
+          @for (car of draft().riyadhTransferCars; track car.key) {
+          <article class="rounded-xl border border-[#4b3b27] bg-[#15130f] p-5">
+            <div class="mb-4 flex items-center gap-3">
+              <div class="h-24 w-36 shrink-0 rounded-lg border border-[#3d3227] bg-[#0a0907] p-1">
+                <img class="h-full w-full object-contain" [src]="car.image" [alt]="car.name" (error)="onImgError($event)">
+              </div>
+              <div>
+                <h3 class="text-base font-black text-[#e7c77f]">{{ car.name }}</h3>
+                <p class="mt-0.5 text-[10px] text-[#7d705c]">{{ car.images?.length || 0 }} صور</p>
+              </div>
+            </div>
+            <div class="mb-5 grid gap-3 sm:grid-cols-2">
+              <label class="field">اسم السيارة<input [(ngModel)]="car.name"></label>
+              <label class="field">السعر<input [(ngModel)]="car.price"></label>
+              <label class="field">نوع الرحلة<input [(ngModel)]="car.note"></label>
+              <label class="field">الشارة (Badge)<input [(ngModel)]="car.badge"></label>
+            </div>
+            <div class="rounded-lg border border-[#3d3227] bg-[#0d0b08] p-3">
+              <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+                <span class="text-[10px] font-bold tracking-widest text-[#d8b66e]">معرض الصور</span>
+                <label class="flex items-center gap-2 text-[10px] text-[#a9987d]">
+                  <span>عدد الصور</span>
+                  <input type="number" min="1" max="20" class="field-input w-16 py-1 text-center"
+                         [value]="car.images?.length || 1"
+                         (change)="onImageCountInput(car.key, 'riyadhTransferCars', $event)">
+                </label>
+              </div>
+              <div class="space-y-2">
+                @for (img of car.images; track $index; let imgIdx = $index) {
+                <div class="flex items-center gap-2">
+                  <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#d4ad67]/20 text-[10px] font-black text-[#d4ad67]">{{ imgIdx + 1 }}</span>
+                  <input class="field-input min-w-0 flex-1" [value]="img"
+                         (input)="updateImageUrl(car.key, 'riyadhTransferCars', imgIdx, $any($event.target).value)">
+                  <button type="button" (click)="removeImageFromCar(car.key, 'riyadhTransferCars', imgIdx)"
+                          class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-red-900/30 text-red-400">
+                    <svg lucideTrash2 class="w-3 h-3"></svg>
+                  </button>
+                </div>
+                }
+              </div>
+              <button type="button" (click)="addImageToCar(car.key, 'riyadhTransferCars')"
+                      class="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-[#d4ad67]/40 py-2 text-xs font-bold text-[#d4ad67]/70">
+                + إضافة صورة
+              </button>
+            </div>
+          </article>
+          }
+        </div>
+
+        <button type="button" (click)="save()" [disabled]="isSaving()" class="save-button">{{ isSaving() ? 'جارٍ الحفظ...' : 'حفظ خدمات الرياض' }}</button>
       </div>
       }
 

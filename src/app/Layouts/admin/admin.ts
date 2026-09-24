@@ -46,6 +46,7 @@ import {
     LucideFileText,
     LucideCar,
     LucideTruck,
+    LucideBuilding2,
     LucideRefreshCw,
     LucideSearch,
     LucidePhone,
@@ -61,7 +62,7 @@ export class Admin implements OnInit {
   private readonly auth = inject(AdminAuthService);
   readonly ordersService = inject(OrdersService);
 
-  readonly activePanel = signal<'overview' | 'orders' | 'content' | 'fleet' | 'transfer' | 'layout'>('overview');
+  readonly activePanel = signal<'overview' | 'orders' | 'content' | 'fleet' | 'transfer' | 'riyadh' | 'layout'>('overview');
   readonly saved = signal(false);
   readonly saveError = signal<string | null>(null);
   readonly draft: ReturnType<typeof signal<SiteContent>>;
@@ -109,16 +110,20 @@ export class Admin implements OnInit {
   }
 
   private ensureImagesOnDraft(content: SiteContent): SiteContent {
-    content.cars?.forEach((car) => {
-      if (!car.images || car.images.length === 0) {
-        car.images = car.image ? [car.image] : [];
-      }
-    });
-    content.transferCars?.forEach((car) => {
-      if (!car.images || car.images.length === 0) {
-        car.images = car.image ? [car.image] : [];
-      }
-    });
+    const ensure = (cars?: { image: string; images?: string[] }[]) => {
+      cars?.forEach((car) => {
+        if (!car.images || car.images.length === 0) {
+          car.images = car.image ? [car.image] : [];
+        }
+      });
+    };
+    ensure(content.cars);
+    ensure(content.transferCars);
+    ensure(content.riyadhCars);
+    ensure(content.riyadhTransferCars);
+    if (!content.riyadhCars?.length) content.riyadhCars = [];
+    if (!content.riyadhTransferCars?.length) content.riyadhTransferCars = [];
+    if (!content.toursFeatures) content.toursFeatures = [];
     return content;
   }
 
@@ -128,7 +133,17 @@ export class Admin implements OnInit {
     img.style.display = 'none';
   }
 
-  addImageToCar(carKey: string, section: 'cars' | 'transferCars'): void {
+  private syncCarGallery(cars?: { image: string; images?: string[] }[]): void {
+    cars?.forEach((car) => {
+      if (car.images && car.images.length > 0) {
+        car.image = car.images[0];
+      } else if (car.image) {
+        car.images = [car.image];
+      }
+    });
+  }
+
+  addImageToCar(carKey: string, section: 'cars' | 'transferCars' | 'riyadhCars' | 'riyadhTransferCars'): void {
     this.draft.update(d => {
       const cloned = structuredClone(d);
       const car = cloned[section].find(c => c.key === carKey);
@@ -142,7 +157,7 @@ export class Admin implements OnInit {
   }
 
   /** Set exact gallery size for a car (adds empty slots or trims from the end). Min 1. */
-  setImageCount(carKey: string, section: 'cars' | 'transferCars', count: number): void {
+  setImageCount(carKey: string, section: 'cars' | 'transferCars' | 'riyadhCars' | 'riyadhTransferCars', count: number): void {
     const target = Math.max(1, Math.min(20, Math.floor(Number(count) || 1)));
     this.draft.update(d => {
       const cloned = structuredClone(d);
@@ -162,12 +177,12 @@ export class Admin implements OnInit {
     });
   }
 
-  onImageCountInput(carKey: string, section: 'cars' | 'transferCars', event: Event): void {
+  onImageCountInput(carKey: string, section: 'cars' | 'transferCars' | 'riyadhCars' | 'riyadhTransferCars', event: Event): void {
     const value = Number((event.target as HTMLInputElement).value);
     this.setImageCount(carKey, section, value);
   }
 
-  removeImageFromCar(carKey: string, section: 'cars' | 'transferCars', index: number): void {
+  removeImageFromCar(carKey: string, section: 'cars' | 'transferCars' | 'riyadhCars' | 'riyadhTransferCars', index: number): void {
     this.draft.update(d => {
       const cloned = structuredClone(d);
       const car = cloned[section].find(c => c.key === carKey);
@@ -185,7 +200,7 @@ export class Admin implements OnInit {
     });
   }
 
-  updateImageUrl(carKey: string, section: 'cars' | 'transferCars', index: number, newUrl: string): void {
+  updateImageUrl(carKey: string, section: 'cars' | 'transferCars' | 'riyadhCars' | 'riyadhTransferCars', index: number, newUrl: string): void {
     this.draft.update(d => {
       const cloned = structuredClone(d);
       const car = cloned[section].find(c => c.key === carKey);
@@ -196,6 +211,32 @@ export class Admin implements OnInit {
       if (index === 0) {
         car.image = newUrl;
       }
+      return cloned;
+    });
+  }
+
+  updateToursFeature(index: number, value: string): void {
+    this.draft.update(d => {
+      const cloned = structuredClone(d);
+      const list = [...(cloned.toursFeatures || [])];
+      list[index] = value;
+      cloned.toursFeatures = list;
+      return cloned;
+    });
+  }
+
+  addToursFeature(): void {
+    this.draft.update(d => {
+      const cloned = structuredClone(d);
+      cloned.toursFeatures = [...(cloned.toursFeatures || []), ''];
+      return cloned;
+    });
+  }
+
+  removeToursFeature(index: number): void {
+    this.draft.update(d => {
+      const cloned = structuredClone(d);
+      cloned.toursFeatures = (cloned.toursFeatures || []).filter((_, i) => i !== index);
       return cloned;
     });
   }
@@ -220,7 +261,7 @@ export class Admin implements OnInit {
     }
   }
 
-  setPanel(panel: 'overview' | 'orders' | 'content' | 'fleet' | 'transfer' | 'layout'): void {
+  setPanel(panel: 'overview' | 'orders' | 'content' | 'fleet' | 'transfer' | 'riyadh' | 'layout'): void {
     this.activePanel.set(panel);
     if (panel === 'orders') {
       void this.ordersService.loadOrders();
@@ -236,20 +277,10 @@ export class Admin implements OnInit {
     this.saveError.set(null);
     try {
       const currentDraft = this.draft();
-      currentDraft.cars?.forEach((car) => {
-        if (car.images && car.images.length > 0) {
-          car.image = car.images[0];
-        } else if (car.image) {
-          car.images = [car.image];
-        }
-      });
-      currentDraft.transferCars?.forEach((car) => {
-        if (car.images && car.images.length > 0) {
-          car.image = car.images[0];
-        } else if (car.image) {
-          car.images = [car.image];
-        }
-      });
+      this.syncCarGallery(currentDraft.cars);
+      this.syncCarGallery(currentDraft.transferCars);
+      this.syncCarGallery(currentDraft.riyadhCars);
+      this.syncCarGallery(currentDraft.riyadhTransferCars);
       await this.siteContent.save(currentDraft);
       const latest = structuredClone(this.siteContent.content());
       this.ensureImagesOnDraft(latest);
@@ -321,9 +352,8 @@ export class Admin implements OnInit {
   getSectionLabel(id: string): string {
     const labels: Record<string, string> = {
       hero: 'القسم الرئيسي (Hero + من نحن)',
-      transfer: 'التنقل بين جدة ومكة',
-      fleet: 'أسطول التأجير بالساعة / اليوم',
-      tours: 'جولات أبها السياحية',
+      cities: 'خدمات المدن (جدة ومكة + الرياض)',
+      tours: 'مدينة أبها — الجولات السياحية',
       contact: 'الاستشارات والتواصل المباشر (الواتساب والهاتف)',
     };
     return labels[id] ?? id;
@@ -332,8 +362,7 @@ export class Admin implements OnInit {
   getSectionIcon(id: string): string {
     const icons: Record<string, string> = {
       hero: '🏠',
-      transfer: '🚗',
-      fleet: '🚙',
+      cities: '🏙️',
       tours: '🏔️',
       contact: '📞',
     };

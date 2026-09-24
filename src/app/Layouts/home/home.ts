@@ -2,7 +2,9 @@ import { Component, inject, signal } from '@angular/core';
 import { Footer } from '../../components/footer/footer';
 import { BookingModal, ServiceType } from '../../components/booking-modal/booking-modal';
 import { CarLightbox, LightboxData } from '../../components/car-lightbox/car-lightbox';
-import { SiteContentService, SectionId } from '../../services/site-content.service';
+import { SiteContentService, SectionId, FleetCar, TransferCar } from '../../services/site-content.service';
+
+type CitiesTab = 'transfer' | 'fleet';
 
 @Component({
   imports: [Footer, BookingModal, CarLightbox],
@@ -12,16 +14,31 @@ import { SiteContentService, SectionId } from '../../services/site-content.servi
 export class Home {
   private readonly siteContent = inject(SiteContentService);
   readonly content = this.siteContent.content;
-  readonly activeCar = signal<string | null>(null);
-  readonly activeTransfer = signal<string | null>(null);
+
+  /** Active tab inside the Jeddah/Makkah cities block */
+  readonly citiesTab = signal<CitiesTab>('transfer');
+
+  /** Active tab inside the Riyadh cities block */
+  readonly riyadhTab = signal<CitiesTab>('fleet');
+
+  /** Per-card image index for in-card carousels */
+  readonly cardImageIndex = signal<Record<string, number>>({});
 
   // Booking Modal State
   readonly isBookingModalOpen = signal<boolean>(false);
   readonly selectedCarKey = signal<string | null>(null);
   readonly selectedServiceType = signal<ServiceType>('transfer');
 
-  // Car Image Lightbox Carousel
+  // Full-screen lightbox
   readonly lightboxData = signal<LightboxData | null>(null);
+
+  setCitiesTab(tab: CitiesTab): void {
+    this.citiesTab.set(tab);
+  }
+
+  setRiyadhTab(tab: CitiesTab): void {
+    this.riyadhTab.set(tab);
+  }
 
   openBookingModal(carKey?: string, serviceType?: ServiceType): void {
     if (carKey) this.selectedCarKey.set(carKey);
@@ -33,36 +50,70 @@ export class Home {
     this.isBookingModalOpen.set(false);
   }
 
-  toggleDetails(car: string): void {
-    this.activeCar.update((active) => (active === car ? null : car));
+  carGallery(car: { image: string; images?: string[] }): string[] {
+    if (car.images && car.images.length > 0) return car.images.filter(Boolean);
+    return car.image ? [car.image] : [];
   }
 
-  toggleTransferDetails(car: string): void {
-    this.activeTransfer.update((active) => (active === car ? null : car));
+  currentCardImage(car: { key: string; image: string; images?: string[] }): string {
+    const gallery = this.carGallery(car);
+    if (gallery.length === 0) return car.image || '';
+    const idx = this.cardImageIndex()[car.key] || 0;
+    return gallery[idx % gallery.length];
   }
 
-  openLightbox(images: string[] | string, name: string): void {
-    let list: string[] = [];
-    if (Array.isArray(images) && images.length > 0) {
-      list = images.filter(Boolean);
-    } else if (typeof images === 'string' && images.trim()) {
-      list = [images.trim()];
-    }
-    this.lightboxData.set({ images: list, name });
+  nextCardImage(car: { key: string; image: string; images?: string[] }, event?: Event): void {
+    event?.stopPropagation();
+    const gallery = this.carGallery(car);
+    if (gallery.length <= 1) return;
+    this.cardImageIndex.update((map) => {
+      const cur = map[car.key] || 0;
+      return { ...map, [car.key]: (cur + 1) % gallery.length };
+    });
+  }
+
+  prevCardImage(car: { key: string; image: string; images?: string[] }, event?: Event): void {
+    event?.stopPropagation();
+    const gallery = this.carGallery(car);
+    if (gallery.length <= 1) return;
+    this.cardImageIndex.update((map) => {
+      const cur = map[car.key] || 0;
+      return { ...map, [car.key]: (cur - 1 + gallery.length) % gallery.length };
+    });
+  }
+
+  openLightbox(car: { name: string; image: string; images?: string[]; key: string }): void {
+    const list = this.carGallery(car);
+    const initialIndex = this.cardImageIndex()[car.key] || 0;
+    this.lightboxData.set({ images: list, name: car.name, initialIndex });
   }
 
   closeLightbox(): void {
     this.lightboxData.set(null);
   }
 
-  transferOrderLink(carName: string, price: string): string {
-    const message = `مرحباً، أريد طلب ${carName} للتنقل بين جدة ومكة بسعر ${price} ريال.`;
+  whatsAppBookLink(
+    car: FleetCar | TransferCar,
+    service: CitiesTab,
+    city: 'jeddah' | 'riyadh' = 'jeddah',
+  ): string {
+    const cityLabel = city === 'riyadh' ? 'في الرياض' : 'بين جدة ومكة';
+    const kind =
+      service === 'transfer'
+        ? `للاستقبال / التنقل ${cityLabel} (${car.note || ''})`
+        : `للتأجير بالساعة / اليوم ${cityLabel} (${car.note || 'يوم كامل'})`;
+    const message = `مرحباً، أريد حجز ${car.name} ${kind} بسعر ${car.price} ريال.`;
     return `https://wa.me/966569038515?text=${encodeURIComponent(message)}`;
   }
 
-  /** Returns the 1-based position (1–5) of a section for Tailwind order-N class binding. */
+  toursWhatsAppLink(): string {
+    const message = 'مرحباً، أريد ترتيب جولة سياحية في أبها مع ROYALRIDE.';
+    return `https://wa.me/966569038515?text=${encodeURIComponent(message)}`;
+  }
+
+  /** 1-based position for Tailwind order-N (supports up to 4 sections). */
   sectionPos(id: SectionId): number {
     const idx = this.content().sectionOrder.indexOf(id);
-    return idx === -1 ? 5 : idx + 1;
+    return idx === -1 ? 4 : idx + 1;
   }
 }
