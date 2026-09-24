@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { Footer } from '../../components/footer/footer';
 import { BookingModal, ServiceType } from '../../components/booking-modal/booking-modal';
-import { CarLightbox, LightboxImage } from '../../components/car-lightbox/car-lightbox';
+import { CarLightbox, LightboxData } from '../../components/car-lightbox/car-lightbox';
 import { SiteContentService, SectionId } from '../../services/site-content.service';
 
 @Component({
@@ -20,8 +20,8 @@ export class Home {
   readonly selectedCarKey = signal<string | null>(null);
   readonly selectedServiceType = signal<ServiceType>('transfer');
 
-  // Car Image Lightbox
-  readonly lightboxImage = signal<LightboxImage | null>(null);
+  // Car Image Lightbox Carousel
+  readonly lightboxData = signal<LightboxData | null>(null);
 
   openBookingModal(carKey?: string, serviceType?: ServiceType): void {
     if (carKey) this.selectedCarKey.set(carKey);
@@ -41,12 +41,18 @@ export class Home {
     this.activeTransfer.update((active) => (active === car ? null : car));
   }
 
-  openLightbox(src: string, name: string): void {
-    this.lightboxImage.set({ src, name });
+  openLightbox(images: string[] | string, name: string): void {
+    let list: string[] = [];
+    if (Array.isArray(images) && images.length > 0) {
+      list = images.filter(Boolean);
+    } else if (typeof images === 'string' && images.trim()) {
+      list = [images.trim()];
+    }
+    this.lightboxData.set({ images: list, name });
   }
 
   closeLightbox(): void {
-    this.lightboxImage.set(null);
+    this.lightboxData.set(null);
   }
 
   transferOrderLink(carName: string, price: string): string {

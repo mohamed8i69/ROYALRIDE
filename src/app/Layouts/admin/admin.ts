@@ -51,7 +51,7 @@ import {
     LucidePhone,
     LucideX,
     LucideSparkles,
-
+    LucideTrash2,
   ],
   selector: 'app-admin',
   templateUrl: './admin.html',
@@ -103,12 +103,108 @@ export class Admin implements OnInit {
   readonly isRefreshing = signal<boolean>(false);
 
   constructor() {
-    this.draft = signal<SiteContent>(structuredClone(this.siteContent.content()));
+    const initial = structuredClone(this.siteContent.content());
+    this.ensureImagesOnDraft(initial);
+    this.draft = signal<SiteContent>(initial);
+  }
+
+  private ensureImagesOnDraft(content: SiteContent): SiteContent {
+    content.cars?.forEach((car) => {
+      if (!car.images || car.images.length === 0) {
+        car.images = car.image ? [car.image] : [];
+      }
+    });
+    content.transferCars?.forEach((car) => {
+      if (!car.images || car.images.length === 0) {
+        car.images = car.image ? [car.image] : [];
+      }
+    });
+    return content;
+  }
+
+  /** Silently swallows broken image loads by hiding the img element */
+  onImgError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.style.display = 'none';
+  }
+
+  addImageToCar(carKey: string, section: 'cars' | 'transferCars'): void {
+    this.draft.update(d => {
+      const cloned = structuredClone(d);
+      const car = cloned[section].find(c => c.key === carKey);
+      if (!car) return cloned;
+      if (!car.images || car.images.length === 0) {
+        car.images = car.image ? [car.image] : [];
+      }
+      car.images = [...car.images, ''];
+      return cloned;
+    });
+  }
+
+  /** Set exact gallery size for a car (adds empty slots or trims from the end). Min 1. */
+  setImageCount(carKey: string, section: 'cars' | 'transferCars', count: number): void {
+    const target = Math.max(1, Math.min(20, Math.floor(Number(count) || 1)));
+    this.draft.update(d => {
+      const cloned = structuredClone(d);
+      const car = cloned[section].find(c => c.key === carKey);
+      if (!car) return cloned;
+      let imgs = Array.isArray(car.images) && car.images.length > 0
+        ? [...car.images]
+        : car.image ? [car.image] : [''];
+      if (imgs.length < target) {
+        imgs = [...imgs, ...Array(target - imgs.length).fill('')];
+      } else if (imgs.length > target) {
+        imgs = imgs.slice(0, target);
+      }
+      car.images = imgs;
+      if (imgs[0]) car.image = imgs[0];
+      return cloned;
+    });
+  }
+
+  onImageCountInput(carKey: string, section: 'cars' | 'transferCars', event: Event): void {
+    const value = Number((event.target as HTMLInputElement).value);
+    this.setImageCount(carKey, section, value);
+  }
+
+  removeImageFromCar(carKey: string, section: 'cars' | 'transferCars', index: number): void {
+    this.draft.update(d => {
+      const cloned = structuredClone(d);
+      const car = cloned[section].find(c => c.key === carKey);
+      if (!car || !car.images) return cloned;
+      if (car.images.length <= 1) {
+        car.images = [''];
+        car.image = '';
+        return cloned;
+      }
+      car.images = car.images.filter((_, i) => i !== index);
+      if (car.images.length > 0) {
+        car.image = car.images[0];
+      }
+      return cloned;
+    });
+  }
+
+  updateImageUrl(carKey: string, section: 'cars' | 'transferCars', index: number, newUrl: string): void {
+    this.draft.update(d => {
+      const cloned = structuredClone(d);
+      const car = cloned[section].find(c => c.key === carKey);
+      if (!car || !car.images) return cloned;
+      const imgs = [...car.images];
+      imgs[index] = newUrl;
+      car.images = imgs;
+      if (index === 0) {
+        car.image = newUrl;
+      }
+      return cloned;
+    });
   }
 
   async ngOnInit(): Promise<void> {
     const latest = await this.siteContent.reload();
-    this.draft.set(structuredClone(latest));
+    const cloned = structuredClone(latest);
+    this.ensureImagesOnDraft(cloned);
+    this.draft.set(cloned);
     void this.ordersService.loadOrders();
   }
 
@@ -116,7 +212,9 @@ export class Admin implements OnInit {
     this.isRefreshing.set(true);
     try {
       const latest = await this.siteContent.reload();
-      this.draft.set(structuredClone(latest));
+      const cloned = structuredClone(latest);
+      this.ensureImagesOnDraft(cloned);
+      this.draft.set(cloned);
     } finally {
       this.isRefreshing.set(false);
     }
@@ -137,8 +235,25 @@ export class Admin implements OnInit {
     this.isSaving.set(true);
     this.saveError.set(null);
     try {
-      await this.siteContent.save(this.draft());
-      this.draft.set(structuredClone(this.siteContent.content()));
+      const currentDraft = this.draft();
+      currentDraft.cars?.forEach((car) => {
+        if (car.images && car.images.length > 0) {
+          car.image = car.images[0];
+        } else if (car.image) {
+          car.images = [car.image];
+        }
+      });
+      currentDraft.transferCars?.forEach((car) => {
+        if (car.images && car.images.length > 0) {
+          car.image = car.images[0];
+        } else if (car.image) {
+          car.images = [car.image];
+        }
+      });
+      await this.siteContent.save(currentDraft);
+      const latest = structuredClone(this.siteContent.content());
+      this.ensureImagesOnDraft(latest);
+      this.draft.set(latest);
       this.saved.set(true);
       window.setTimeout(() => this.saved.set(false), 2500);
     } catch (err: any) {
@@ -153,7 +268,9 @@ export class Admin implements OnInit {
     this.saveError.set(null);
     try {
       await this.siteContent.reset();
-      this.draft.set(structuredClone(this.siteContent.content()));
+      const latest = structuredClone(this.siteContent.content());
+      this.ensureImagesOnDraft(latest);
+      this.draft.set(latest);
     } catch (err: any) {
       this.saveError.set(err?.error?.message || err?.message || 'تعذر إعادة البيانات الافتراضية من الخادم.');
     } finally {
