@@ -230,17 +230,97 @@
       <!-- RENTAL FLEET PANEL -->
       @if (activePanel() === 'fleet') {
       <div>
-        <div class="mb-6"><span class="text-[10px] font-bold tracking-[0.18em] text-[#d8b66e]">RENTAL FLEET</span><h2 class="mt-2 text-2xl font-black text-white">إدارة أسطول التأجير</h2></div>
-        <div class="grid gap-4 xl:grid-cols-2">
+        <div class="mb-6">
+          <span class="text-[10px] font-bold tracking-[0.18em] text-[#d8b66e]">RENTAL FLEET</span>
+          <h2 class="mt-2 text-2xl font-black text-white">إدارة أسطول التأجير</h2>
+          <p class="mt-1 text-xs text-[#a9987d]">حدد عدد الصور أو أضفها واحدةً، وعدّل روابطها. الصورة الأولى هي الرئيسية على الكارت، وباقي الصور تظهر في المعرض عند النقر.</p>
+        </div>
+        <div class="grid gap-6 xl:grid-cols-2">
           @for (car of draft().cars; track car.key; let i = $index) {
-          <article class="rounded-xl border border-[#4b3b27] bg-[#15130f] p-4">
+          <article class="rounded-xl border border-[#4b3b27] bg-[#15130f] p-5">
+
+            <!-- Car Header: live preview -->
             <div class="mb-4 flex items-center gap-3">
-              <div class="h-28 w-44 rounded-lg bg-gradient-to-b from-[#241c14] to-[#0a0907] p-1 flex items-center justify-center border border-[#3d3227]">
-                <img class="h-full w-full object-contain object-center drop-shadow" [src]="car.image" [alt]="car.name">
+              <div class="h-24 w-36 shrink-0 rounded-lg bg-gradient-to-b from-[#241c14] to-[#0a0907] p-1 flex items-center justify-center border border-[#3d3227]">
+                <img class="h-full w-full object-contain object-center drop-shadow" [src]="car.image" [alt]="car.name" (error)="onImgError($event)">
               </div>
-              <h3 class="font-black text-[#e7c77f] text-base">{{ car.name }}</h3>
+              <div>
+                <h3 class="font-black text-[#e7c77f] text-base">{{ car.name }}</h3>
+                <p class="text-[10px] text-[#7d705c] mt-0.5">{{ car.images?.length || 0 }} {{ (car.images?.length || 0) === 1 ? 'صورة' : 'صور' }}</p>
+              </div>
             </div>
-            <div class="grid gap-3 sm:grid-cols-2"><label class="field">اسم السيارة<input [(ngModel)]="car.name"></label><label class="field">السعر<input [(ngModel)]="car.price"></label><label class="field sm:col-span-2">الوصف المختصر<input [(ngModel)]="car.note"></label><label class="field sm:col-span-2">التفاصيل<textarea rows="2" [(ngModel)]="car.details"></textarea></label><label class="field sm:col-span-2">مسار الصورة<input [(ngModel)]="car.image"></label></div>
+
+            <!-- Basic Fields -->
+            <div class="grid gap-3 sm:grid-cols-2 mb-5">
+              <label class="field">اسم السيارة<input [(ngModel)]="car.name"></label>
+              <label class="field">السعر<input [(ngModel)]="car.price"></label>
+              <label class="field sm:col-span-2">الوصف المختصر<input [(ngModel)]="car.note"></label>
+              <label class="field sm:col-span-2">التفاصيل<textarea rows="2" [(ngModel)]="car.details"></textarea></label>
+            </div>
+
+            <!-- Image Gallery Manager -->
+            <div class="rounded-lg border border-[#3d3227] bg-[#0d0b08] p-3">
+              <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+                <span class="text-[10px] font-bold tracking-widest text-[#d8b66e]">معرض الصور</span>
+                <label class="flex items-center gap-2 text-[10px] text-[#a9987d]">
+                  <span>عدد الصور</span>
+                  <input type="number" min="1" max="20"
+                         class="field-input w-16 text-center py-1"
+                         [value]="car.images?.length || 1"
+                         (change)="onImageCountInput(car.key, 'cars', $event)">
+                </label>
+              </div>
+
+              <!-- Live Thumbnail Strip -->
+              @if (car.images && car.images.length > 0) {
+              <div class="flex gap-2 mb-3 overflow-x-auto pb-1">
+                @for (img of car.images; track $index; let imgIdx = $index) {
+                <div class="relative shrink-0">
+                  <div class="h-14 w-20 rounded border-2 overflow-hidden bg-[#1a1510]"
+                       [class.border-[#d4ad67]]="imgIdx === 0"
+                       [class.border-[#3d3227]]="imgIdx !== 0">
+                    <img class="h-full w-full object-contain" [src]="img || ''"
+                         [style.opacity]="img ? '1' : '0.3'"
+                         [alt]="'صورة ' + (imgIdx+1)">
+                    @if (!img) {
+                    <span class="absolute inset-0 flex items-center justify-center text-[#7d705c] text-lg">?</span>
+                    }
+                  </div>
+                  @if (imgIdx === 0) {
+                  <span class="absolute -top-1 -right-1 text-[8px] font-black bg-[#d4ad67] text-black rounded-full px-1 leading-4">رئيسية</span>
+                  }
+                </div>
+                }
+              </div>
+              }
+
+              <!-- Editable Image URL Inputs -->
+              <div class="space-y-2">
+                @for (img of car.images; track $index; let imgIdx = $index) {
+                <div class="flex items-center gap-2">
+                  <span class="shrink-0 flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-black bg-[#d4ad67]/20 text-[#d4ad67]">{{ imgIdx + 1 }}</span>
+                  <input class="field-input flex-1 min-w-0"
+                         [placeholder]="imgIdx === 0 ? 'رابط الصورة الرئيسية (تظهر على الكارت)' : 'رابط الصورة ' + (imgIdx+1)"
+                         [value]="img"
+                         (input)="updateImageUrl(car.key, 'cars', imgIdx, $any($event.target).value)">
+                  <button type="button"
+                          (click)="removeImageFromCar(car.key, 'cars', imgIdx)"
+                          class="shrink-0 flex h-7 w-7 items-center justify-center rounded-lg bg-red-900/30 text-red-400 hover:bg-red-800/50 transition"
+                          title="حذف الصورة">
+                    <svg lucideTrash2 class="w-3 h-3"></svg>
+                  </button>
+                </div>
+                }
+              </div>
+
+              <!-- Add Image Button -->
+              <button type="button"
+                      (click)="addImageToCar(car.key, 'cars')"
+                      class="mt-3 w-full flex items-center justify-center gap-2 rounded-lg border border-dashed border-[#d4ad67]/40 py-2 text-xs font-bold text-[#d4ad67]/70 hover:border-[#d4ad67]/70 hover:text-[#d4ad67] hover:bg-[#d4ad67]/5 transition">
+                <span class="text-base leading-none">+</span> إضافة صورة
+              </button>
+            </div>
+
           </article>
           }
         </div>
@@ -251,17 +331,96 @@
       <!-- TRANSFER FLEET PANEL -->
       @if (activePanel() === 'transfer') {
       <div>
-        <div class="mb-6"><span class="text-[10px] font-bold tracking-[0.18em] text-[#d8b66e]">TRANSFER PRICES</span><h2 class="mt-2 text-2xl font-black text-white">أسعار التنقل بين جدة ومكة</h2></div>
-        <div class="grid gap-4 xl:grid-cols-2">
+        <div class="mb-6">
+          <span class="text-[10px] font-bold tracking-[0.18em] text-[#d8b66e]">TRANSFER PRICES</span>
+          <h2 class="mt-2 text-2xl font-black text-white">أسعار التنقل بين جدة ومكة</h2>
+          <p class="mt-1 text-xs text-[#a9987d]">حدد عدد الصور أو أضفها واحدةً، وعدّل روابطها. الصورة الأولى هي الرئيسية على الكارت، وباقي الصور تظهر في المعرض عند النقر.</p>
+        </div>
+        <div class="grid gap-6 xl:grid-cols-2">
           @for (car of draft().transferCars; track car.key; let i = $index) {
-          <article class="rounded-xl border border-[#4b3b27] bg-[#15130f] p-4">
+          <article class="rounded-xl border border-[#4b3b27] bg-[#15130f] p-5">
+
+            <!-- Car Header: live preview -->
             <div class="mb-4 flex items-center gap-3">
-              <div class="h-24 w-40 rounded-lg bg-gradient-to-b from-[#241c14] to-[#0a0907] p-1 flex items-center justify-center border border-[#3d3227]">
-                <img class="h-full w-full object-contain object-center drop-shadow" [src]="car.image" [alt]="car.name">
+              <div class="h-24 w-36 shrink-0 rounded-lg bg-gradient-to-b from-[#241c14] to-[#0a0907] p-1 flex items-center justify-center border border-[#3d3227]">
+                <img class="h-full w-full object-contain object-center drop-shadow" [src]="car.image" [alt]="car.name" (error)="onImgError($event)">
               </div>
-              <h3 class="font-black text-[#e7c77f] text-base">{{ car.name }}</h3>
+              <div>
+                <h3 class="font-black text-[#e7c77f] text-base">{{ car.name }}</h3>
+                <p class="text-[10px] text-[#7d705c] mt-0.5">{{ car.images?.length || 0 }} {{ (car.images?.length || 0) === 1 ? 'صورة' : 'صور' }}</p>
+              </div>
             </div>
-            <div class="grid gap-3 sm:grid-cols-2"><label class="field">اسم السيارة<input [(ngModel)]="car.name"></label><label class="field">السعر<input [(ngModel)]="car.price"></label><label class="field">نوع الرحلة<input [(ngModel)]="car.note"></label><label class="field">مسار الصورة<input [(ngModel)]="car.image"></label></div>
+
+            <!-- Basic Fields -->
+            <div class="grid gap-3 sm:grid-cols-2 mb-5">
+              <label class="field">اسم السيارة<input [(ngModel)]="car.name"></label>
+              <label class="field">السعر<input [(ngModel)]="car.price"></label>
+              <label class="field">نوع الرحلة<input [(ngModel)]="car.note"></label>
+            </div>
+
+            <!-- Image Gallery Manager -->
+            <div class="rounded-lg border border-[#3d3227] bg-[#0d0b08] p-3">
+              <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+                <span class="text-[10px] font-bold tracking-widest text-[#d8b66e]">معرض الصور</span>
+                <label class="flex items-center gap-2 text-[10px] text-[#a9987d]">
+                  <span>عدد الصور</span>
+                  <input type="number" min="1" max="20"
+                         class="field-input w-16 text-center py-1"
+                         [value]="car.images?.length || 1"
+                         (change)="onImageCountInput(car.key, 'transferCars', $event)">
+                </label>
+              </div>
+
+              <!-- Live Thumbnail Strip -->
+              @if (car.images && car.images.length > 0) {
+              <div class="flex gap-2 mb-3 overflow-x-auto pb-1">
+                @for (img of car.images; track $index; let imgIdx = $index) {
+                <div class="relative shrink-0">
+                  <div class="h-14 w-20 rounded border-2 overflow-hidden bg-[#1a1510]"
+                       [class.border-[#d4ad67]]="imgIdx === 0"
+                       [class.border-[#3d3227]]="imgIdx !== 0">
+                    <img class="h-full w-full object-contain" [src]="img || ''"
+                         [style.opacity]="img ? '1' : '0.3'"
+                         [alt]="'صورة ' + (imgIdx+1)">
+                    @if (!img) {
+                    <span class="absolute inset-0 flex items-center justify-center text-[#7d705c] text-lg">?</span>
+                    }
+                  </div>
+                  @if (imgIdx === 0) {
+                  <span class="absolute -top-1 -right-1 text-[8px] font-black bg-[#d4ad67] text-black rounded-full px-1 leading-4">رئيسية</span>
+                  }
+                </div>
+                }
+              </div>
+              }
+
+              <!-- Editable Image URL Inputs -->
+              <div class="space-y-2">
+                @for (img of car.images; track $index; let imgIdx = $index) {
+                <div class="flex items-center gap-2">
+                  <span class="shrink-0 flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-black bg-[#d4ad67]/20 text-[#d4ad67]">{{ imgIdx + 1 }}</span>
+                  <input class="field-input flex-1 min-w-0"
+                         [placeholder]="imgIdx === 0 ? 'رابط الصورة الرئيسية (تظهر على الكارت)' : 'رابط الصورة ' + (imgIdx+1)"
+                         [value]="img"
+                         (input)="updateImageUrl(car.key, 'transferCars', imgIdx, $any($event.target).value)">
+                  <button type="button"
+                          (click)="removeImageFromCar(car.key, 'transferCars', imgIdx)"
+                          class="shrink-0 flex h-7 w-7 items-center justify-center rounded-lg bg-red-900/30 text-red-400 hover:bg-red-800/50 transition"
+                          title="حذف الصورة">
+                    <svg lucideTrash2 class="w-3 h-3"></svg>
+                  </button>
+                </div>
+                }
+              </div>
+
+              <!-- Add Image Button -->
+              <button type="button"
+                      (click)="addImageToCar(car.key, 'transferCars')"
+                      class="mt-3 w-full flex items-center justify-center gap-2 rounded-lg border border-dashed border-[#d4ad67]/40 py-2 text-xs font-bold text-[#d4ad67]/70 hover:border-[#d4ad67]/70 hover:text-[#d4ad67] hover:bg-[#d4ad67]/5 transition">
+                <span class="text-base leading-none">+</span> إضافة صورة
+              </button>
+            </div>
+
           </article>
           }
         </div>
@@ -462,7 +621,10 @@
   .field { display: grid; gap: 0.45rem; color: #b9a88c; font-size: 0.7rem; font-weight: 700; }
   .field input, .field textarea { width: 100%; border: 1px solid #4b3b27; border-radius: 0.45rem; background: #0f0e0c; color: #f3e7d0; padding: 0.65rem 0.75rem; outline: none; }
   .field input:focus, .field textarea:focus { border-color: #d4ad67; box-shadow: 0 0 0 2px rgb(212 173 103 / 0.12); }
+  .field-input { border: 1px solid #4b3b27; border-radius: 0.45rem; background: #0f0e0c; color: #f3e7d0; padding: 0.5rem 0.7rem; outline: none; font-size: 0.7rem; }
+  .field-input:focus { border-color: #d4ad67; box-shadow: 0 0 0 2px rgb(212 173 103 / 0.12); }
   .save-button { margin-top: 1.5rem; border-radius: 0.45rem; background: #d4ad67; padding: 0.7rem 1.3rem; color: #21180d; font-size: 0.75rem; font-weight: 900; }
   .save-button:hover { background: #edc77f; }
   .save-button:disabled { opacity: 0.55; cursor: wait; pointer-events: none; }
+
 </style>

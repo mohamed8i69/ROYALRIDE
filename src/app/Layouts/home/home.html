@@ -100,14 +100,20 @@
             @for (car of content().transferCars; track car.key) {
             <article
                 class="group flex flex-col overflow-hidden rounded-xl border border-[#4f4130] bg-gradient-to-b from-[#282119] to-[#13110e] p-3 text-center transition duration-300 hover:-translate-y-1 hover:border-[#c9a05a]">
-                <!-- Clickable image → lightbox -->
-                <button type="button" (click)="openLightbox(car.image, car.name)"
+                <!-- Clickable image → lightbox carousel -->
+                <button type="button" (click)="openLightbox(car.images || car.image, car.name)"
                     class="relative h-36 w-full overflow-hidden rounded-lg bg-gradient-to-b from-[#241c14] via-[#14110d] to-[#0a0907] border border-[#3d3227] mb-2 cursor-zoom-in focus:outline-none sm:h-44"
-                    [attr.aria-label]="'عرض صورة ' + car.name">
+                    [attr.aria-label]="'عرض صور ' + car.name">
                     <img class="h-full w-full object-cover object-center transition duration-500 group-hover:scale-105"
                         [src]="car.image" [alt]="car.name">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none">
                     </div>
+                    @if ((car.images?.length || 0) > 1) {
+                    <span
+                        class="absolute top-1.5 right-1.5 rounded-full border border-[#d4ad67]/50 bg-black/80 px-2 py-0.5 text-[9px] font-bold text-[#e7c77f] shadow backdrop-blur-sm">
+                        {{ car.images!.length }} صور
+                    </span>
+                    }
                     <!-- Zoom hint icon -->
                     <span
                         class="absolute bottom-1.5 left-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition group-hover:opacity-100 text-[10px]">⛶</span>
@@ -161,10 +167,10 @@
             @for (car of content().cars; track car.key) {
             <article
                 class="group flex self-start flex-col overflow-hidden rounded-xl border border-[#4f4130] bg-gradient-to-b from-[#292219] to-[#13110e] shadow-[0_12px_28px_rgba(0,0,0,.5)] transition duration-300 hover:border-[#d4ad67]">
-                <!-- Clickable image → lightbox -->
-                <button type="button" (click)="openLightbox(car.image, car.name)"
+                <!-- Clickable image → lightbox carousel -->
+                <button type="button" (click)="openLightbox(car.images || car.image, car.name)"
                     class="relative h-44 w-full overflow-hidden rounded-t-lg bg-gradient-to-b from-[#241c14] via-[#14110d] to-[#0a0907] border-b border-[#3d3227] cursor-zoom-in focus:outline-none sm:h-52 md:h-60"
-                    [attr.aria-label]="'عرض صورة ' + car.name">
+                    [attr.aria-label]="'عرض صور ' + car.name">
                     <img class="h-full w-full object-cover object-center transition duration-500 group-hover:scale-105 drop-shadow-[0_12px_24px_rgba(0,0,0,0.85)]"
                         [src]="car.image" [alt]="car.name">
                     <div
@@ -174,6 +180,12 @@
                         class="absolute top-2.5 right-2.5 rounded-full border border-[#d4ad67]/50 bg-black/80 px-2.5 py-0.5 text-[10px] font-bold text-[#e7c77f] shadow-lg backdrop-blur-sm sm:top-3 sm:right-3 sm:px-3 sm:py-1">
                         {{ car.number }} مقاعد VIP
                     </span>
+                    @if ((car.images?.length || 0) > 1) {
+                    <span
+                        class="absolute top-2.5 left-2.5 rounded-full border border-[#d4ad67]/50 bg-black/80 px-2.5 py-0.5 text-[10px] font-bold text-[#e7c77f] shadow-lg backdrop-blur-sm sm:top-3 sm:left-3 sm:px-3 sm:py-1">
+                        {{ car.images!.length }} صور
+                    </span>
+                    }
                     <!-- Zoom hint icon -->
                     <span
                         class="absolute bottom-2 left-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-white opacity-0 transition group-hover:opacity-100 text-xs">⛶</span>
@@ -294,5 +306,5 @@
     [initialServiceType]="selectedServiceType()" (closeModal)="closeBookingModal()">
 </app-booking-modal>
 
-<!-- ══════════ CAR IMAGE LIGHTBOX ══════════ -->
-<app-car-lightbox [image]="lightboxImage()" (close)="closeLightbox()"></app-car-lightbox>
+<!-- ══════════ CAR IMAGE LIGHTBOX CAROUSEL ══════════ -->
+<app-car-lightbox [data]="lightboxData()" (close)="closeLightbox()"></app-car-lightbox>

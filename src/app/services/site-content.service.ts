@@ -12,6 +12,7 @@ export interface FleetCar {
   note: string;
   details: string;
   image: string;
+  images?: string[];
 }
 
 export interface TransferCar {
@@ -20,6 +21,7 @@ export interface TransferCar {
   price: string;
   note: string;
   image: string;
+  images?: string[];
 }
 
 export type SectionId = 'hero' | 'transfer' | 'fleet' | 'tours'|'contact';
@@ -51,22 +53,54 @@ const defaultContent: SiteContent = {
   toursText: 'بكجات خاصة يتم ترتيبها بناءً على جدول رحلاتكم لخدمتكم، تواصلوا معنا.',
   sectionOrder: ['hero', 'transfer', 'fleet', 'tours', 'contact'],
   cars: [
-    { key: 'taurus', name: 'فورد تورس', number: 4, price: '1000', note: 'اليوم الكامل · 12 ساعة مع السائق', details: 'خيار أنيق ومريح للتنقلات اليومية والرحلات الخاصة.', image: 'photo_2026-09-19_14-27-45.jpg' },
-    { key: 'gmc', name: 'جمس (GMC)', number: 6, price: '1100', note: 'اليوم الكامل · 12 ساعة مع السائق', details: 'مساحة واسعة وخدمة مثالية للعائلات والوفود الصغيرة.', image: 'photo_2026-09-19_14-27-39.jpg' },
-    { key: 'lexus', name: 'لكزس', number: 7, price: '1500', note: 'اليوم الكامل · 12 ساعة مع السائق', details: 'فخامة هادئة وتجربة راقية مع سائق خاص.', image: 'WhatsApp Image 2026-09-20 at 7.11.13 AM (2).jpeg' },
-    { key: 'sclass', name: 'مرسيدس S Class', number: 4, price: '2300', note: 'اليوم الكامل · 12 ساعة مع السائق', details: 'الفئة الملكية للمناسبات المهمة والتنقلات التنفيذية.', image: 'photo_2026-09-19_14-27-42.jpg' },
-    { key: 'staria', name: 'Staria Van', number: 4, price: '800', note: '100 ريال بالساعة داخل جدة · 800 ريال يوم كامل', details: 'سيارة واسعة للمجموعات؛ اليوم الكامل يشمل 12 ساعة مع السائق.', image: 'WhatsApp Image 2026-09-20 at 7.11.13 AM (3).jpeg' },
+    { key: 'taurus', name: 'فورد تورس', number: 4, price: '1000', note: 'اليوم الكامل · 12 ساعة مع السائق', details: 'خيار أنيق ومريح للتنقلات اليومية والرحلات الخاصة.', image: 'photo_2026-09-19_14-27-45.jpg', images: ['photo_2026-09-19_14-27-45.jpg', 'hero.jpg', 'photo_2026-09-19_14-27-48.jpg'] },
+    { key: 'gmc', name: 'جمس (GMC)', number: 6, price: '1100', note: 'اليوم الكامل · 12 ساعة مع السائق', details: 'مساحة واسعة وخدمة مثالية للعائلات والوفود الصغيرة.', image: 'photo_2026-09-19_14-27-39.jpg', images: ['photo_2026-09-19_14-27-39.jpg', 'Gemini_Generated_Image_qs51tfqs51tfqs51.jpg', 'hero.jpg'] },
+    { key: 'lexus', name: 'لكزس', number: 7, price: '1500', note: 'اليوم الكامل · 12 ساعة مع السائق', details: 'فخامة هادئة وتجربة راقية مع سائق خاص.', image: 'WhatsApp Image 2026-09-20 at 7.11.13 AM (2).jpeg', images: ['WhatsApp Image 2026-09-20 at 7.11.13 AM (2).jpeg', 'photo_2026-09-19_14-27-45.jpg', 'photo_2026-09-19_14-27-42.jpg'] },
+    { key: 'sclass', name: 'مرسيدس S Class', number: 4, price: '2300', note: 'اليوم الكامل · 12 ساعة مع السائق', details: 'الفئة الملكية للمناسبات المهمة والتنقلات التنفيذية.', image: 'photo_2026-09-19_14-27-42.jpg', images: ['photo_2026-09-19_14-27-42.jpg', 'WhatsApp Image 2026-09-20 at 7.11.13 AM (2).jpeg', 'hero.jpg'] },
+    { key: 'staria', name: 'Staria Van', number: 4, price: '800', note: '100 ريال بالساعة داخل جدة · 800 ريال يوم كامل', details: 'سيارة واسعة للمجموعات؛ اليوم الكامل يشمل 12 ساعة مع السائق.', image: 'WhatsApp Image 2026-09-20 at 7.11.13 AM (3).jpeg', images: ['WhatsApp Image 2026-09-20 at 7.11.13 AM (3).jpeg', 'photo_2026-09-19_14-27-39.jpg', '70772683470.png'] },
   ],
   transferCars: [
-    { key: 'transfer-taurus', name: 'فورد تورس', price: '250', note: 'اتجاه واحد', image: 'photo_2026-09-19_14-27-45.jpg' },
-    { key: 'transfer-lexus', name: 'لكزس', price: '340', note: 'اتجاه واحد', image: 'WhatsApp Image 2026-09-20 at 7.11.13 AM (2).jpeg' },
-    { key: 'transfer-gmc', name: 'جمس (GMC)', price: '370', note: 'اتجاه واحد', image: 'photo_2026-09-19_14-27-39.jpg' },
-    { key: 'transfer-sclass', name: 'مرسيدس S Class', price: '1200', note: '12 ساعة', image: 'photo_2026-09-19_14-27-42.jpg' },
-    { key: 'transfer-staria', name: 'Staria Van', price: '800', note: '12 ساعة', image: 'WhatsApp Image 2026-09-20 at 7.11.13 AM (3).jpeg' },
+    { key: 'transfer-taurus', name: 'فورد تورس', price: '250', note: 'اتجاه واحد', image: 'photo_2026-09-19_14-27-45.jpg', images: ['photo_2026-09-19_14-27-45.jpg', 'hero.jpg'] },
+    { key: 'transfer-lexus', name: 'لكزس', price: '340', note: 'اتجاه واحد', image: 'WhatsApp Image 2026-09-20 at 7.11.13 AM (2).jpeg', images: ['WhatsApp Image 2026-09-20 at 7.11.13 AM (2).jpeg', 'photo_2026-09-19_14-27-42.jpg'] },
+    { key: 'transfer-gmc', name: 'جمس (GMC)', price: '370', note: 'اتجاه واحد', image: 'photo_2026-09-19_14-27-39.jpg', images: ['photo_2026-09-19_14-27-39.jpg', 'Gemini_Generated_Image_qs51tfqs51tfqs51.jpg'] },
+    { key: 'transfer-sclass', name: 'مرسيدس S Class', price: '1200', note: '12 ساعة', image: 'photo_2026-09-19_14-27-42.jpg', images: ['photo_2026-09-19_14-27-42.jpg', 'WhatsApp Image 2026-09-20 at 7.11.13 AM (2).jpeg'] },
+    { key: 'transfer-staria', name: 'Staria Van', price: '800', note: '12 ساعة', image: 'WhatsApp Image 2026-09-20 at 7.11.13 AM (3).jpeg', images: ['WhatsApp Image 2026-09-20 at 7.11.13 AM (3).jpeg', 'photo_2026-09-19_14-27-39.jpg'] },
   ],
 };
 
 const API_BASE = environment.apiUrl || 'https://dashboard-nine-flame-50.vercel.app';
+
+/** Ensure every car has an `images` gallery; fall back to defaults then primary `image`. */
+function normalizeCarImages<T extends { key: string; image: string; images?: string[] }>(
+  cars: T[] | undefined,
+  defaults: T[],
+): T[] {
+  const list = cars && cars.length > 0 ? cars : defaults;
+  return list.map((car) => {
+    const fallback = defaults.find((d) => d.key === car.key);
+    const hasGallery = Array.isArray(car.images) && car.images.filter(Boolean).length > 0;
+
+    let images: string[];
+    if (hasGallery) {
+      images = car.images!.filter(Boolean);
+    } else if (fallback?.images && fallback.images.length > 0) {
+      // Keep the live primary image first, then append other default gallery shots
+      const primary = (car.image || fallback.image || '').trim();
+      const rest = fallback.images.filter((src) => src && src !== primary);
+      images = primary ? [primary, ...rest] : [...fallback.images];
+    } else if (car.image?.trim()) {
+      images = [car.image.trim()];
+    } else {
+      images = [];
+    }
+
+    return {
+      ...car,
+      image: car.image?.trim() || images[0] || '',
+      images,
+    };
+  });
+}
 
 @Injectable({ providedIn: 'root' })
 export class SiteContentService {
@@ -87,6 +121,14 @@ export class SiteContentService {
 
   async save(nextContent: SiteContent): Promise<void> {
     const next = structuredClone(nextContent);
+    const syncGallery = <T extends { image: string; images?: string[] }>(cars: T[]): T[] =>
+      cars.map((car) => {
+        const filled = (car.images || []).map((s) => (s || '').trim()).filter(Boolean);
+        const images = filled.length > 0 ? filled : car.image?.trim() ? [car.image.trim()] : [];
+        return { ...car, images, image: images[0] || car.image || '' };
+      });
+    next.cars = syncGallery(next.cars || []);
+    next.transferCars = syncGallery(next.transferCars || []);
     await firstValueFrom(this.http.put<SiteContent>(`${API_BASE}/api/site-content`, next));
     this.content.set(next);
     this.error.set(null);
@@ -131,8 +173,8 @@ export class SiteContentService {
         const merged: SiteContent = {
           ...structuredClone(defaultContent),
           ...remote,
-          cars: remote.cars && remote.cars.length > 0 ? remote.cars : defaultContent.cars,
-          transferCars: remote.transferCars && remote.transferCars.length > 0 ? remote.transferCars : defaultContent.transferCars,
+          cars: normalizeCarImages(remote.cars, defaultContent.cars),
+          transferCars: normalizeCarImages(remote.transferCars, defaultContent.transferCars),
           sectionOrder: mergedSectionOrder,
         };
         this.content.set(merged);
