@@ -164,22 +164,14 @@ export class SiteContentService {
     try {
       const remote = await firstValueFrom(this.http.get<SiteContent>(`${API_BASE}/api/site-content`));
       if (remote && typeof remote === 'object') {
-        let mergedSectionOrder = defaultContent.sectionOrder;
-        if (remote.sectionOrder && Array.isArray(remote.sectionOrder) && remote.sectionOrder.length > 0) {
-          const order = [...remote.sectionOrder];
-          if (!order.includes('testimonials')) {
-            const contactIdx = order.indexOf('contact');
-            if (contactIdx !== -1) {
-              order.splice(contactIdx, 0, 'testimonials');
-            } else {
-              order.push('testimonials');
-            }
-          }
-          if (!order.includes('contact')) {
-            order.push('contact');
-          }
-          mergedSectionOrder = order as SectionId[];
-        }
+        const validSectionIds = new Set<SectionId>(defaultContent.sectionOrder);
+        const suppliedOrder = (Array.isArray(remote.sectionOrder) ? remote.sectionOrder : [])
+          .filter((id): id is SectionId => validSectionIds.has(id));
+        const uniqueSuppliedOrder = [...new Set(suppliedOrder)];
+        const mergedSectionOrder = [
+          ...uniqueSuppliedOrder,
+          ...defaultContent.sectionOrder.filter((id) => !uniqueSuppliedOrder.includes(id)),
+        ];
 
         const merged: SiteContent = {
           ...structuredClone(defaultContent),

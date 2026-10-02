@@ -324,6 +324,7 @@ export class Admin implements OnInit {
       transfer: 'التنقل بين جدة ومكة',
       fleet: 'أسطول التأجير بالساعة / اليوم',
       tours: 'جولات أبها السياحية',
+      testimonials: 'آراء العملاء',
       contact: 'الاستشارات والتواصل المباشر (الواتساب والهاتف)',
     };
     return labels[id] ?? id;
@@ -335,6 +336,7 @@ export class Admin implements OnInit {
       transfer: '🚗',
       fleet: '🚙',
       tours: '🏔️',
+      testimonials: '⭐',
       contact: '📞',
     };
     return icons[id] ?? '📄';

@@ -4,7 +4,8 @@
     <!-- ══════════ HERO + ABOUT ══════════ -->
     <section id="home" class="w-full bg-[#090909]" [class.order-1]="sectionPos('hero') === 1"
         [class.order-2]="sectionPos('hero') === 2" [class.order-3]="sectionPos('hero') === 3"
-        [class.order-4]="sectionPos('hero') === 4" [class.order-5]="sectionPos('hero') === 5">
+        [class.order-4]="sectionPos('hero') === 4" [class.order-5]="sectionPos('hero') === 5"
+        [class.order-6]="sectionPos('hero') === 6">
 
         <article id="hero"
             class="relative left-1/2 right-1/2 -mt-4 -ml-[50vw] -mr-[50vw] min-h-[600px] w-screen overflow-hidden sm:min-h-[680px]">
@@ -73,7 +74,7 @@
     <section id="transfer" class="relative isolate w-full overflow-hidden bg-[#0b0c0d] p-3 sm:p-8"
         [class.order-1]="sectionPos('transfer') === 1" [class.order-2]="sectionPos('transfer') === 2"
         [class.order-3]="sectionPos('transfer') === 3" [class.order-4]="sectionPos('transfer') === 4"
-        [class.order-5]="sectionPos('transfer') === 5">
+        [class.order-5]="sectionPos('transfer') === 5" [class.order-6]="sectionPos('transfer') === 6">
 
         <div class="relative isolate min-h-[420px] overflow-hidden rounded-2xl sm:min-h-[550px]">
             <img class="absolute inset-0 -z-20 h-full w-full object-cover object-center"
@@ -152,7 +153,7 @@
         class="relative isolate w-full overflow-hidden bg-gradient-to-b from-[#11100d] to-[#090909] p-3 sm:p-8"
         [class.order-1]="sectionPos('fleet') === 1" [class.order-2]="sectionPos('fleet') === 2"
         [class.order-3]="sectionPos('fleet') === 3" [class.order-4]="sectionPos('fleet') === 4"
-        [class.order-5]="sectionPos('fleet') === 5">
+        [class.order-5]="sectionPos('fleet') === 5" [class.order-6]="sectionPos('fleet') === 6">
 
         <div class="mb-5 text-center sm:mb-6">
             <span class="text-[10px] font-bold tracking-[0.18em] text-[#d8b66e]">ROYALRIDE SERVICES</span>
@@ -229,7 +230,7 @@
     <section id="tours" class="relative isolate w-full overflow-hidden border-t border-[#3d3227] bg-[#090909]"
         [class.order-1]="sectionPos('tours') === 1" [class.order-2]="sectionPos('tours') === 2"
         [class.order-3]="sectionPos('tours') === 3" [class.order-4]="sectionPos('tours') === 4"
-        [class.order-5]="sectionPos('tours') === 5">
+        [class.order-5]="sectionPos('tours') === 5" [class.order-6]="sectionPos('tours') === 6">
 
         <div class="relative min-h-[340px] overflow-hidden sm:min-h-[430px]">
             <img class="absolute inset-0 h-full w-full object-cover" src="70772683470.png"
@@ -255,7 +256,12 @@
     <!-- ══════════ TESTIMONIALS ══════════ -->
     <section id="testimonials"
         class="relative isolate w-full overflow-hidden border-t border-[#3d3227] bg-gradient-to-b from-[#090909] via-[#0f0d0a] to-[#090909] py-14 sm:py-20"
-        [style.order]="sectionPos('tours') + 1">
+        [class.order-1]="sectionPos('testimonials') === 1"
+        [class.order-2]="sectionPos('testimonials') === 2"
+        [class.order-3]="sectionPos('testimonials') === 3"
+        [class.order-4]="sectionPos('testimonials') === 4"
+        [class.order-5]="sectionPos('testimonials') === 5"
+        [class.order-6]="sectionPos('testimonials') === 6">
 
 
         <!-- Ambient glow -->
@@ -409,7 +415,7 @@
         class="relative isolate w-full overflow-hidden border-t border-[#3d3227] bg-gradient-to-b from-[#090909] via-[#16120d] to-[#080808] py-12 px-4 sm:py-16 sm:px-8"
         [class.order-1]="sectionPos('contact') === 1" [class.order-2]="sectionPos('contact') === 2"
         [class.order-3]="sectionPos('contact') === 3" [class.order-4]="sectionPos('contact') === 4"
-        [class.order-5]="sectionPos('contact') === 5">
+        [class.order-5]="sectionPos('contact') === 5" [class.order-6]="sectionPos('contact') === 6">
         <!-- Ambient background glow -->
         <div
             class="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[300px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#c7a261]/10 blur-[100px]">
