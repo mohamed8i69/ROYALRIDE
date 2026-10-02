@@ -1,3 +1,145 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+
+/* ═══════════════════════════════════════════
+   TESTIMONIALS — Infinite Marquee Animation
+   Technique: two identical halves, translate
+   by exactly -50% of the inner track width.
+   Cards are fixed-width so both halves match.
+   ═══════════════════════════════════════════ */
+
+@keyframes marquee-scroll {
+  0%   { transform: translateX(calc(10 * (280px + 1rem))); }
+  100% { transform: translateX(0); }
+}
+
+.testimonials-track-wrapper {
+  user-select: none;
+  position: relative;
+}
+
+.testimonials-row {
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Inner track holds 2× the cards side-by-side.
+   width: max-content lets it grow naturally.
+   The animation moves it left by exactly half
+   its own width, snapping back seamlessly.    */
+.testimonials-inner {
+  display: flex;
+  gap: 1rem;           /* 16 px gap */
+  width: max-content;
+  will-change: transform;
+  animation: marquee-scroll 50s linear infinite;
+}
+
+/* Pause on hover / focus */
+.testimonials-track-wrapper:hover .testimonials-inner,
+.testimonials-track-wrapper:focus-within .testimonials-inner {
+  animation-play-state: paused;
+}
+
+/* ── Card shell ── */
+.testimonial-card {
+  flex-shrink: 0;
+  width: 280px;           /* fixed — both halves identical */
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(180, 138, 69, 0.25);
+  background: linear-gradient(145deg, #1e1810 0%, #13110e 100%);
+  padding: 1.1rem 1.25rem;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+  transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+  cursor: default;
+}
+
+.testimonial-card:hover {
+  border-color: rgba(212, 173, 103, 0.55);
+  box-shadow: 0 12px 40px rgba(212, 173, 103, 0.12);
+  transform: translateY(-3px);
+}
+
+/* ── Bubble text area ── */
+.testimonial-bubble {
+  font-family: inherit;
+  font-size: 0.78rem;
+  line-height: 1.65;
+  color: #e6d6bc;
+  direction: rtl;
+  text-align: right;
+  position: relative;
+  padding: 0.85rem 1rem;
+  border-radius: 0.75rem 0.75rem 0 0.75rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(212, 173, 103, 0.12);
+  /* Let text wrap freely — card height varies but loop still works */
+}
+
+.testimonial-bubble p {
+  margin: 0;
+}
+
+/* ── Footer (avatar + name) ── */
+.testimonial-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  direction: rtl;
+  margin-top: auto;   /* push to bottom of card */
+}
+
+.testimonial-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d4ad67, #b88f42);
+  color: #1e160b;
+  font-size: 0.9rem;
+  font-weight: 900;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(212,173,103,0.3);
+}
+
+.testimonial-name {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #f4ead8;
+  margin: 0;
+}
+
+.testimonial-stars {
+  font-size: 0.65rem;
+  color: #d4ad67;
+  letter-spacing: 1px;
+  margin: 0.1rem 0 0;
+}
+
+/* Responsive — wider cards on larger screens */
+@media (min-width: 640px) {
+  @keyframes marquee-scroll {
+    0%   { transform: translateX(calc(10 * (340px + 1.25rem))); }
+    100% { transform: translateX(0); }
+  }
+
+  .testimonial-card {
+    width: 340px;
+    padding: 1.25rem 1.5rem;
+  }
+
+  .testimonial-bubble {
+    font-size: 0.82rem;
+  }
+
+  .testimonials-inner {
+    gap: 1.25rem;
+  }
+}

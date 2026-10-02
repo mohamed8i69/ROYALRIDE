@@ -24,7 +24,7 @@ export interface TransferCar {
   images?: string[];
 }
 
-export type SectionId = 'hero' | 'transfer' | 'fleet' | 'tours'|'contact';
+export type SectionId = 'hero' | 'transfer' | 'fleet' | 'tours' | 'testimonials' | 'contact';
 
 export interface SiteContent {
   heroTitle: string;
@@ -51,7 +51,8 @@ const defaultContent: SiteContent = {
   transferText: 'الاستقبال والتنقل من جدة إلى مكة والعكس من مكة إلى جدة',
   toursTitle: 'أبها: الجولات السياحية والخدمات الخاصة',
   toursText: 'بكجات خاصة يتم ترتيبها بناءً على جدول رحلاتكم لخدمتكم، تواصلوا معنا.',
-  sectionOrder: ['hero', 'transfer', 'fleet', 'tours', 'contact'],
+  sectionOrder: ['hero', 'transfer', 'fleet', 'tours', 'testimonials', 'contact'],
+
   cars: [
     { key: 'taurus', name: 'فورد تورس', number: 4, price: '1000', note: 'اليوم الكامل · 12 ساعة مع السائق', details: 'خيار أنيق ومريح للتنقلات اليومية والرحلات الخاصة.', image: 'photo_2026-09-19_14-27-45.jpg', images: ['photo_2026-09-19_14-27-45.jpg', 'hero.jpg', 'photo_2026-09-19_14-27-48.jpg'] },
     { key: 'gmc', name: 'جمس (GMC)', number: 6, price: '1100', note: 'اليوم الكامل · 12 ساعة مع السائق', details: 'مساحة واسعة وخدمة مثالية للعائلات والوفود الصغيرة.', image: 'photo_2026-09-19_14-27-39.jpg', images: ['photo_2026-09-19_14-27-39.jpg', 'Gemini_Generated_Image_qs51tfqs51tfqs51.jpg', 'hero.jpg'] },
@@ -165,9 +166,19 @@ export class SiteContentService {
       if (remote && typeof remote === 'object') {
         let mergedSectionOrder = defaultContent.sectionOrder;
         if (remote.sectionOrder && Array.isArray(remote.sectionOrder) && remote.sectionOrder.length > 0) {
-          mergedSectionOrder = remote.sectionOrder.includes('contact')
-            ? remote.sectionOrder
-            : [...remote.sectionOrder, 'contact'];
+          const order = [...remote.sectionOrder];
+          if (!order.includes('testimonials')) {
+            const contactIdx = order.indexOf('contact');
+            if (contactIdx !== -1) {
+              order.splice(contactIdx, 0, 'testimonials');
+            } else {
+              order.push('testimonials');
+            }
+          }
+          if (!order.includes('contact')) {
+            order.push('contact');
+          }
+          mergedSectionOrder = order as SectionId[];
         }
 
         const merged: SiteContent = {
