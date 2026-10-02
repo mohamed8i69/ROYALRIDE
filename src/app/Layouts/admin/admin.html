@@ -482,7 +482,7 @@
           القسم الرئيسي (hero) يحتوي على شريط التصفح والصورة الرئيسية. يُنصح بإبقائه في المرتبة الأولى دائماً.
         </div>
 
-        <button type="button" (click)="save()" [disabled]="isSaving()" class="save-button mt-6">{{ isSaving() ? 'جارٍ الحفظ...' : 'حفظ الترتيب الجديد' }}</button>
+        <button type="button" (click)="saveLayout()" [disabled]="isSaving()" class="save-button mt-6">{{ isSaving() ? 'جارٍ الحفظ...' : 'حفظ الترتيب الجديد' }}</button>
       </div>
       }
 

@@ -263,6 +263,24 @@ export class Admin implements OnInit {
     }
   }
 
+  async saveLayout(): Promise<void> {
+    this.isSaving.set(true);
+    this.saveError.set(null);
+    try {
+      await this.siteContent.saveSectionOrder(this.draft().sectionOrder);
+      this.draft.update((current) => ({
+        ...current,
+        sectionOrder: [...this.siteContent.content().sectionOrder],
+      }));
+      this.saved.set(true);
+      window.setTimeout(() => this.saved.set(false), 2500);
+    } catch (err: any) {
+      this.saveError.set(err?.error?.message || err?.message || 'تعذر حفظ ترتيب الأقسام.');
+    } finally {
+      this.isSaving.set(false);
+    }
+  }
+
   async reset(): Promise<void> {
     this.isResetting.set(true);
     this.saveError.set(null);
