@@ -39,7 +39,6 @@ import {
   imports: [
     CommonModule,
     FormsModule,
-    LucideCrown,
     LucideX,
     LucideCarFront,
     LucideClock3,

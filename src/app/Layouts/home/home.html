@@ -27,13 +27,13 @@
             </header>
             <div
                 class="relative flex min-h-[600px] flex-col items-center justify-center px-4 pb-6 pt-16 text-center sm:min-h-[680px] sm:px-6 sm:pb-8 sm:pt-20">
-                <span class="rounded-full bg-[#c7a261] px-3 py-1 text-[10px] font-bold text-[#21180d] shadow">الحجز
+                <span class="rounded-full bg-[#c7a261] px-3 py-1 text-xs font-bold text-[#21180d] shadow">الحجز
                     متاح الآن 24/7</span>
                 <h1
                     class="mt-3 max-w-xs text-2xl font-black leading-tight text-[#e4c38c] sm:mt-4 sm:max-w-3xl sm:text-5xl">
                     {{ content().heroTitle }}</h1>
                 <p class="mt-2 text-base font-bold tracking-wide text-white sm:text-xl">{{ content().heroSubtitle }}</p>
-                <p class="mt-1 text-[10px] text-[#e7d4b1] sm:text-xs">مؤسسة مرون خالد عبدالله محمد لخدمات النقل</p>
+                <p class="mt-1 text-xs text-[#e7d4b1] sm:text-sm">مؤسسة مرون خالد عبدالله محمد لخدمات النقل</p>
                 <div class="mt-4 flex flex-wrap justify-center gap-2 text-xs sm:mt-5 sm:gap-3">
                     <button type="button" (click)="openBookingModal()"
                         class="rounded-full bg-gradient-to-r from-[#c7a261] to-[#f0cc84] px-5 py-2 font-black text-[#21180d] transition hover:scale-105 shadow-xl sm:px-6 sm:py-2.5">احجز
@@ -43,13 +43,13 @@
                         الأسطول</a>
                 </div>
                 <div
-                    class="mt-auto grid w-full max-w-xs grid-cols-2 overflow-hidden rounded-xl border border-[#b38c4c]/40 bg-[#17120d]/90 text-[9px] text-[#ead7b0] shadow-2xl backdrop-blur-sm sm:max-w-3xl sm:grid-cols-4 sm:text-[10px]">
+                    class="mt-auto grid w-full max-w-xs grid-cols-2 overflow-hidden rounded-xl border border-[#b38c4c]/40 bg-[#17120d]/90 text-xs text-[#ead7b0] shadow-2xl backdrop-blur-sm sm:max-w-3xl sm:grid-cols-4 sm:text-sm">
                     <span class="flex items-center justify-center gap-1 px-2 py-2.5 sm:gap-1.5 sm:px-3 sm:py-3"><img
                             class="h-4 w-auto object-contain sm:h-5" src="ZATCA.png" alt="ZATCA"><b>ZATCA</b></span>
                     <span class="flex items-center justify-center py-2.5 text-center leading-4 sm:py-3">مدى / Apple Pay
                         / Tabby</span>
-                    <span class="flex items-center justify-center px-2 py-2.5 sm:px-3 sm:py-3">نقطة 7 من 7</span>
-                    <span class="flex items-center justify-center px-2 py-2.5 sm:px-3 sm:py-3">مرخصة سعودية</span>
+                    <span class="flex items-center justify-center px-2 py-2.5 text-center sm:px-3 sm:py-3">أسطول متنوع</span>
+                    <span class="flex items-center justify-center px-2 py-2.5 text-center sm:px-3 sm:py-3">خدمات في المملكة</span>
                 </div>
             </div>
         </article>
@@ -81,7 +81,7 @@
                 src="backgroundSection.jpg" alt="صورة للتنقل بين جدة ومكة">
             <div class="absolute inset-0 -z-10 bg-[#080808]/50"></div>
             <div class="relative z-10 mb-4 pt-6 text-center sm:pt-8">
-                <span class="text-[10px] font-bold tracking-[0.18em] text-[#d8b66e]">JEDDAH · MAKKAH</span>
+                <span class="text-xs font-bold tracking-[0.18em] text-[#d8b66e]">JEDDAH · MAKKAH</span>
                 <h2 class="mt-2 text-2xl font-black text-[#dab878] sm:text-4xl">التنقل بين جدة ومكة</h2>
                 <div
                     class="mx-auto mt-3 h-1 w-20 rounded-full bg-gradient-to-l from-[#dcb469] to-transparent sm:mt-4 sm:w-24">
@@ -89,10 +89,9 @@
             </div>
             <div
                 class="relative z-10 mx-auto max-w-sm overflow-hidden rounded-xl border border-[#b48a45]/70 bg-[#17120d]/50 px-3 py-4 text-center shadow-2xl  sm:max-w-3xl sm:px-5 sm:py-6">
-                <h3 class="text-sm font-black text-white sm:text-base">{{ content().transferText }}</h3>
+                <h3 class="text-base font-black leading-7 text-white sm:text-lg">{{ content().transferText }}</h3>
                 <button type="button" (click)="openBookingModal(undefined, 'transfer')"
-                    class="mt-3 rounded-full bg-[#e5b860] px-5 py-2 text-xs font-black text-[#21180d] hover:bg-[#f2d28d] transition shadow-lg sm:px-6 sm:py-2.5">احجز
-                    رحلة تنقل الآن</button>
+                    class="mt-3 rounded-full bg-[#e5b860] px-5 py-2 text-sm font-black text-[#21180d] hover:bg-[#f2d28d] transition shadow-lg sm:px-6 sm:py-2.5">ابدأ طلب النقل</button>
             </div>
         </div>
 
@@ -111,7 +110,7 @@
                     </div>
                     @if ((car.images?.length || 0) > 1) {
                     <span
-                        class="absolute top-1.5 right-1.5 rounded-full border border-[#d4ad67]/50 bg-black/80 px-2 py-0.5 text-[9px] font-bold text-[#e7c77f] shadow backdrop-blur-sm">
+                        class="absolute top-1.5 right-1.5 rounded-full border border-[#d4ad67]/50 bg-black/80 px-2 py-0.5 text-xs font-bold text-[#e7c77f] shadow backdrop-blur-sm">
                         {{ car.images!.length }} صور
                     </span>
                     }
@@ -119,14 +118,14 @@
                     <span
                         class="absolute bottom-1.5 left-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition group-hover:opacity-100 text-[10px]">⛶</span>
                 </button>
-                <h3 class="mt-1 truncate text-xs font-black text-[#fff3d8]">{{ car.name }}</h3>
-                <p class="mt-1 text-[10px] font-bold text-[#e7c77f]"><strong class="text-base">{{ car.price }}</strong>
+                <h3 class="mt-1 truncate text-sm font-black text-[#fff3d8]">{{ car.name }}</h3>
+                <p class="mt-1 text-sm font-bold text-[#e7c77f]"><strong class="text-lg">{{ car.price }}</strong>
                     ريال</p>
-                <p class="text-[9px] text-[#bbaa8d]">{{ car.note }}</p>
+                <p class="text-xs text-[#bbaa8d]">{{ car.note }}</p>
                 @if (activeTransfer() === car.key) {
-                <div class="mt-2 border-t border-[#a78045]/30 pt-1.5 text-[9px] leading-4 text-[#eadcc4]">
-                    <p>رحلة خاصة مع سائق محترف، {{ car.note }}.</p>
-                    <p class="font-bold text-[#e7c77f]">السعر: {{ car.price }} ريال</p>
+                <div class="mt-2 border-t border-[#a78045]/30 pt-1.5 text-xs leading-5 text-[#eadcc4]">
+                    <p>خدمة خاصة مع سائق، {{ car.note }}.</p>
+                    <p class="font-bold text-[#e7c77f]">السعر: {{ car.price }} ريال، {{ car.note }}.</p>
                 </div>
                 } @else {
                 <div class="min-h-[32px]"></div>
@@ -134,13 +133,13 @@
                 <div class="mt-auto flex gap-2 border-t border-white/10 pt-2.5">
                     <button type="button" (click)="toggleTransferDetails(car.key)"
                         [attr.aria-expanded]="activeTransfer() === car.key"
-                        class="flex-1 rounded-lg border border-[#b48a45]/70 bg-[#b48a45]/10 px-2 py-2 text-[9px] font-bold text-[#f0cf8a] transition hover:bg-[#b48a45]/25">
-                        {{ activeTransfer() === car.key ? 'إخفاء' : 'التفاصيل' }}
+                        class="flex-1 rounded-lg border border-[#b48a45]/70 bg-[#b48a45]/10 px-2 py-2 text-xs font-bold text-[#f0cf8a] transition hover:bg-[#b48a45]/25">
+                        {{ activeTransfer() === car.key ? 'إخفاء التفاصيل' : 'عرض التفاصيل' }}
                     </button>
                     <button type="button" (click)="openBookingModal(car.key, 'transfer')"
                         [attr.aria-label]="'احجز ' + car.name"
-                        class="flex-1 rounded-lg bg-gradient-to-r from-[#d4ad67] to-[#e7c77f] px-2 py-2 text-[9px] font-black text-[#21180d] transition hover:brightness-110 shadow">
-                        احجز الآن
+                        class="flex-1 rounded-lg bg-gradient-to-r from-[#d4ad67] to-[#e7c77f] px-2 py-2 text-xs font-black text-[#21180d] transition hover:brightness-110 shadow">
+                        ابدأ طلب السيارة
                     </button>
                 </div>
             </article>
@@ -156,9 +155,9 @@
         [class.order-5]="sectionPos('fleet') === 5" [class.order-6]="sectionPos('fleet') === 6">
 
         <div class="mb-5 text-center sm:mb-6">
-            <span class="text-[10px] font-bold tracking-[0.18em] text-[#d8b66e]">ROYALRIDE SERVICES</span>
+            <span class="text-xs font-bold tracking-[0.18em] text-[#d8b66e]">ROYALRIDE SERVICES</span>
             <h1 class="mt-2 text-2xl font-black text-[#dab878] sm:text-4xl">التأجير بالساعة / اليوم الكامل</h1>
-            <p class="mt-2 text-xs font-bold text-[#bfad91]">خدمة التأجير مع سائق خاص (بالساعة / يوم كامل 12 ساعة)</p>
+            <p class="mt-2 text-sm font-bold leading-6 text-[#bfad91] sm:text-base">استعرض السيارات وتفاصيلها، ثم اختر السيارة والمدة المناسبة. خدمة التأجير مع سائق خاص بالساعة أو اليوم الكامل (12 ساعة)، مع مراجعة إجمالي السعر شاملاً ضريبة القيمة المضافة 15% قبل إرسال الطلب.</p>
             <div
                 class="mx-auto mt-3 h-1 w-20 rounded-full bg-gradient-to-l from-[#dcb469] to-transparent sm:mt-4 sm:w-24">
             </div>
@@ -194,30 +193,32 @@
 
                 <div class="flex flex-1 flex-col p-3 text-center sm:p-3.5">
                     <h2 class="truncate text-sm font-black text-[#fff3d8]">{{ car.name }}</h2>
-                    <p class="mt-1 text-[10px] text-[#c9b998]">{{ car.note }}</p>
-                    <p class="mt-2 text-xs font-black text-[#e7c77f]"><strong class="text-lg text-[#f4d89a]">{{
-                            car.price }}</strong> ريال</p>
+                    <p class="mt-1 text-sm text-[#c9b998]">{{ car.note }}</p>
+                    <p class="mt-2 text-sm font-black text-[#e7c77f]"><strong class="text-lg text-[#f4d89a]">{{ car.price }}</strong> ريال <span class="text-xs font-normal text-[#c9b998]">لليوم الكامل (12 ساعة)</span></p>
                     @if (activeCar() === car.key) {
-                    <div class="min-h-[56px] border-t border-[#a78045]/30 pt-2 text-[10px] leading-5 text-[#eadcc4]">
+                    <div class="min-h-[56px] border-t border-[#a78045]/30 pt-2 text-sm leading-6 text-[#eadcc4]">
                         <p>{{ car.details }}</p>
-                        <p class="mt-1 font-bold text-[#e7c77f]">اليوم الكامل: {{ car.price }} ريال</p>
+                        <p class="mt-1 font-bold text-[#e7c77f]">سعر اليوم الكامل: {{ car.price }} ريال قبل الضريبة.</p>
                         @if (car.key === 'staria') {
-                        <p class="font-bold text-[#e7c77f]">بالساعة داخل جدة: 100 ريال</p>
+                        <p class="font-bold text-[#e7c77f]">بالساعة داخل جدة: 100 ريال.</p>
                         }
                     </div>
                     } @else {
                     <div class="min-h-[56px]"></div>
                     }
+                    @if (car.key === 'staria') {
+                    <p class="mt-1 text-[10px] font-bold text-[#e7c77f]">بالساعة داخل جدة: 100 ريال</p>
+                    }
                     <div class="mt-auto flex justify-center gap-2 border-t border-white/10 pt-2.5">
                         <button type="button" (click)="toggleDetails(car.key)"
                             [attr.aria-expanded]="activeCar() === car.key"
-                            class="flex-1 rounded-lg border border-[#b48a45]/70 bg-[#b48a45]/10 px-3 py-2 text-[10px] font-bold text-[#f0cf8a] transition hover:border-[#e7c77f] hover:bg-[#b48a45]/25 active:scale-95">
-                            {{ activeCar() === car.key ? 'إخفاء' : 'التفاصيل' }}
+                            class="flex-1 rounded-lg border border-[#b48a45]/70 bg-[#b48a45]/10 px-3 py-2 text-xs font-bold text-[#f0cf8a] transition hover:border-[#e7c77f] hover:bg-[#b48a45]/25 active:scale-95">
+                            {{ activeCar() === car.key ? 'إخفاء التفاصيل' : 'عرض التفاصيل' }}
                         </button>
                         <button type="button" (click)="openBookingModal(car.key, 'hourly')"
-                            [attr.aria-label]="'احجز ' + car.name"
-                            class="flex-1 rounded-lg bg-gradient-to-r from-[#d4ad67] to-[#e7c77f] px-3 py-2 text-[10px] font-black text-[#1c1409] shadow-[0_4px_14px_rgba(212,173,103,.3)] transition hover:brightness-110 active:scale-95">
-                            احجز الآن
+                            [attr.aria-label]="'اختر ' + car.name + ' وتابع تفاصيل الحجز'"
+                            class="flex-1 rounded-lg bg-gradient-to-r from-[#d4ad67] to-[#e7c77f] px-3 py-2 text-xs font-black text-[#1c1409] shadow-[0_4px_14px_rgba(212,173,103,.3)] transition hover:brightness-110 active:scale-95">
+                            اختر السيارة والمدة
                         </button>
                     </div>
                 </div>
@@ -238,7 +239,7 @@
             <div class="absolute inset-0 bg-gradient-to-b from-black/65 via-black/30 to-[#090909]"></div>
             <div
                 class="relative flex min-h-[340px] flex-col items-center justify-center px-4 py-8 text-center sm:min-h-[390px] sm:px-6">
-                <span class="text-[10px] font-bold tracking-[0.2em] text-[#e3bd73]">ABHA TOURS</span>
+                <span class="text-xs font-bold tracking-[0.2em] text-[#e3bd73]">ABHA TOURS</span>
                 <h2 class="mt-3 text-2xl font-black text-[#dab878] sm:text-4xl">{{ content().toursTitle }}</h2>
                 <div
                     class="mx-auto mt-3 h-1 w-20 rounded-full bg-gradient-to-l from-[#dcb469] to-transparent sm:mt-4 sm:w-24">
@@ -247,8 +248,7 @@
                     class="mt-5 max-w-xs rounded-lg border border-[#d4ae64] bg-[#1b1610]/50 px-4 py-3 text-sm font-bold leading-7 text-[#f7ead0] sm:mt-6 sm:max-w-sm sm:px-5 sm:py-4">
                     {{ content().toursText }}</p>
                 <button type="button" (click)="openBookingModal(undefined, 'tour')"
-                    class="mt-4 rounded-md bg-[#d4ad67] px-5 py-2 text-xs font-black text-[#21180d] hover:bg-[#f0cc84] transition shadow-lg sm:mt-5 sm:px-6 sm:py-2.5">احجز
-                    باقة سياحية الآن</button>
+                    class="mt-4 rounded-md bg-[#d4ad67] px-5 py-2 text-sm font-black text-[#21180d] hover:bg-[#f0cc84] transition shadow-lg sm:mt-5 sm:px-6 sm:py-2.5">ابدأ طلب الجولة</button>
             </div>
         </div>
     </section>

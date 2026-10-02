@@ -71,4 +71,8 @@ Section order is shared between the admin layout editor, the site-content API, a
 
 When adding or renaming a section, keep its ID consistent across `SectionId`, the default order, admin labels/icons, the homepage section ID and `sectionPos()` binding. The homepage template uses explicit `order-N` classes: extend the full set of bindings on every top-level section when the supported section count grows, not only on the new section. Verify that the new section remains in the correct place after saving and reloading; the API must support the dedicated section-order endpoint.
 
+The order bindings were completed for all supported sections through `order-6`. This avoids any section falling outside the explicit ordering set when the saved layout is larger than five entries.
+
+Vehicle card thumbnails also follow the final design treatment: each card keeps a 4:3 image frame and uses `object-cover object-bottom` so the lower portion of the car stays visible without cropping the vehicle out of the frame. The click-to-open lightbox behaviour is preserved.
+
 For section-order changes, run `npm run build`. Also verify persistence in the admin UI by moving a section, saving, reloading the page, and confirming both the editor order and homepage order match. This workspace contains the frontend; API behavior may need to be verified in the backend project.

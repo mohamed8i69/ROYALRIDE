@@ -2,6 +2,12 @@
 
 @import 'tailwindcss';
 
+.booking-modal :is([class~="text-[8px]"], [class~="text-[9px]"], [class~="text-[10px]"], [class~="text-[11px]"]),
+.car-lightbox :is([class~="text-[8px]"], [class~="text-[9px]"], [class~="text-[10px]"], [class~="text-[11px]"]) {
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+}
+
 /* ═══════════════════════════════════════════
    TESTIMONIALS — Infinite Marquee Animation
    Technique: two identical halves, translate
@@ -68,8 +74,8 @@
 /* ── Bubble text area ── */
 .testimonial-bubble {
   font-family: inherit;
-  font-size: 0.78rem;
-  line-height: 1.65;
+  font-size: 0.9rem;
+  line-height: 1.7;
   color: #e6d6bc;
   direction: rtl;
   text-align: right;
@@ -110,7 +116,7 @@
 }
 
 .testimonial-name {
-  font-size: 0.72rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: #f4ead8;
   margin: 0;
@@ -136,7 +142,7 @@
   }
 
   .testimonial-bubble {
-    font-size: 0.82rem;
+    font-size: 0.95rem;
   }
 
   .testimonials-inner {
