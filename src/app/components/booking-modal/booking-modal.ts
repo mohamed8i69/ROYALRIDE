@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, signal, computed, inject } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SiteContentService, FleetCar } from '../../services/site-content.service';
@@ -7,7 +7,6 @@ import { OrdersService } from '../../services/orders.service';
 export type ServiceType = 'transfer' | 'hourly' | 'tour';
 export type PeakSeason = 'normal' | 'hajj_umrah' | 'riyadh_season' | 'alula_season';
 export type ScentChoice = 'royal_oud' | 'musk' | 'amber' | 'none';
-export type RefreshmentChoice = 'saudi_coffee' | 'sparkling_water' | 'fresh_juices' | 'water';
 export type DriverLangChoice = 'ar' | 'en' | 'both';
 export type PaymentMethod = 'mada' | 'apple_pay' | 'credit_card' | 'stc_pay' | 'tabby_tamara' | 'corporate_b2b';
 import {
@@ -22,7 +21,6 @@ import {
   LucideFlame,
   LucideCoffee,
   LucideGlassWater,
-  LucideCitrus,
   LucideShieldCheck,
   LucideBadge,
   LucideCreditCard,
@@ -49,7 +47,6 @@ import {
     LucideFlame,
     LucideCoffee,
     LucideGlassWater,
-    LucideCitrus,
     LucideShieldCheck,
     LucideBadge,
     LucideCreditCard,
@@ -63,6 +60,10 @@ import {
   templateUrl: './booking-modal.html',
 })
 export class BookingModal {
+  @ViewChild('bookingScrollArea') private bookingScrollArea?: ElementRef<HTMLElement>;
+  @ViewChild('bookingPriceSummary') private bookingPriceSummary?: ElementRef<HTMLElement>;
+  @ViewChild('bookingAmenitiesSummary') private bookingAmenitiesSummary?: ElementRef<HTMLElement>;
+
   private readonly siteContent = inject(SiteContentService);
   private readonly ordersService = inject(OrdersService);
 
@@ -71,7 +72,7 @@ export class BookingModal {
   }
   @Input() set initialCarKey(key: string | null) {
     if (key) {
-      this.selectedCarKey.set(key);
+      this.selectCar(key);
     }
   }
   @Input() set initialServiceType(type: ServiceType | null) {
@@ -105,7 +106,7 @@ export class BookingModal {
 
   // Step 3: VIP Personalization & Privacy
   readonly cabinScent = signal<ScentChoice>('royal_oud');
-  readonly refreshment = signal<RefreshmentChoice>('saudi_coffee');
+  readonly addCoffeeAndDates = signal<boolean>(false);
   readonly driverLanguage = signal<DriverLangChoice>('ar');
   readonly isDiscreetBooking = signal<boolean>(false);
   readonly welcomePlacardName = signal<string>('سعادة الضيف الكريم');
@@ -118,7 +119,7 @@ export class BookingModal {
 
   // Setters for Template Signal Binding
   setCabinScent(val: ScentChoice): void { this.cabinScent.set(val); }
-  setRefreshment(val: RefreshmentChoice): void { this.refreshment.set(val); }
+  setAddCoffeeAndDates(val: boolean): void { this.addCoffeeAndDates.set(val); }
   setDriverLanguage(val: DriverLangChoice): void { this.driverLanguage.set(val); }
   setPaymentMethod(val: PaymentMethod): void { this.paymentMethod.set(val); }
   setPickupLocation(val: string): void { this.pickupLocation.set(val); }
@@ -136,6 +137,10 @@ export class BookingModal {
 
   // Computed data
   readonly carsList = computed(() => this.siteContent.content().cars);
+  readonly cityOptions = computed(() => {
+    const cities = this.selectedCarObj().availableCities;
+    return cities?.length ? cities : ['جدة', 'مكة المكرمة', 'الرياض', 'أبها', 'العلا', 'البحر الأحمر'];
+  });
 
   readonly selectedCarObj = computed(() => {
     const list = this.carsList();
@@ -145,24 +150,7 @@ export class BookingModal {
 
   // Dynamic Pricing Calculations
   readonly basePrice = computed(() => {
-    const car = this.selectedCarObj();
-    const type = this.serviceType();
-
-    if (type === 'transfer') {
-      const transferItem = this.siteContent.content().transferCars.find((t) => t.key.includes(car.key));
-      return transferItem ? parseInt(transferItem.price, 10) || 300 : 300;
-    } else if (type === 'tour') {
-      if (this.selectedTour().includes('العلا')) return 2800;
-      if (this.selectedTour().includes('أبها')) return 1500;
-      return 1200;
-    } else {
-      // Hourly
-      const fullDayRate = parseInt(car.price, 10) || 1000;
-      const hours = this.selectedHours();
-      if (hours === 4) return Math.round(fullDayRate * 0.45);
-      if (hours === 8) return Math.round(fullDayRate * 0.75);
-      return fullDayRate; // 12 hours
-    }
+    return this.basePriceForCar(this.selectedCarObj());
   });
 
   readonly peakMultiplier = computed(() => {
@@ -181,7 +169,7 @@ export class BookingModal {
   });
 
   readonly subtotal = computed(() => {
-    return this.basePrice() + this.surgeAmount();
+    return this.basePrice() + this.surgeAmount() + (this.addCoffeeAndDates() ? 25 : 0);
   });
 
   readonly vatAmount = computed(() => {
@@ -191,6 +179,48 @@ export class BookingModal {
   readonly totalPrice = computed(() => {
     return this.subtotal() + this.vatAmount();
   });
+
+  selectPeakSeason(season: PeakSeason): void {
+    this.peakSeason.set(season);
+  }
+
+  estimatedTotalForCar(car: FleetCar): number {
+    const base = this.basePriceForCar(car);
+    const peakAmount = Math.round(base * (this.peakMultiplier() - 1));
+    const subtotal = base + peakAmount + (this.addCoffeeAndDates() ? 25 : 0);
+    return subtotal + Math.round(subtotal * 0.15);
+  }
+
+  priceBasisForCar(car: FleetCar): string {
+    if (this.serviceType() === 'transfer') {
+      return this.transferItemForCar(car)?.note || 'سعر الرحلة حسب المسار';
+    }
+    if (this.serviceType() === 'tour') {
+      return `حسب الباقة: ${this.selectedTour()}`;
+    }
+    return `${this.selectedHours()} ساعة مع السائق`;
+  }
+
+  private basePriceForCar(car: FleetCar): number {
+    if (this.serviceType() === 'transfer') {
+      return parseInt(this.transferItemForCar(car)?.price || '', 10) || 300;
+    }
+    if (this.serviceType() === 'tour') {
+      if (this.selectedTour().includes('العلا')) return 2800;
+      if (this.selectedTour().includes('أبها')) return 1500;
+      return 1200;
+    }
+
+    const fullDayRate = parseInt(car.price, 10) || 1000;
+    if (this.selectedHours() === 4) return Math.round(fullDayRate * 0.45);
+    if (this.selectedHours() === 8) return Math.round(fullDayRate * 0.75);
+    return fullDayRate;
+  }
+
+  private transferItemForCar(car: FleetCar) {
+    const transferKey = `transfer-${car.key.replace('transfer-', '')}`;
+    return this.siteContent.content().transferCars.find((item) => item.key === transferKey);
+  }
 
   readonly bookingRef = computed(() => {
     return 'ROYAL-' + Math.floor(100000 + Math.random() * 900000);
@@ -204,6 +234,7 @@ export class BookingModal {
   setStep(step: number): void {
     if (step >= 1 && step <= 5) {
       this.currentStep.set(step);
+      this.scrollStepToTop();
     }
   }
 
@@ -232,6 +263,7 @@ export class BookingModal {
       pricing: {
         basePrice: this.basePrice(),
         surgeAmount: this.surgeAmount(),
+        hospitalityAddon: this.addCoffeeAndDates() ? 25 : 0,
         subtotal: this.subtotal(),
         vatAmount: this.vatAmount(),
         totalPrice: this.totalPrice(),
@@ -254,20 +286,64 @@ export class BookingModal {
   nextStep(): void {
     if (this.currentStep() < 4) {
       this.currentStep.update((s) => s + 1);
+      this.scrollStepToTop();
     } else if (this.currentStep() === 4) {
       void this.submitOrder('direct');
       this.currentStep.set(5); // Receipt view
+      this.scrollStepToTop();
     }
   }
 
   prevStep(): void {
     if (this.currentStep() > 1) {
       this.currentStep.update((s) => s - 1);
+      this.scrollStepToTop();
     }
+  }
+
+  private scrollStepToTop(): void {
+    window.requestAnimationFrame(() => {
+      const scrollArea = this.bookingScrollArea?.nativeElement;
+      if (!scrollArea) return;
+
+      scrollArea.scrollTo({
+        top: 0,
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      });
+    });
   }
 
   selectCar(key: string): void {
     this.selectedCarKey.set(key);
+    const selectedCar = this.carsList().find((car) => car.key === key.replace('transfer-', ''));
+    const availableCities = selectedCar?.availableCities;
+    if (availableCities?.length && !availableCities.includes(this.selectedCity())) {
+      this.selectedCity.set(availableCities[0]);
+    }
+  }
+
+  selectCarAndShowPrice(key: string): void {
+    this.selectCar(key);
+    this.scrollToPriceSummary();
+  }
+
+  private scrollToPriceSummary(): void {
+    window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
+      const scrollArea = this.bookingScrollArea?.nativeElement;
+      const priceSummary = this.currentStep() === 3
+        ? this.bookingAmenitiesSummary?.nativeElement
+        : this.bookingPriceSummary?.nativeElement;
+      if (!scrollArea || !priceSummary) return;
+
+      const areaTop = scrollArea.getBoundingClientRect().top;
+      const summaryTop = priceSummary.getBoundingClientRect().top;
+      const targetTop = scrollArea.scrollTop + summaryTop - areaTop - 16;
+      const maxScrollTop = scrollArea.scrollHeight - scrollArea.clientHeight;
+      scrollArea.scrollTo({
+        top: Math.max(0, Math.min(targetTop, maxScrollTop)),
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      });
+    }));
   }
 
   onWhatsAppClick(): void {
@@ -323,12 +399,9 @@ export class BookingModal {
   }
 
   getRefreshmentLabel(): string {
-    switch (this.refreshment()) {
-      case 'saudi_coffee': return 'القهوة السعودية والتمور الفاخرة ☕';
-      case 'sparkling_water': return 'ماء فوار بارد 🧊';
-      case 'fresh_juices': return 'عصائر طازجة 🍊';
-      default: return 'مياه معدنية فاخرة 💧';
-    }
+    return this.addCoffeeAndDates()
+      ? 'مياه مجانية + قهوة عربية وتمور (+25 ريال)'
+      : 'مياه مجانية';
   }
 
   getPaymentLabel(): string {

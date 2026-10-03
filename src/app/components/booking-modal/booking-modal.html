@@ -19,7 +19,7 @@
     </div>
 
     <!-- Wizard Step Progress Indicator -->
-    <div class="grid grid-cols-4 border-b border-[#3d3227] bg-[#0c0a08] text-center text-[10px] sm:text-xs font-bold">
+    <div class="grid grid-cols-2 sm:grid-cols-5 border-b border-[#3d3227] bg-[#0c0a08] text-center text-xs font-bold">
       <button type="button" (click)="setStep(1)" [class.bg-[#d4ad67]/20]="currentStep() === 1" [class.text-[#f2d08a]]="currentStep() === 1" class="py-3 px-1 border-l border-[#3d3227] transition flex flex-col sm:flex-row items-center justify-center gap-1">
         <span class="flex size-5 items-center justify-center rounded-full bg-[#d4ad67]/20 text-[9px]">1</span>
         <span>الخدمة والمسار</span>
@@ -32,14 +32,18 @@
         <span class="flex size-5 items-center justify-center rounded-full bg-[#d4ad67]/20 text-[9px]">3</span>
         <span>الرفاهية والسرية</span>
       </button>
-      <button type="button" (click)="setStep(4)" [class.bg-[#d4ad67]/20]="currentStep() >= 4" [class.text-[#f2d08a]]="currentStep() >= 4" class="py-3 px-1 transition flex flex-col sm:flex-row items-center justify-center gap-1">
+      <button type="button" (click)="setStep(4)" [class.bg-[#d4ad67]/20]="currentStep() === 4" [class.text-[#f2d08a]]="currentStep() === 4" class="py-3 px-1 transition flex flex-col sm:flex-row items-center justify-center gap-1">
         <span class="flex size-5 items-center justify-center rounded-full bg-[#d4ad67]/20 text-[9px]">4</span>
         <span>الضيف والدفع</span>
+      </button>
+      <button type="button" (click)="setStep(5)" [class.bg-[#d4ad67]/20]="currentStep() === 5" [class.text-[#f2d08a]]="currentStep() === 5" class="py-3 px-1 transition flex flex-col sm:flex-row items-center justify-center gap-1">
+        <span class="flex size-5 items-center justify-center rounded-full bg-[#d4ad67]/20 text-[9px]">5</span>
+        <span>الفاتورة والتأكيد</span>
       </button>
     </div>
 
     <!-- Modal Content Body -->
-    <div class="p-5 sm:p-7 max-h-[72vh] overflow-y-auto">
+    <div #bookingScrollArea class="booking-scroll-area p-5 sm:p-7 max-h-[72vh] overflow-y-auto">
 
       <!-- STEP 1: Service Type & Route -->
       @if (currentStep() === 1) {
@@ -69,7 +73,7 @@
         <div>
           <label class="block text-xs font-bold text-[#d8b66e] mb-2">2. المدينة الرئيسية:</label>
           <div class="flex flex-wrap gap-2">
-            @for (city of ['جدة', 'مكة المكرمة', 'الرياض', 'أبها', 'العلا', 'البحر الأحمر']; track city) {
+            @for (city of cityOptions(); track city) {
             <button type="button" (click)="selectedCity.set(city)" [class.bg-[#d4ad67]]="selectedCity() === city" [class.text-[#120f0c]]="selectedCity() === city" [class.font-black]="selectedCity() === city" class="rounded-lg border border-[#4d3f30] bg-[#17130f] px-3.5 py-2 text-xs text-[#e8d7ba] hover:border-[#d4ad67] transition">
               {{ city }}
             </button>
@@ -169,19 +173,31 @@
       <div class="space-y-6">
         <div>
           <label class="block text-xs font-bold text-[#d8b66e] mb-2">1. اختر السيارة المطلوبة:</label>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div class="mt-4 grid grid-cols-2 gap-4 sm:mt-6 sm:grid-cols-3 sm:gap-5
+            lg:mx-auto lg:max-w-6xl lg:grid-cols-[repeat(3,minmax(0,320px))]
+            lg:justify-between lg:gap-x-6 lg:gap-y-10 lg:px-4">
             @for (car of carsList(); track car.key) {
-            <div (click)="selectCar(car.key)" [class.border-[#d4ad67]]="selectedCarKey() === car.key" [class.bg-[#d4ad67]/15]="selectedCarKey() === car.key" class="cursor-pointer rounded-xl border border-[#4d3f30] bg-[#15120e] overflow-hidden transition hover:border-[#d4ad67]/60 group">
-              <div class="h-32 w-full bg-gradient-to-b from-[#251e16] to-[#0d0b09] flex items-center justify-center p-2 relative">
+            <div (click)="selectCarAndShowPrice(car.key)" [class.border-[#d4ad67]]="selectedCarKey() === car.key" [class.bg-[#d4ad67]/15]="selectedCarKey() === car.key" class="cursor-pointer rounded-lg border border-[#4d3f30] bg-[#15120e] overflow-hidden transition hover:border-[#d4ad67]/60 group">
+              <div class="relative aspect-[4/3] w-full bg-gradient-to-b from-[#251e16] to-[#0d0b09] flex items-center justify-center p-2">
+                @if (car.image) {
                 <img [src]="car.image" [alt]="car.name" class="h-full w-full object-contain transition duration-300 group-hover:scale-105">
+                } @else {
+                <span class="text-center text-xs text-[#a8977d]">ستُضاف صور السيارة قريباً</span>
+                }
+                @if (car.number) {
                 <span class="absolute top-2 right-2 rounded-full bg-black/70 border border-[#d4ad67]/40 px-2 py-0.5 text-[9px] font-bold text-[#e7c77f]">
                   {{ car.number }} مقاعد
                 </span>
+                }
               </div>
-              <div class="p-3 text-right">
-                <h3 class="font-black text-sm text-[#f7ead0]">{{ car.name }}</h3>
-                <p class="text-[10px] text-[#bba789] mt-0.5 truncate">{{ car.note }}</p>
-                <p class="text-xs font-black text-[#e7c77f] mt-2">{{ car.price }} ريال <span class="text-[9px] font-normal text-[#9e8d75]">/ اليوم</span></p>
+              <div class="p-2 text-right sm:p-3">
+                <h3 class="truncate font-black text-xs text-[#f7ead0] sm:text-sm">{{ car.name }}</h3>
+                <p class="text-[10px] text-[#bba789] mt-0.5">{{ priceBasisForCar(car) }}</p>
+                <p class="text-lg font-black text-[#e7c77f] mt-2">{{ estimatedTotalForCar(car) }} ريال</p>
+                <p class="text-[10px] text-[#c9b998]">المبلغ المتوقع شامل ضريبة القيمة المضافة</p>
+                @if (addCoffeeAndDates()) {
+                <p class="mt-1 text-[10px] text-[#c9b998]">يشمل إضافة القهوة والتمر</p>
+                }
               </div>
             </div>
             }
@@ -192,19 +208,19 @@
         <div class="rounded-xl border border-[#3d3227] bg-[#14100c] p-4">
           <label class="block text-xs font-bold text-[#d8b66e] mb-2">2. معامل مواسم الذروة (Dynamic Peak Surge Engine):</label>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <button type="button" (click)="peakSeason.set('normal')" [class.border-[#d4ad67]]="peakSeason() === 'normal'" [class.bg-[#d4ad67]/20]="peakSeason() === 'normal'" class="rounded-lg border border-[#4d3f30] bg-[#0e0c0a] p-2 text-center text-xs text-[#e8d7ba]">
+            <button type="button" (click)="selectPeakSeason('normal')" [class.border-[#d4ad67]]="peakSeason() === 'normal'" [class.bg-[#d4ad67]/20]="peakSeason() === 'normal'" class="rounded-lg border border-[#4d3f30] bg-[#0e0c0a] p-2 text-center text-xs text-[#e8d7ba]">
               <span class="block font-bold">موسم عادي</span>
               <span class="text-[9px] text-emerald-400">بدون زيادة (1.0x)</span>
             </button>
-            <button type="button" (click)="peakSeason.set('hajj_umrah')" [class.border-[#d4ad67]]="peakSeason() === 'hajj_umrah'" [class.bg-[#d4ad67]/20]="peakSeason() === 'hajj_umrah'" class="rounded-lg border border-[#4d3f30] bg-[#0e0c0a] p-2 text-center text-xs text-[#e8d7ba]">
+            <button type="button" (click)="selectPeakSeason('hajj_umrah')" [class.border-[#d4ad67]]="peakSeason() === 'hajj_umrah'" [class.bg-[#d4ad67]/20]="peakSeason() === 'hajj_umrah'" class="rounded-lg border border-[#4d3f30] bg-[#0e0c0a] p-2 text-center text-xs text-[#e8d7ba]">
               <span class="block font-bold">الحج والعمرة</span>
               <span class="text-[9px] text-[#d4ad67]">(+25%)</span>
             </button>
-            <button type="button" (click)="peakSeason.set('riyadh_season')" [class.border-[#d4ad67]]="peakSeason() === 'riyadh_season'" [class.bg-[#d4ad67]/20]="peakSeason() === 'riyadh_season'" class="rounded-lg border border-[#4d3f30] bg-[#0e0c0a] p-2 text-center text-xs text-[#e8d7ba]">
+            <button type="button" (click)="selectPeakSeason('riyadh_season')" [class.border-[#d4ad67]]="peakSeason() === 'riyadh_season'" [class.bg-[#d4ad67]/20]="peakSeason() === 'riyadh_season'" class="rounded-lg border border-[#4d3f30] bg-[#0e0c0a] p-2 text-center text-xs text-[#e8d7ba]">
               <span class="block font-bold">موسم الرياض</span>
               <span class="text-[9px] text-[#d4ad67]">(+20%)</span>
             </button>
-            <button type="button" (click)="peakSeason.set('alula_season')" [class.border-[#d4ad67]]="peakSeason() === 'alula_season'" [class.bg-[#d4ad67]/20]="peakSeason() === 'alula_season'" class="rounded-lg border border-[#4d3f30] bg-[#0e0c0a] p-2 text-center text-xs text-[#e8d7ba]">
+            <button type="button" (click)="selectPeakSeason('alula_season')" [class.border-[#d4ad67]]="peakSeason() === 'alula_season'" [class.bg-[#d4ad67]/20]="peakSeason() === 'alula_season'" class="rounded-lg border border-[#4d3f30] bg-[#0e0c0a] p-2 text-center text-xs text-[#e8d7ba]">
               <span class="block font-bold">موسم العلا</span>
               <span class="text-[9px] text-[#d4ad67]">(+30%)</span>
             </button>
@@ -212,13 +228,19 @@
         </div>
 
         <!-- Live Dynamic Price Calculation Box -->
-        <div class="rounded-xl border border-[#d4ad67]/60 bg-gradient-to-r from-[#201911] via-[#17120d] to-[#0f0c09] p-5 shadow-xl">
-          <h4 class="text-xs font-bold tracking-wider text-[#d8b66e] uppercase mb-3">حاسبة التسعير المباشرة (Real-Time Pricing)</h4>
+        <div #bookingPriceSummary class="booking-price-summary rounded-xl border border-[#d4ad67]/60 bg-gradient-to-r from-[#201911] via-[#17120d] to-[#0f0c09] p-5 shadow-xl">
+          <h4 class="text-xs font-bold tracking-wider text-[#d8b66e] mb-3">تفاصيل السعر</h4>
           <div class="space-y-2 text-xs text-[#d9c8aa]">
             <div class="flex justify-between border-b border-[#3d3227] pb-2">
               <span>السعر الأساسي للمركبة المختارة:</span>
               <span class="font-bold text-[#f4ead8]">{{ basePrice() }} ريال</span>
             </div>
+            @if (addCoffeeAndDates()) {
+            <div class="flex justify-between border-b border-[#3d3227] pb-2 text-[#e7c77f]">
+              <span>قهوة عربية وتمور:</span>
+              <span class="font-bold">25 ريال</span>
+            </div>
+            }
             @if (surgeAmount() > 0) {
             <div class="flex justify-between border-b border-[#3d3227] pb-2 text-[#e7c77f]">
               <span>معامل مواسم الذروة (+{{ (peakMultiplier() - 1) * 100 | number:'1.0-0' }}%):</span>
@@ -240,11 +262,11 @@
 
       <!-- STEP 3: VIP Amenities & Discretion -->
       @if (currentStep() === 3) {
-      <div class="space-y-6">
-        <div>
+      <div class="space-y-7">
+        <div class="rounded-xl border border-[#3d3227] bg-[#14100c]/60 p-5 sm:p-6">
           <h3 class="text-sm font-black text-[#f7ead0] mb-1 flex items-center gap-1.5">
             <svg lucideSparkles class="w-4 h-4 text-[#d8b66e]"></svg>
-            <span>تخصيص رفاهية الكابينة (In-Cabin VIP Personalization)</span>
+            <span>خيارات الراحة والضيافة</span>
           </h3>
           <p class="text-xs text-[#a8977d] mb-4">اضبط التفاصيل الدقيقة داخل السيارة قبل وصولها لضمان أقصى درجات الراحة والرفاهية.</p>
 
@@ -252,37 +274,46 @@
             <!-- Cabin Scent -->
             <div>
               <label class="block text-xs font-bold text-[#d8b66e] mb-2">نوع المعطر المفضل:</label>
-              <div class="space-y-2">
-                <label class="flex items-center gap-2 p-2.5 rounded-lg border border-[#4d3f30] bg-[#15120e] cursor-pointer text-xs text-[#e8d7ba]">
-                  <input type="radio" name="scent" value="royal_oud" [ngModel]="cabinScent()" (ngModelChange)="setCabinScent($event)" class="accent-[#d4ad67]">
-                  <span class="flex items-center gap-1.5"><svg lucideFlower2 class="w-3.5 h-3.5 text-[#d8b66e]"></svg> العود الملكي (Royal Oud)</span>
+              <div class="space-y-3">
+                <label class="flex items-center justify-between gap-3 p-3 rounded-lg border border-[#4d3f30] bg-[#15120e] cursor-pointer text-sm text-[#e8d7ba]" dir="rtl">
+                  <span class="shrink-0 rounded-full border border-[#d4ad67]/30 px-2.5 py-1 text-xs text-[#d8b66e]">مجاني</span>
+                  <span class="flex items-center gap-2">
+                    <input type="radio" name="scent" value="royal_oud" [ngModel]="cabinScent()" (ngModelChange)="setCabinScent($event)" class="accent-[#d4ad67]">
+                    <span class="flex items-center gap-1.5"><svg lucideFlower2 class="w-4 h-4 text-[#d8b66e]"></svg> العود الملكي</span>
+                  </span>
                 </label>
-                <label class="flex items-center gap-2 p-2.5 rounded-lg border border-[#4d3f30] bg-[#15120e] cursor-pointer text-xs text-[#e8d7ba]">
-                  <input type="radio" name="scent" value="musk" [ngModel]="cabinScent()" (ngModelChange)="setCabinScent($event)" class="accent-[#d4ad67]">
-                  <span class="flex items-center gap-1.5"><svg lucideFlower2 class="w-3.5 h-3.5 text-[#d8b66e]"></svg> المسك الأبيض (White Musk)</span>
+                <label class="flex items-center justify-between gap-3 p-3 rounded-lg border border-[#4d3f30] bg-[#15120e] cursor-pointer text-sm text-[#e8d7ba]" dir="rtl">
+                  <span class="shrink-0 rounded-full border border-[#d4ad67]/30 px-2.5 py-1 text-xs text-[#d8b66e]">مجاني</span>
+                  <span class="flex items-center gap-2">
+                    <input type="radio" name="scent" value="musk" [ngModel]="cabinScent()" (ngModelChange)="setCabinScent($event)" class="accent-[#d4ad67]">
+                    <span class="flex items-center gap-1.5"><svg lucideFlower2 class="w-4 h-4 text-[#d8b66e]"></svg> المسك الأبيض</span>
+                  </span>
                 </label>
-                <label class="flex items-center gap-2 p-2.5 rounded-lg border border-[#4d3f30] bg-[#15120e] cursor-pointer text-xs text-[#e8d7ba]">
-                  <input type="radio" name="scent" value="amber" [ngModel]="cabinScent()" (ngModelChange)="setCabinScent($event)" class="accent-[#d4ad67]">
-                  <span class="flex items-center gap-1.5"><svg lucideFlame class="w-3.5 h-3.5 text-[#d8b66e]"></svg> العنبر الفاخر (Luxurious Amber)</span>
+                <label class="flex items-center justify-between gap-3 p-3 rounded-lg border border-[#4d3f30] bg-[#15120e] cursor-pointer text-sm text-[#e8d7ba]" dir="rtl">
+                  <span class="shrink-0 rounded-full border border-[#d4ad67]/30 px-2.5 py-1 text-xs text-[#d8b66e]">مجاني</span>
+                  <span class="flex items-center gap-2">
+                    <input type="radio" name="scent" value="amber" [ngModel]="cabinScent()" (ngModelChange)="setCabinScent($event)" class="accent-[#d4ad67]">
+                    <span class="flex items-center gap-1.5"><svg lucideFlame class="w-4 h-4 text-[#d8b66e]"></svg> العنبر الفاخر</span>
+                  </span>
                 </label>
               </div>
             </div>
 
             <!-- Refreshments -->
             <div>
-              <label class="block text-xs font-bold text-[#d8b66e] mb-2">الضيافة والمشروبات:</label>
-              <div class="space-y-2">
-                <label class="flex items-center gap-2 p-2.5 rounded-lg border border-[#4d3f30] bg-[#15120e] cursor-pointer text-xs text-[#e8d7ba]">
-                  <input type="radio" name="refresh" value="saudi_coffee" [ngModel]="refreshment()" (ngModelChange)="setRefreshment($event)" class="accent-[#d4ad67]">
-                  <span class="flex items-center gap-1.5"><svg lucideCoffee class="w-3.5 h-3.5 text-[#d8b66e]"></svg> القهوة السعودية والتمور الفاخرة</span>
-                </label>
-                <label class="flex items-center gap-2 p-2.5 rounded-lg border border-[#4d3f30] bg-[#15120e] cursor-pointer text-xs text-[#e8d7ba]">
-                  <input type="radio" name="refresh" value="sparkling_water" [ngModel]="refreshment()" (ngModelChange)="setRefreshment($event)" class="accent-[#d4ad67]">
-                  <span class="flex items-center gap-1.5"><svg lucideGlassWater class="w-3.5 h-3.5 text-[#d8b66e]"></svg> ماء فوار بارد + مياه معدنية</span>
-                </label>
-                <label class="flex items-center gap-2 p-2.5 rounded-lg border border-[#4d3f30] bg-[#15120e] cursor-pointer text-xs text-[#e8d7ba]">
-                  <input type="radio" name="refresh" value="fresh_juices" [ngModel]="refreshment()" (ngModelChange)="setRefreshment($event)" class="accent-[#d4ad67]">
-                  <span class="flex items-center gap-1.5"><svg lucideCitrus class="w-3.5 h-3.5 text-[#d8b66e]"></svg> عصيرات طازجة فاخرة</span>
+              <label class="block text-xs font-bold text-[#d8b66e] mb-2">الضيافة:</label>
+              <div class="space-y-3">
+                <div class="flex items-center justify-between gap-3 p-3 rounded-lg border border-[#4d3f30] bg-[#15120e] text-sm text-[#e8d7ba]" dir="rtl">
+                  <span class="shrink-0 rounded-full border border-emerald-500/30 px-2.5 py-1 text-xs text-emerald-300">مجاني</span>
+                  <span class="flex items-center gap-2"><svg lucideGlassWater class="w-4 h-4 text-[#d8b66e]"></svg> مياه شرب</span>
+                </div>
+                <label class="flex items-center justify-between gap-3 p-3 rounded-lg border border-[#d4ad67]/50 bg-[#21190f] cursor-pointer text-sm text-[#e8d7ba]" dir="rtl">
+                  <span class="shrink-0 rounded-full bg-[#d4ad67] px-2.5 py-1 text-xs font-bold text-[#17120c]">+25 ريال</span>
+                  <span class="flex items-center gap-2">
+                    <input type="checkbox" [ngModel]="addCoffeeAndDates()" (ngModelChange)="setAddCoffeeAndDates($event)" class="accent-[#d4ad67]">
+                    <svg lucideCoffee class="w-4 h-4 text-[#d8b66e]"></svg>
+                    <span>قهوة عربية وتمور</span>
+                  </span>
                 </label>
               </div>
             </div>
@@ -291,40 +322,49 @@
 
         <!-- Driver Preferred Language -->
         <div>
-          <label class="block text-xs font-bold text-[#d8b66e] mb-2">لغة السائق المفضلة (Chauffeur Language):</label>
-          <div class="flex gap-3">
-            <button type="button" (click)="setDriverLanguage('ar')" [class.bg-[#d4ad67]]="driverLanguage() === 'ar'" [class.text-[#120f0c]]="driverLanguage() === 'ar'" [class.font-black]="driverLanguage() === 'ar'" class="rounded-lg border border-[#4d3f30] bg-[#15120e] px-4 py-2 text-xs text-[#e8d7ba] hover:border-[#d4ad67] flex items-center gap-1.5">
-              <svg lucideBadge class="w-3.5 h-3.5 text-[#d8b66e]"></svg>
-              <span>السائق عربي</span>
+          <label class="block text-xs font-bold text-[#d8b66e] mb-2">لغة السائق المفضلة:</label>
+          <div class="grid gap-3 sm:grid-cols-2">
+            <button type="button" (click)="setDriverLanguage('ar')" [class.bg-[#d4ad67]]="driverLanguage() === 'ar'" [class.text-[#120f0c]]="driverLanguage() === 'ar'" [class.font-black]="driverLanguage() === 'ar'" class="rounded-lg border border-[#4d3f30] bg-[#15120e] px-4 py-3 text-sm text-[#e8d7ba] hover:border-[#d4ad67] flex items-center justify-between gap-2" dir="rtl">
+              <span class="flex items-center gap-2"><svg lucideBadge class="w-4 h-4 text-[#d8b66e]"></svg> السائق عربي</span>
+              <span class="text-xs text-[#d8b66e]">مجاني</span>
             </button>
-            <button type="button" (click)="setDriverLanguage('en')" [class.bg-[#d4ad67]]="driverLanguage() === 'en'" [class.text-[#120f0c]]="driverLanguage() === 'en'" [class.font-black]="driverLanguage() === 'en'" class="rounded-lg border border-[#4d3f30] bg-[#15120e] px-4 py-2 text-xs text-[#e8d7ba] hover:border-[#d4ad67] flex items-center gap-1.5">
-              <svg lucideBadge class="w-3.5 h-3.5 text-[#d8b66e]"></svg>
-              <span>English Speaking</span>
+            <button type="button" (click)="setDriverLanguage('en')" [class.bg-[#d4ad67]]="driverLanguage() === 'en'" [class.text-[#120f0c]]="driverLanguage() === 'en'" [class.font-black]="driverLanguage() === 'en'" class="rounded-lg border border-[#4d3f30] bg-[#15120e] px-4 py-3 text-sm text-[#e8d7ba] hover:border-[#d4ad67] flex items-center justify-between gap-2" dir="rtl">
+              <span class="flex items-center gap-2"><svg lucideBadge class="w-4 h-4 text-[#d8b66e]"></svg> السائق يتحدث الإنجليزية</span>
+              <span class="text-xs text-[#d8b66e]">مجاني</span>
             </button>
           </div>
         </div>
 
         <!-- VVIP Discreet Booking & Airport Placard -->
-        <div class="rounded-xl border border-[#d4ad67]/30 bg-[#15120e] p-4 space-y-4">
+        <div class="rounded-xl border border-[#d4ad67]/30 bg-[#15120e] p-5 sm:p-6 space-y-5">
           <div>
-            <label class="flex items-center gap-2 text-xs font-bold text-[#e8d7ba] cursor-pointer">
-              <input type="checkbox" [ngModel]="isDiscreetBooking()" (ngModelChange)="setIsDiscreetBooking($event)" class="size-4 rounded accent-[#d4ad67]">
-              <span class="flex items-center gap-1.5">
+            <label class="flex items-center justify-between gap-3 text-sm font-bold text-[#e8d7ba] cursor-pointer" dir="rtl">
+              <span class="shrink-0 rounded-full border border-[#d4ad67]/30 px-2.5 py-1 text-xs text-[#d8b66e]">مجاني</span>
+              <span class="flex items-center gap-2">
+                <input type="checkbox" [ngModel]="isDiscreetBooking()" (ngModelChange)="setIsDiscreetBooking($event)" class="size-4 rounded accent-[#d4ad67]">
                 <svg lucideShieldCheck class="w-4 h-4 text-[#d8b66e]"></svg>
-                <span>نظام الحجز السري والخاص (VVIP Discreet Booking)</span>
+                <span>الحجز السري والخاص</span>
               </span>
             </label>
             <p class="text-[10px] text-[#a8977d] mt-1 mr-6">حماية خصوصية الشخصيات الهامة، حيث يتم إخفاء أسماء الضيوف ورقم اللوحة وتوفير تواصل مشفر.</p>
           </div>
 
           <div class="border-t border-[#3d3227] pt-3">
-            <label class="block text-xs font-bold text-[#c4b193] mb-1 flex items-center gap-1.5">
-              <svg lucideBadge class="w-4 h-4 text-[#d8b66e]"></svg>
-              <span>لوحة الاستقبال الترحيبية بالمطار (Airport Welcome Placard):</span>
+            <label class="flex items-center justify-between gap-3 text-sm font-bold text-[#c4b193] mb-2" dir="rtl">
+              <span class="shrink-0 rounded-full border border-[#d4ad67]/30 px-2.5 py-1 text-xs text-[#d8b66e]">بدون رسوم إضافية</span>
+              <span class="flex items-center gap-1.5"><svg lucideBadge class="w-4 h-4 text-[#d8b66e]"></svg> لوحة استقبال المطار</span>
             </label>
             <input type="text" [ngModel]="welcomePlacardName()" (ngModelChange)="setWelcomePlacardName($event)" placeholder="الاسم أو اللقب للوح جهاز iPad الخاص بالسائق" class="w-full rounded-lg border border-[#4d3f30] bg-[#0d0b09] px-3.5 py-2.5 text-xs text-[#f4ead8] focus:border-[#d4ad67] focus:outline-none">
             <p class="text-[10px] text-[#9e8c74] mt-1">يتم عرض هذا الاسم برسوم فاخرة على جهاز iPad الخاص بالسائق في الصالة لتسهيل الترحيب.</p>
           </div>
+        </div>
+
+        <div #bookingAmenitiesSummary class="booking-price-summary flex items-center justify-between gap-4 rounded-xl border border-[#d4ad67]/50 bg-[#21190f] p-5 sm:p-6" dir="rtl">
+          <div>
+            <p class="text-sm font-bold text-[#f4ead8]">الإجمالي الحالي المتوقع</p>
+            <p class="mt-1 text-xs text-[#bda98c]">شامل الضريبة وخيارات الضيافة المحددة</p>
+          </div>
+          <p class="shrink-0 text-2xl font-black text-[#e7c77f]">{{ totalPrice() }} <span class="text-sm">ريال</span></p>
         </div>
       </div>
       }
@@ -420,6 +460,12 @@
               <span>السعر الأساسي:</span>
               <span>{{ basePrice() }} ريال</span>
             </div>
+            @if (addCoffeeAndDates()) {
+            <div class="flex justify-between text-[#e7c77f]">
+              <span>قهوة عربية وتمور:</span>
+              <span>25 ريال</span>
+            </div>
+            }
             @if (surgeAmount() > 0) {
             <div class="flex justify-between text-[#e7c77f]">
               <span>معامل الذروة (+{{ (peakMultiplier() - 1) * 100 | number:'1.0-0' }}%):</span>
