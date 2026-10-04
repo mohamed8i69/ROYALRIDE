@@ -172,7 +172,7 @@
                   <td class="p-3.5">
                     <span class="font-bold text-[#e7c77f] block">{{ order.selectedCar?.name || 'مركبة ملغاة' }}</span>
                     <span class="text-[10px] text-[#b9a88c] block">
-                      {{ order.serviceType === 'transfer' ? 'تنقل: ' + order.selectedCity : order.serviceType === 'hourly' ? 'بالساعة (' + order.selectedHours + 'h)' : 'جولة سياحية' }}
+                      {{ order.serviceType === 'transfer' ? (order.transferMode === 'jeddah_airport' ? 'مطار جدة داخل المدينة' : 'جدة–مكة') : order.serviceType === 'hourly' ? 'بالساعة (' + order.selectedHours + 'h)' : 'جولة سياحية' }}
                     </span>
                   </td>
                   <td class="p-3.5">
@@ -354,7 +354,8 @@
             <!-- Basic Fields -->
             <div class="grid gap-3 sm:grid-cols-2 mb-5">
               <label class="field">اسم السيارة<input [(ngModel)]="car.name"></label>
-              <label class="field">السعر<input [(ngModel)]="car.price"></label>
+              <label class="field">السعر الأساسي / المسار الحالي (ريال)<input [(ngModel)]="car.price"></label>
+              <label class="field">مطار جدة داخل المدينة (ريال)<input [(ngModel)]="car.airportPrice" placeholder="غير متاح"></label>
               <label class="field">نوع الرحلة<input [(ngModel)]="car.note"></label>
             </div>
 
@@ -570,19 +571,16 @@
       </div>
     </div>
 
-    <!-- VIP Comfort Details -->
+    <!-- Booking Privacy -->
     <div class="bg-[#171410] p-4 rounded-xl border border-[#2e261e] space-y-2 text-xs">
       <h4 class="font-bold text-[#d8b66e] text-xs flex items-center gap-1.5">
-        <svg lucideSparkles class="w-4 h-4 text-[#d8b66e]"></svg>
-        <span>تفاصيل الرفاهية والسرية VIP:</span>
+        <svg lucideShield class="w-4 h-4 text-[#d8b66e]"></svg>
+        <span>خيارات السرية:</span>
       </h4>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[#d9c8ab]">
-        <div>• معطر الكابينة: <strong class="text-white">{{ item.vipPreferences?.cabinScent || 'غير محدد' }}</strong></div>
-        <div>• الضيافة: <strong class="text-white">{{ item.vipPreferences?.refreshment || 'غير محدد' }}</strong></div>
-        <div>• لغة السائق: <strong class="text-white">{{ item.vipPreferences?.driverLanguage || 'غير محدد' }}</strong></div>
-        <div>• اسم اللوحة الترحيبية: <strong class="text-white">{{ item.vipPreferences?.welcomePlacardName || 'بدون' }}</strong></div>
-        <div>• حجز سري VVIP: <strong class="text-white">{{ item.vipPreferences?.isDiscreetBooking ? 'نعم (بدون شعارات)' : 'عادي' }}</strong></div>
-      </div>
+      <div class="text-[#d9c8ab]">• الحجز السري: <strong class="text-white">{{ item.vipPreferences?.isDiscreetBooking ? 'مفعّل' : 'غير مفعّل' }}</strong></div>
+      @if (item.vipPreferences?.welcomePlacardName) {
+      <div class="text-[#d9c8ab]">• لوحة استقبال المطار: <strong class="text-white">{{ item.vipPreferences?.welcomePlacardName }}</strong></div>
+      }
       @if (item.specialNotes) {
       <div class="mt-2 pt-2 border-t border-[#3a3024]">
         <span class="text-[#a9987d] block">ملاحظات خاصة:</span>

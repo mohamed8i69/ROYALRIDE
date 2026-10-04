@@ -20,6 +20,7 @@ export interface TransferCar {
   key: string;
   name: string;
   price: string;
+  airportPrice?: string;
   note: string;
   image: string;
   images?: string[];
@@ -64,13 +65,13 @@ const defaultContent: SiteContent = {
     { key: 'staria', name: 'Staria Van', number: 4, price: '800', note: 'اليوم الكامل 12 ساعة · 100 ريال للساعة داخل جدة', details: 'سيارة واسعة للمجموعات؛ اليوم الكامل يشمل 12 ساعة مع السائق.', image: 'WhatsApp Image 2026-09-20 at 7.11.13 AM (3).jpeg', images: ['WhatsApp Image 2026-09-20 at 7.11.13 AM (3).jpeg', 'photo_2026-09-19_14-27-39.jpg', '70772683470.png'] },
   ],
   transferCars: [
-    { key: 'transfer-taurus', name: 'فورد تورس', price: '250', note: 'اتجاه واحد', image: 'photo_2026-09-19_14-27-45.jpg', images: ['photo_2026-09-19_14-27-45.jpg', 'hero.jpg'] },
-    { key: 'transfer-lexus', name: 'لكزس', price: '340', note: 'اتجاه واحد', image: 'WhatsApp Image 2026-09-20 at 7.11.13 AM (2).jpeg', images: ['WhatsApp Image 2026-09-20 at 7.11.13 AM (2).jpeg', 'photo_2026-09-19_14-27-42.jpg'] },
-    { key: 'transfer-gmc', name: 'جمس (GMC)', price: '370', note: 'اتجاه واحد', image: 'photo_2026-09-19_14-27-39.jpg', images: ['photo_2026-09-19_14-27-39.jpg', 'Gemini_Generated_Image_qs51tfqs51tfqs51.jpg'] },
+    { key: 'transfer-taurus', name: 'فورد تورس', price: '250', airportPrice: '150', note: 'اتجاه واحد بين جدة ومكة', image: 'photo_2026-09-19_14-27-45.jpg', images: ['photo_2026-09-19_14-27-45.jpg', 'hero.jpg'] },
+    { key: 'transfer-lexus', name: 'لكزس', price: '340', airportPrice: '200', note: 'اتجاه واحد بين جدة ومكة', image: 'WhatsApp Image 2026-09-20 at 7.11.13 AM (2).jpeg', images: ['WhatsApp Image 2026-09-20 at 7.11.13 AM (2).jpeg', 'photo_2026-09-19_14-27-42.jpg'] },
+    { key: 'transfer-gmc', name: 'جمس (GMC)', price: '370', airportPrice: '170', note: 'اتجاه واحد بين جدة ومكة', image: 'photo_2026-09-19_14-27-39.jpg', images: ['photo_2026-09-19_14-27-39.jpg', 'Gemini_Generated_Image_qs51tfqs51tfqs51.jpg'] },
     { key: 'transfer-tahoe', name: 'شفروليه تاهو', price: '370', note: 'اتجاه واحد', image: '', images: [] },
     { key: 'transfer-jetour', name: 'جيتور', price: '270', note: 'اتجاه واحد بين جدة ومكة', image: '', images: [] },
-    { key: 'transfer-sclass', name: 'مرسيدس S Class', price: '1200', note: 'خدمة مع سائق لمدة 12 ساعة', image: 'photo_2026-09-19_14-27-42.jpg', images: ['photo_2026-09-19_14-27-42.jpg', 'WhatsApp Image 2026-09-20 at 7.11.13 AM (2).jpeg'] },
-    { key: 'transfer-staria', name: 'Staria Van', price: '800', note: 'خدمة مع سائق لمدة 12 ساعة', image: 'WhatsApp Image 2026-09-20 at 7.11.13 AM (3).jpeg', images: ['WhatsApp Image 2026-09-20 at 7.11.13 AM (3).jpeg', 'photo_2026-09-19_14-27-39.jpg'] },
+    { key: 'transfer-sclass', name: 'مرسيدس S Class', price: '1200', airportPrice: '550', note: 'خدمة مع سائق لمدة 12 ساعة', image: 'photo_2026-09-19_14-27-42.jpg', images: ['photo_2026-09-19_14-27-42.jpg', 'WhatsApp Image 2026-09-20 at 7.11.13 AM (2).jpeg'] },
+    { key: 'transfer-staria', name: 'Staria Van', price: '800', airportPrice: '160', note: 'خدمة مع سائق لمدة 12 ساعة', image: 'WhatsApp Image 2026-09-20 at 7.11.13 AM (3).jpeg', images: ['WhatsApp Image 2026-09-20 at 7.11.13 AM (3).jpeg', 'photo_2026-09-19_14-27-39.jpg'] },
   ],
 };
 
@@ -186,7 +187,10 @@ export class SiteContentService {
           ...structuredClone(defaultContent),
           ...remote,
           cars: normalizeCarImages(remote.cars, defaultContent.cars),
-          transferCars: normalizeCarImages(remote.transferCars, defaultContent.transferCars),
+          transferCars: normalizeCarImages(remote.transferCars, defaultContent.transferCars).map((car) => ({
+            ...car,
+            airportPrice: car.airportPrice || defaultContent.transferCars.find((item) => item.key === car.key)?.airportPrice,
+          })),
           sectionOrder: mergedSectionOrder,
         };
         this.content.set(merged);

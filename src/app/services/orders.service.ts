@@ -15,9 +15,6 @@ export interface OrderPricing {
 }
 
 export interface VipPreferences {
-  cabinScent?: string;
-  refreshment?: string;
-  driverLanguage?: string;
   isDiscreetBooking?: boolean;
   welcomePlacardName?: string;
 }
@@ -37,6 +34,7 @@ export interface Order {
   specialNotes?: string;
   paymentMethod: string;
   serviceType: 'transfer' | 'hourly' | 'tour';
+  transferMode?: 'intercity' | 'jeddah_airport';
   selectedCity: string;
   pickupLocation: string;
   dropoffLocation?: string;

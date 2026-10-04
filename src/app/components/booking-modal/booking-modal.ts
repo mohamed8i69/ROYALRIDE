@@ -5,9 +5,8 @@ import { SiteContentService, FleetCar } from '../../services/site-content.servic
 import { OrdersService } from '../../services/orders.service';
 
 export type ServiceType = 'transfer' | 'hourly' | 'tour';
+export type TransferMode = 'intercity' | 'jeddah_airport';
 export type PeakSeason = 'normal' | 'hajj_umrah' | 'riyadh_season' | 'alula_season';
-export type ScentChoice = 'royal_oud' | 'musk' | 'amber' | 'none';
-export type DriverLangChoice = 'ar' | 'en' | 'both';
 export type PaymentMethod = 'mada' | 'apple_pay' | 'credit_card' | 'stc_pay' | 'tabby_tamara' | 'corporate_b2b';
 import {
   LucideCrown,
@@ -16,13 +15,7 @@ import {
   LucideClock3,
   LucideMap,
   LucidePlane,
-  LucideSparkles,
-  LucideFlower2,
-  LucideFlame,
-  LucideCoffee,
-  LucideGlassWater,
   LucideShieldCheck,
-  LucideBadge,
   LucideCreditCard,
   LucideSmartphone,
   LucideShoppingBag,
@@ -42,13 +35,7 @@ import {
     LucideClock3,
     LucideMap,
     LucidePlane,
-    LucideSparkles,
-    LucideFlower2,
-    LucideFlame,
-    LucideCoffee,
-    LucideGlassWater,
     LucideShieldCheck,
-    LucideBadge,
     LucideCreditCard,
     LucideSmartphone,
     LucideShoppingBag,
@@ -62,7 +49,6 @@ import {
 export class BookingModal {
   @ViewChild('bookingScrollArea') private bookingScrollArea?: ElementRef<HTMLElement>;
   @ViewChild('bookingPriceSummary') private bookingPriceSummary?: ElementRef<HTMLElement>;
-  @ViewChild('bookingAmenitiesSummary') private bookingAmenitiesSummary?: ElementRef<HTMLElement>;
 
   private readonly siteContent = inject(SiteContentService);
   private readonly ordersService = inject(OrdersService);
@@ -84,12 +70,13 @@ export class BookingModal {
   @Output() closeModal = new EventEmitter<void>();
 
   readonly open = signal<boolean>(false);
-  readonly currentStep = signal<number>(1); // 1: Route & Date, 2: Fleet & Dynamic Pricing, 3: VIP Comfort, 4: Guest & Payment, 5: Receipt
+  readonly currentStep = signal<number>(1); // 1: Route & Date, 2: Fleet & Pricing, 3: Privacy, 4: Guest & Payment, 5: Receipt
   readonly isSavingOrder = signal<boolean>(false);
   readonly orderSavedSuccess = signal<boolean>(false);
 
   // Step 1: Service & Route Details
   readonly serviceType = signal<ServiceType>('transfer');
+  readonly transferMode = signal<TransferMode>('intercity');
   readonly selectedCity = signal<string>('جدة');
   readonly pickupLocation = signal<string>('مطار الملك عبد العزيز الدولي (JED)');
   readonly dropoffLocation = signal<string>('فندق برج الساعة - مكة المكرمة');
@@ -104,12 +91,9 @@ export class BookingModal {
   readonly selectedCarKey = signal<string>('taurus');
   readonly peakSeason = signal<PeakSeason>('normal');
 
-  // Step 3: VIP Personalization & Privacy
-  readonly cabinScent = signal<ScentChoice>('royal_oud');
-  readonly addCoffeeAndDates = signal<boolean>(false);
-  readonly driverLanguage = signal<DriverLangChoice>('ar');
+  // Step 3: Privacy
   readonly isDiscreetBooking = signal<boolean>(false);
-  readonly welcomePlacardName = signal<string>('سعادة الضيف الكريم');
+  readonly welcomePlacardName = signal<string>('');
 
   // Step 4: Guest Information & Payment
   readonly guestName = signal<string>('');
@@ -118,26 +102,40 @@ export class BookingModal {
   readonly paymentMethod = signal<PaymentMethod>('mada');
 
   // Setters for Template Signal Binding
-  setCabinScent(val: ScentChoice): void { this.cabinScent.set(val); }
-  setAddCoffeeAndDates(val: boolean): void { this.addCoffeeAndDates.set(val); }
-  setDriverLanguage(val: DriverLangChoice): void { this.driverLanguage.set(val); }
   setPaymentMethod(val: PaymentMethod): void { this.paymentMethod.set(val); }
   setPickupLocation(val: string): void { this.pickupLocation.set(val); }
   setDropoffLocation(val: string): void { this.dropoffLocation.set(val); }
   setFlightNumber(val: string): void { this.flightNumber.set(val); }
-  setWelcomePlacardName(val: string): void { this.welcomePlacardName.set(val); }
   setGuestName(val: string): void { this.guestName.set(val); }
   setGuestPhone(val: string): void { this.guestPhone.set(val); }
   setSpecialNotes(val: string): void { this.specialNotes.set(val); }
   setIsDiscreetBooking(val: boolean): void { this.isDiscreetBooking.set(val); }
+  setWelcomePlacardName(val: string): void { this.welcomePlacardName.set(val); }
   setEnableFlightTracking(val: boolean): void { this.enableFlightTracking.set(val); }
   setPickupDate(val: string): void { this.pickupDate.set(val); }
   setPickupTime(val: string): void { this.pickupTime.set(val); }
   setSelectedTour(val: string): void { this.selectedTour.set(val); }
 
+  setTransferMode(mode: TransferMode): void {
+    this.transferMode.set(mode);
+    if (mode === 'jeddah_airport') {
+      this.selectedCity.set('جدة');
+      this.dropoffLocation.set('داخل جدة');
+    } else {
+      this.dropoffLocation.set('فندق برج الساعة - مكة المكرمة');
+    }
+
+    const selectedCar = this.selectedCarObj();
+    if (!this.isCarAvailableForCurrentRoute(selectedCar)) {
+      const firstAvailableCar = this.carsList().find((car) => this.isCarAvailableForCurrentRoute(car));
+      if (firstAvailableCar) this.selectCar(firstAvailableCar.key);
+    }
+  }
+
   // Computed data
   readonly carsList = computed(() => this.siteContent.content().cars);
   readonly cityOptions = computed(() => {
+    if (this.serviceType() === 'transfer' && this.transferMode() === 'jeddah_airport') return ['جدة'];
     const cities = this.selectedCarObj().availableCities;
     return cities?.length ? cities : ['جدة', 'مكة المكرمة', 'الرياض', 'أبها', 'العلا', 'البحر الأحمر'];
   });
@@ -169,7 +167,7 @@ export class BookingModal {
   });
 
   readonly subtotal = computed(() => {
-    return this.basePrice() + this.surgeAmount() + (this.addCoffeeAndDates() ? 25 : 0);
+    return this.basePrice() + this.surgeAmount();
   });
 
   readonly vatAmount = computed(() => {
@@ -187,12 +185,13 @@ export class BookingModal {
   estimatedTotalForCar(car: FleetCar): number {
     const base = this.basePriceForCar(car);
     const peakAmount = Math.round(base * (this.peakMultiplier() - 1));
-    const subtotal = base + peakAmount + (this.addCoffeeAndDates() ? 25 : 0);
+    const subtotal = base + peakAmount;
     return subtotal + Math.round(subtotal * 0.15);
   }
 
   priceBasisForCar(car: FleetCar): string {
     if (this.serviceType() === 'transfer') {
+      if (this.transferMode() === 'jeddah_airport') return 'من/إلى مطار جدة داخل المدينة';
       return this.transferItemForCar(car)?.note || 'سعر الرحلة حسب المسار';
     }
     if (this.serviceType() === 'tour') {
@@ -203,7 +202,11 @@ export class BookingModal {
 
   private basePriceForCar(car: FleetCar): number {
     if (this.serviceType() === 'transfer') {
-      return parseInt(this.transferItemForCar(car)?.price || '', 10) || 300;
+      const transferItem = this.transferItemForCar(car);
+      const price = this.transferMode() === 'jeddah_airport'
+        ? transferItem?.airportPrice
+        : transferItem?.price;
+      return parseInt(price || '', 10) || 300;
     }
     if (this.serviceType() === 'tour') {
       if (this.selectedTour().includes('العلا')) return 2800;
@@ -222,6 +225,11 @@ export class BookingModal {
     return this.siteContent.content().transferCars.find((item) => item.key === transferKey);
   }
 
+  isCarAvailableForCurrentRoute(car: FleetCar): boolean {
+    if (this.serviceType() !== 'transfer' || this.transferMode() !== 'jeddah_airport') return true;
+    return Boolean(this.transferItemForCar(car)?.airportPrice);
+  }
+
   readonly bookingRef = computed(() => {
     return 'ROYAL-' + Math.floor(100000 + Math.random() * 900000);
   });
@@ -229,13 +237,6 @@ export class BookingModal {
   close(): void {
     this.open.set(false);
     this.closeModal.emit();
-  }
-
-  setStep(step: number): void {
-    if (step >= 1 && step <= 5) {
-      this.currentStep.set(step);
-      this.scrollStepToTop();
-    }
   }
 
   async submitOrder(channel: 'whatsapp' | 'direct' = 'direct'): Promise<void> {
@@ -250,6 +251,7 @@ export class BookingModal {
       specialNotes: this.specialNotes(),
       paymentMethod: this.paymentMethod(),
       serviceType: this.serviceType(),
+      transferMode: this.serviceType() === 'transfer' ? this.transferMode() : undefined,
       selectedCity: this.selectedCity(),
       pickupLocation: this.pickupLocation(),
       dropoffLocation: this.serviceType() === 'transfer' ? this.dropoffLocation() : 'حسب الجدول',
@@ -263,18 +265,14 @@ export class BookingModal {
       pricing: {
         basePrice: this.basePrice(),
         surgeAmount: this.surgeAmount(),
-        hospitalityAddon: this.addCoffeeAndDates() ? 25 : 0,
         subtotal: this.subtotal(),
         vatAmount: this.vatAmount(),
         totalPrice: this.totalPrice(),
         peakSeason: this.peakSeason(),
       },
       vipPreferences: {
-        cabinScent: this.getScentLabel(),
-        refreshment: this.getRefreshmentLabel(),
-        driverLanguage: this.driverLanguage() === 'ar' ? 'عربي' : 'English',
         isDiscreetBooking: this.isDiscreetBooking(),
-        welcomePlacardName: this.welcomePlacardName(),
+        welcomePlacardName: this.welcomePlacardName().trim(),
       },
     };
 
@@ -330,9 +328,7 @@ export class BookingModal {
   private scrollToPriceSummary(): void {
     window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
       const scrollArea = this.bookingScrollArea?.nativeElement;
-      const priceSummary = this.currentStep() === 3
-        ? this.bookingAmenitiesSummary?.nativeElement
-        : this.bookingPriceSummary?.nativeElement;
+      const priceSummary = this.bookingPriceSummary?.nativeElement;
       if (!scrollArea || !priceSummary) return;
 
       const areaTop = scrollArea.getBoundingClientRect().top;
@@ -354,7 +350,7 @@ export class BookingModal {
     const car = this.selectedCarObj().name;
     const typeLabel =
       this.serviceType() === 'transfer'
-        ? 'من نقطة إلى نقطة'
+        ? this.transferMode() === 'jeddah_airport' ? 'من/إلى مطار جدة داخل المدينة' : 'بين جدة ومكة'
         : this.serviceType() === 'hourly'
           ? `بالساعة (${this.selectedHours()} ساعة)`
           : `باقة سياحية (${this.selectedTour()})`;
@@ -370,12 +366,9 @@ export class BookingModal {
 📅 *التاريخ والوقت:* ${this.pickupDate()} - ${this.pickupTime()}
 ✈️ *رقم الرحلة الجوية:* ${this.enableFlightTracking() ? this.flightNumber() : 'غير محدد'}
 
-🌿 *تفاصيل الرفاهية الملكية:*
-• المعطر: ${this.getScentLabel()}
-• الضيافة: ${this.getRefreshmentLabel()}
-• السائق: ${this.driverLanguage() === 'ar' ? 'عربي' : 'English'}
-• اسم اللوحة الترحيبية: ${this.welcomePlacardName() || 'بدون'}
-• حجز سري VVIP: ${this.isDiscreetBooking() ? 'نعم' : 'لا'}
+🔒 *الخصوصية:*
+• حجز سري: ${this.isDiscreetBooking() ? 'نعم' : 'لا'}
+• اسم لوحة استقبال المطار: ${this.welcomePlacardName().trim() || 'بدون'}
 
 👤 *بيانات الضيف:*
 • الاسم: ${this.guestName() || 'ضيف كريم'}
@@ -387,21 +380,6 @@ export class BookingModal {
 يرجى تأكيد الحجز وتعيين السائق.`;
 
     return `https://wa.me/966569038515?text=${encodeURIComponent(text)}`;
-  }
-
-  getScentLabel(): string {
-    switch (this.cabinScent()) {
-      case 'royal_oud': return 'العود الملكي Luxury Oud';
-      case 'musk': return 'المسك الأبيض White Musk';
-      case 'amber': return 'العنبر الفاخر Amber';
-      default: return 'بدون معطر';
-    }
-  }
-
-  getRefreshmentLabel(): string {
-    return this.addCoffeeAndDates()
-      ? 'مياه مجانية + قهوة عربية وتمور (+25 ريال)'
-      : 'مياه مجانية';
   }
 
   getPaymentLabel(): string {
