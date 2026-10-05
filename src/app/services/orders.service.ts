@@ -78,8 +78,9 @@ export class OrdersService {
       if (response && response.order) {
         return response.order;
       }
-    } catch (err: any) {
-      this.error.set(err?.error?.message || err?.message || 'تعذر حفظ الطلب في خادم API.');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'تعذر حفظ الطلب في خادم API.';
+      this.error.set((err as { error?: { message?: string } })?.error?.message ?? msg);
       console.error('Backend API order save error:', err);
     } finally {
       this.submitting.set(false);
@@ -101,8 +102,9 @@ export class OrdersService {
       );
       this.orders.set(sorted);
       return sorted;
-    } catch (err: any) {
-      this.error.set(err?.error?.message || err?.message || 'تعذر جلب الطلبات من خادم MongoDB API.');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'تعذر جلب الطلبات من خادم MongoDB API.';
+      this.error.set((err as { error?: { message?: string } })?.error?.message ?? msg);
       console.error('Failed to load orders from API:', err);
       this.orders.set([]);
       return [];
@@ -128,8 +130,9 @@ export class OrdersService {
         list.map((o) => (o._id === orderIdOrRef || o.bookingRef === orderIdOrRef ? { ...o, status: newStatus } : o))
       );
       return true;
-    } catch (err: any) {
-      this.error.set(err?.error?.message || err?.message || 'تحديث حالة الطلب فشل.');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'تحديث حالة الطلب فشل.';
+      this.error.set((err as { error?: { message?: string } })?.error?.message ?? msg);
       console.error('API order status update failed:', err);
       return false;
     } finally {
@@ -148,8 +151,9 @@ export class OrdersService {
       await firstValueFrom(this.http.delete(`${API_BASE}/api/orders/${orderIdOrRef}`));
       this.orders.update((list) => list.filter((o) => o._id !== orderIdOrRef && o.bookingRef !== orderIdOrRef));
       return true;
-    } catch (err: any) {
-      this.error.set(err?.error?.message || err?.message || 'حذف الطلب فشل.');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'حذف الطلب فشل.';
+      this.error.set((err as { error?: { message?: string } })?.error?.message ?? msg);
       console.error('API order delete failed:', err);
       return false;
     } finally {

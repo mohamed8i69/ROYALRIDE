@@ -19,13 +19,17 @@ export class Home {
   readonly isBookingModalOpen = signal<boolean>(false);
   readonly selectedCarKey = signal<string | null>(null);
   readonly selectedServiceType = signal<ServiceType>('transfer');
+  readonly selectedCity = signal<string | null>(null);
+  readonly selectedTour = signal<string | null>(null);
 
   // Car Image Lightbox Carousel
   readonly lightboxData = signal<LightboxData | null>(null);
 
-  openBookingModal(carKey?: string, serviceType?: ServiceType): void {
+  openBookingModal(carKey?: string, serviceType?: ServiceType, city?: string, tour?: string): void {
     if (carKey) this.selectedCarKey.set(carKey);
     if (serviceType) this.selectedServiceType.set(serviceType);
+    if (city) this.selectedCity.set(city);
+    if (tour) this.selectedTour.set(tour);
     this.isBookingModalOpen.set(true);
   }
 

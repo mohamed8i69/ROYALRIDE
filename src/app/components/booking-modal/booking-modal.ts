@@ -55,6 +55,10 @@ export class BookingModal {
 
   @Input() set isOpen(value: boolean) {
     this.open.set(value);
+    if (value) {
+      this.currentStep.set(1);
+      this.orderSavedSuccess.set(false);
+    }
   }
   @Input() set initialCarKey(key: string | null) {
     if (key) {
@@ -64,6 +68,16 @@ export class BookingModal {
   @Input() set initialServiceType(type: ServiceType | null) {
     if (type) {
       this.serviceType.set(type);
+    }
+  }
+  @Input() set initialCity(city: string | null) {
+    if (city) {
+      this.setSelectedCity(city);
+    }
+  }
+  @Input() set initialTour(tour: string | null) {
+    if (tour) {
+      this.selectedTour.set(tour);
     }
   }
 
@@ -200,6 +214,38 @@ export class BookingModal {
     return `${this.selectedHours()} ساعة مع السائق`;
   }
 
+  setSelectedCity(city: string): void {
+    this.selectedCity.set(city);
+    if (city === 'أبها') {
+      if (this.serviceType() === 'tour') {
+        this.selectedTour.set('جولة عسير وأبها (12 ساعة)');
+      }
+      this.pickupLocation.set('مطار أبها الإقليمي (AHB)');
+      this.dropoffLocation.set('منتزه السودة - أبها');
+    } else if (city === 'الرياض') {
+      if (this.serviceType() === 'tour') {
+        this.selectedTour.set('خدمات وتغطية موسم الرياض الخاصة');
+      }
+      this.pickupLocation.set('مطار الملك خالد الدولي (RUH)');
+      this.dropoffLocation.set('منطقة بوليفارد سيتي - الرياض');
+    } else if (city === 'العلا') {
+      if (this.serviceType() === 'tour') {
+        this.selectedTour.set('تجربة العلا الملكية VIP');
+      }
+      this.pickupLocation.set('مطار العلا الدولي (ULH)');
+      this.dropoffLocation.set('منتجع الحجر - العلا');
+    } else if (city === 'مكة المكرمة') {
+      if (this.serviceType() === 'tour') {
+        this.selectedTour.set('باقة العمرة والزيارة الراقية');
+      }
+      this.pickupLocation.set('مطار الملك عبد العزيز الدولي (JED)');
+      this.dropoffLocation.set('فندق برج الساعة - مكة المكرمة');
+    } else if (city === 'جدة') {
+      this.pickupLocation.set('مطار الملك عبد العزيز الدولي (JED)');
+      this.dropoffLocation.set('فندق الشاطئ - كورنيش جدة');
+    }
+  }
+
   private basePriceForCar(car: FleetCar): number {
     if (this.serviceType() === 'transfer') {
       const transferItem = this.transferItemForCar(car);
@@ -211,6 +257,7 @@ export class BookingModal {
     if (this.serviceType() === 'tour') {
       if (this.selectedTour().includes('العلا')) return 2800;
       if (this.selectedTour().includes('أبها')) return 1500;
+      if (this.selectedTour().includes('الرياض')) return 1500;
       return 1200;
     }
 

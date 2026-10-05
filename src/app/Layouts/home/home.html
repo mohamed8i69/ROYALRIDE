@@ -250,29 +250,61 @@
     </section>
 
     <!-- ══════════ TOURS ══════════ -->
-    <section id="tours" class="relative isolate w-full overflow-hidden border-t border-[#3d3227] bg-[#090909]"
+    <section id="tours-and-services" class="relative isolate w-full overflow-hidden border-t border-[#3d3227] bg-[#090909]"
         [class.order-1]="sectionPos('tours') === 1" [class.order-2]="sectionPos('tours') === 2"
         [class.order-3]="sectionPos('tours') === 3" [class.order-4]="sectionPos('tours') === 4"
         [class.order-5]="sectionPos('tours') === 5" [class.order-6]="sectionPos('tours') === 6">
 
-        <div class="relative min-h-[340px] overflow-hidden sm:min-h-[430px]">
-            <img class="absolute inset-0 h-full w-full object-cover" src="70772683470.png"
-                alt="الجولات السياحية في أبها">
-            <div class="absolute inset-0 bg-gradient-to-b from-black/65 via-black/30 to-[#090909]"></div>
-            <div
-                class="relative flex min-h-[340px] flex-col items-center justify-center px-4 py-8 text-center sm:min-h-[390px] sm:px-6">
-                <span class="text-xs font-bold tracking-[0.2em] text-[#e3bd73]">ABHA TOURS</span>
-                <h2 class="mt-3 text-2xl font-black text-[#dab878] sm:text-4xl">{{ content().toursTitle }}</h2>
-                <div
-                    class="mx-auto mt-3 h-1 w-20 rounded-full bg-gradient-to-l from-[#dcb469] to-transparent sm:mt-4 sm:w-24">
-                </div>
-                <p
-                    class="mt-5 max-w-xs rounded-lg border border-[#d4ae64] bg-[#1b1610]/50 px-4 py-3 text-sm font-bold leading-7 text-[#f7ead0] sm:mt-6 sm:max-w-sm sm:px-5 sm:py-4">
-                    {{ content().toursText }}</p>
-                <button type="button" (click)="openBookingModal(undefined, 'tour')"
-                    class="mt-4 rounded-md bg-[#d4ad67] px-5 py-2 text-sm font-black text-[#21180d] hover:bg-[#f0cc84] transition shadow-lg sm:mt-5 sm:px-6 sm:py-2.5">ابدأ طلب الجولة</button>
-            </div>
+        <!-- Main Title for both tours and special services -->
+        <div class="text-center pt-12 pb-6 px-4 mt-12">
+            <span class="text-xs font-bold tracking-[0.2em] text-[#e3bd73]">الجولات السياحية و الخدمات الخاصة</span>
+            <h2 class="mt-3 text-2xl font-black text-[#dab878] sm:text-4xl">
+                اكتشف رحلات أبها وخدماتنا الخاصة في الرياض
+            </h2>
+            <div class="mx-auto mt-3 h-1 w-20 rounded-full bg-gradient-to-l from-[#dcb469] to-transparent"></div>
         </div>
+
+        <!-- أبها الجولات السياحية -->
+        <section id="abha-tours" class="relative w-full overflow-hidden mt-8">
+            <div class="relative min-h-[340px] sm:min-h-[430px]">
+                <img class="absolute inset-0 h-full w-full object-cover" src="70772683470.png" alt="الجولات السياحية في أبها" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-b from-black/65 via-black/30 to-[#090909]"></div>
+                <div class="relative z-10 flex min-h-[340px] flex-col items-center justify-center px-4 py-8 text-center sm:min-h-[390px] sm:px-6">
+                    <span class="text-xs font-bold tracking-[0.2em] text-[#e3bd73]">ABHA TOURS</span>
+                    <h3 class="mt-3 text-xl font-black text-[#dab878] sm:text-2xl">{{ content().toursTitle }}</h3>
+                    <div class="mx-auto mt-3 h-1 w-20 rounded-full bg-gradient-to-l from-[#dcb469] to-transparent"></div>
+                    <p class="mt-5 max-w-xs rounded-lg border border-[#d4ae64] bg-[#1b1610]/50 px-4 py-3 text-sm font-bold leading-7 text-[#f7ead0] sm:mt-6 sm:max-w-sm sm:px-5 sm:py-4">
+                        {{ content().toursText }}
+                    </p>
+                    <button type="button" (click)="openBookingModal(undefined, 'tour')"
+                        class="mt-4 rounded-md bg-[#d4ad67] px-5 py-2 text-sm font-black text-[#21180d] hover:bg-[#f0cc84] transition shadow-lg sm:mt-5 sm:px-6 sm:py-2.5">
+                        ابدأ طلب الجولة
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- الرياض الخدمات الخاصة -->
+        <section id="riyadh-services" class="relative w-full overflow-hidden mt-12">
+            <div class="relative min-h-[280px] sm:min-h-[330px]">
+                <img class="absolute inset-0 h-full w-full object-cover" src="https://pa.sa/wp-content/uploads/2025/08/Opportunities-for-Housing-in-Riyadh-City--2048x1055.png" alt="الخدمات الخاصة في الرياض" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/25 to-[#090909]"></div>
+                <div class="relative z-10 flex min-h-[280px] flex-col items-center justify-center px-4 py-8 text-center sm:min-h-[310px] sm:px-6">
+                    <span class="text-xs font-bold tracking-[0.2em] text-[#e3bd73]">RIYADH SPECIAL SERVICES</span>
+                    <h3 class="mt-3 text-xl font-black text-[#dab878] sm:text-2xl">الخدمات الخاصة في الرياض</h3>
+                    <div class="mx-auto mt-3 h-1 w-20 rounded-full bg-gradient-to-l from-[#dcb469] to-transparent"></div>
+                    <p class="mt-5 max-w-xs rounded-lg border border-[#d4ae64] bg-[#1b1610]/50 px-4 py-3 text-sm font-bold leading-7 text-[#f7ead0] sm:mt-6 sm:max-w-sm sm:px-5 sm:py-4">
+                        عروض وجولات سياحية فاخرة وتجارب مميزة وخدمات استقبال وتوصيل خاصة لعملائنا في الرياض. اكتشف الفخامة والتميز في التنقل داخل العاصمة.
+                    </p>
+                    
+                    <button type="button" (click)="openBookingModal(undefined, 'tour')"
+                        class="mt-4 rounded-md bg-[#d4ad67] px-5 py-2 text-sm font-black text-[#21180d] hover:bg-[#f0cc84] transition shadow-lg sm:mt-5 sm:px-6 sm:py-2.5">
+                        اطلب الخدمة الخاصة
+                    </button>
+                   
+                </div>
+            </div>
+        </section>
     </section>
 
     <!-- ══════════ TESTIMONIALS ══════════ -->

@@ -74,7 +74,7 @@
           <label class="block text-xs font-bold text-[#d8b66e] mb-2">2. المدينة الرئيسية:</label>
           <div class="flex flex-wrap gap-2">
             @for (city of cityOptions(); track city) {
-            <button type="button" (click)="selectedCity.set(city)" [class.bg-[#d4ad67]]="selectedCity() === city" [class.text-[#120f0c]]="selectedCity() === city" [class.font-black]="selectedCity() === city" class="rounded-lg border border-[#4d3f30] bg-[#17130f] px-3.5 py-2 text-xs text-[#e8d7ba] hover:border-[#d4ad67] transition">
+            <button type="button" (click)="setSelectedCity(city)" [class.bg-[#d4ad67]]="selectedCity() === city" [class.text-[#120f0c]]="selectedCity() === city" [class.font-black]="selectedCity() === city" class="rounded-lg border border-[#4d3f30] bg-[#17130f] px-3.5 py-2 text-xs text-[#e8d7ba] hover:border-[#d4ad67] transition">
               {{ city }}
             </button>
             }
