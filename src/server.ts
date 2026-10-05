@@ -1,99 +1,59 @@
+import { AngularAppEngine, createRequestHandler } from '@angular/ssr';
 import {
-  AngularNodeAppEngine,
-  createNodeRequestHandler,
-  isMainModule,
-  writeResponseToNodeResponse,
-} from '@angular/ssr/node';
-import express from 'express';
-import { join } from 'node:path';
+  getAllowedHosts,
+  getContext,
+  getTrustProxyHeaders,
+} from '@netlify/angular-runtime/app-engine.js';
 
-const browserDistFolder = join(import.meta.dirname, '../browser');
 const backendApiUrl = process.env['BACKEND_API_URL'] || 'https://dashboard-nine-flame-50.vercel.app';
 
-const app = express();
-const angularApp = new AngularNodeAppEngine();
+const angularAppEngine = new AngularAppEngine({
+  allowedHosts: getAllowedHosts(),
+  trustProxyHeaders: getTrustProxyHeaders(),
+});
 
 /**
- * Proxy /api requests to Express Dashboard backend when running SSR / standalone Node server
+ * Proxy /api requests to the Express Dashboard backend.
  */
-app.use('/api', async (req, res) => {
+async function proxyApiRequest(request: Request, url: URL): Promise<Response> {
   try {
-    const targetUrl = `${backendApiUrl}/api${req.url}`;
-    const headers = new Headers();
-    for (const [key, value] of Object.entries(req.headers)) {
-      if (value && key !== 'host') {
-        headers.set(key, Array.isArray(value) ? value.join(', ') : value);
-      }
-    }
+    const headers = new Headers(request.headers);
+    headers.delete('host');
 
-    const init: RequestInit = {
-      method: req.method,
+    const response = await fetch(`${backendApiUrl}${url.pathname}${url.search}`, {
+      method: request.method,
       headers,
-    };
-
-    if (req.method !== 'GET' && req.method !== 'HEAD') {
-      const chunks: Uint8Array[] = [];
-      for await (const chunk of req) {
-        chunks.push(chunk);
-      }
-      init.body = Buffer.concat(chunks);
-    }
-
-    const response = await fetch(targetUrl, init);
-    res.status(response.status);
-    response.headers.forEach((val, key) => {
-      if (key !== 'transfer-encoding') {
-        res.setHeader(key, val);
-      }
+      body: request.method !== 'GET' && request.method !== 'HEAD' ? await request.arrayBuffer() : undefined,
     });
 
-    const arrayBuffer = await response.arrayBuffer();
-    res.send(Buffer.from(arrayBuffer));
+    const responseHeaders = new Headers(response.headers);
+    responseHeaders.delete('transfer-encoding');
+    responseHeaders.delete('content-encoding');
+    responseHeaders.delete('content-length');
+
+    return new Response(response.body, { status: response.status, headers: responseHeaders });
   } catch (error) {
     console.error('SSR API Proxy Error:', error);
-    res.status(502).json({ message: 'Backend service unavailable.' });
+    return Response.json({ message: 'Backend service unavailable.' }, { status: 502 });
   }
-});
-
-/**
- * Serve static files from /browser
- */
-app.use(
-  express.static(browserDistFolder, {
-    maxAge: '1y',
-    index: false,
-    redirect: false,
-  }),
-);
-
-/**
- * Handle all other requests by rendering the Angular application.
- */
-app.use((req, res, next) => {
-  angularApp
-    .handle(req)
-    .then((response) =>
-      response ? writeResponseToNodeResponse(response, res) : next(),
-    )
-    .catch(next);
-});
-
-/**
- * Start the server if this module is the main entry point, or it is ran via PM2.
- * The server listens on the port defined by the `PORT` environment variable, or defaults to 4000.
- */
-if (isMainModule(import.meta.url) || process.env['pm_id']) {
-  const port = process.env['PORT'] || 4000;
-  app.listen(port, (error) => {
-    if (error) {
-      throw error;
-    }
-
-    console.log(`[ROYALRIDE SSR] Listening on http://localhost:${port}`);
-  });
 }
 
 /**
- * Request handler used by the Angular CLI (for dev-server and during build) or Firebase Cloud Functions.
+ * Request handler used by Netlify to render the Angular application.
  */
-export const reqHandler = createNodeRequestHandler(app);
+export async function netlifyAppEngineHandler(request: Request): Promise<Response> {
+  const context = getContext();
+
+  const url = new URL(request.url);
+  if (url.pathname === '/api' || url.pathname.startsWith('/api/')) {
+    return proxyApiRequest(request, url);
+  }
+
+  const result = await angularAppEngine.handle(request, context);
+  return result || new Response('Not found', { status: 404 });
+}
+
+/**
+ * The request handler used by the Angular CLI (dev-server and during build).
+ */
+export const reqHandler = createRequestHandler(netlifyAppEngineHandler);
