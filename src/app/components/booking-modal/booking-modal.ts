@@ -9,7 +9,6 @@ export type TransferMode = 'intercity' | 'jeddah_airport';
 export type PeakSeason = 'normal' | 'hajj_umrah' | 'riyadh_season' | 'alula_season';
 export type PaymentMethod = 'mada' | 'apple_pay' | 'credit_card' | 'stc_pay' | 'tabby_tamara' | 'corporate_b2b';
 import {
-  LucideCrown,
   LucideX,
   LucideCarFront,
   LucideClock3,
@@ -19,10 +18,8 @@ import {
   LucideCreditCard,
   LucideSmartphone,
   LucideShoppingBag,
-  LucideBuilding2,
   LucideFileText,
   LucideCheck,
-  LucideStar
 } from '@lucide/angular';
 @Component({
   selector: 'app-booking-modal',
@@ -39,10 +36,8 @@ import {
     LucideCreditCard,
     LucideSmartphone,
     LucideShoppingBag,
-    LucideBuilding2,
     LucideFileText,
     LucideCheck,
-    // LucideStar
   ],
   templateUrl: './booking-modal.html',
 })
@@ -147,7 +142,7 @@ export class BookingModal {
   }
 
   // Computed data
-  readonly carsList = computed(() => this.siteContent.content().cars);
+  readonly carsList = computed(() => this.siteContent.content()?.cars ?? []);
   readonly cityOptions = computed(() => {
     if (this.serviceType() === 'transfer' && this.transferMode() === 'jeddah_airport') return ['جدة'];
     const cities = this.selectedCarObj().availableCities;
@@ -269,7 +264,7 @@ export class BookingModal {
 
   private transferItemForCar(car: FleetCar) {
     const transferKey = `transfer-${car.key.replace('transfer-', '')}`;
-    return this.siteContent.content().transferCars.find((item) => item.key === transferKey);
+    return this.siteContent.content()?.transferCars?.find((item) => item.key === transferKey);
   }
 
   isCarAvailableForCurrentRoute(car: FleetCar): boolean {

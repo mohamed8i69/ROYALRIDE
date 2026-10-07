@@ -1,6 +1,6 @@
-import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
+import { inject, PLATFORM_ID, Service, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, httpResource } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -43,68 +43,19 @@ export interface SiteContent {
   sectionOrder: SectionId[];
 }
 
-const defaultContent: SiteContent = {
-  heroTitle: 'رحلات ملكية بسيارات VIP وسائقين خاصين في جدة ومكة وأبها',
-  heroSubtitle: 'ROYALRIDE — الرحلة الملكية',
-  aboutTitle: 'من نحن',
-  aboutText: 'نحن مؤسسة مرون خالد عبدالله محمد لخدمات النقل. نقدم التنقل بين جدة ومكة، وتأجير سيارات فاخرة مع سائق، وجولات سياحية في أبها.',
-  aboutSecondaryText: 'اختر الخدمة والسيارة ومدة الاستخدام، ثم راجع تفاصيل طلبك وإجمالي السعر قبل إرساله للتأكيد.',
-  transferTitle: 'التنقل بين جدة ومكة',
-  transferText: 'تنقّل بين جدة ومكة بسيارة خاصة وسائق. استعرض السيارات وتفاصيلها، ثم اختر السيارة المناسبة وابدأ طلبك.',
-  toursTitle: 'أبها: الجولات السياحية والخدمات الخاصة',
-  toursText: 'جولات سياحية في أبها وباقات خاصة تُرتب وفق موعدك واحتياجك. اختر الجولة المناسبة، ثم راجع تفاصيل الطلب والسعر قبل الإرسال.',
-  sectionOrder: ['hero', 'transfer', 'fleet', 'tours', 'testimonials', 'contact'],
-
-  cars: [
-    { key: 'taurus', name: 'فورد تورس', number: 4, price: '1000', note: 'اليوم الكامل · 12 ساعة مع السائق', details: 'خيار أنيق ومريح للتنقلات اليومية والرحلات الخاصة.', image: 'photo_2026-09-19_14-27-45.jpg', images: ['photo_2026-09-19_14-27-45.jpg', 'hero.jpg', 'photo_2026-09-19_14-27-48.jpg'] },
-    { key: 'gmc', name: 'جمس (GMC)', number: 6, price: '1100', note: 'اليوم الكامل · 12 ساعة مع السائق', details: 'مساحة واسعة وخدمة مثالية للعائلات والوفود الصغيرة.', image: 'photo_2026-09-19_14-27-39.jpg', images: ['photo_2026-09-19_14-27-39.jpg', 'Gemini_Generated_Image_qs51tfqs51tfqs51.jpg', 'hero.jpg'] },
-    { key: 'tahoe', name: 'شفروليه تاهو', price: '1100', note: 'اليوم الكامل · 12 ساعة مع السائق', details: 'سيارة SUV واسعة للرحلات العائلية والتنقلات الخاصة. السعر مماثل لسيارة GMC.', image: '', images: [] },
-    { key: 'jetour', name: 'جيتور', price: '900', note: 'اليوم الكامل · 12 ساعة مع السائق · متوفرة في جدة والرياض', details: 'سيارة SUV للتنقل داخل المدينة. السعر لليوم الكامل داخل جدة، والتوفر في جدة والرياض.', image: '', images: [], availableCities: ['جدة', 'الرياض'] },
-    { key: 'lexus', name: 'لكزس', number: 7, price: '1500', note: 'اليوم الكامل · 12 ساعة مع السائق', details: 'فخامة هادئة وتجربة راقية مع سائق خاص.', image: 'WhatsApp Image 2026-09-20 at 7.11.13 AM (2).jpeg', images: ['WhatsApp Image 2026-09-20 at 7.11.13 AM (2).jpeg', 'photo_2026-09-19_14-27-45.jpg', 'photo_2026-09-19_14-27-42.jpg'] },
-    { key: 'sclass', name: 'مرسيدس S Class', number: 4, price: '2300', note: 'اليوم الكامل · 12 ساعة مع السائق', details: 'الفئة الملكية للمناسبات المهمة والتنقلات التنفيذية.', image: 'photo_2026-09-19_14-27-42.jpg', images: ['photo_2026-09-19_14-27-42.jpg', 'WhatsApp Image 2026-09-20 at 7.11.13 AM (2).jpeg', 'hero.jpg'] },
-    { key: 'staria', name: 'Staria Van', number: 4, price: '800', note: 'اليوم الكامل 12 ساعة · 100 ريال للساعة داخل جدة', details: 'سيارة واسعة للمجموعات؛ اليوم الكامل يشمل 12 ساعة مع السائق.', image: 'WhatsApp Image 2026-09-20 at 7.11.13 AM (3).jpeg', images: ['WhatsApp Image 2026-09-20 at 7.11.13 AM (3).jpeg', 'photo_2026-09-19_14-27-39.jpg', '70772683470.png'] },
-  ],
-  transferCars: [
-    { key: 'transfer-taurus', name: 'فورد تورس', price: '250', airportPrice: '150', note: 'اتجاه واحد بين جدة ومكة', image: 'photo_2026-09-19_14-27-45.jpg', images: ['photo_2026-09-19_14-27-45.jpg', 'hero.jpg'] },
-    { key: 'transfer-lexus', name: 'لكزس', price: '340', airportPrice: '200', note: 'اتجاه واحد بين جدة ومكة', image: 'WhatsApp Image 2026-09-20 at 7.11.13 AM (2).jpeg', images: ['WhatsApp Image 2026-09-20 at 7.11.13 AM (2).jpeg', 'photo_2026-09-19_14-27-42.jpg'] },
-    { key: 'transfer-gmc', name: 'جمس (GMC)', price: '370', airportPrice: '170', note: 'اتجاه واحد بين جدة ومكة', image: 'photo_2026-09-19_14-27-39.jpg', images: ['photo_2026-09-19_14-27-39.jpg', 'Gemini_Generated_Image_qs51tfqs51tfqs51.jpg'] },
-    { key: 'transfer-tahoe', name: 'شفروليه تاهو', price: '370', airportPrice: '170', note: 'اتجاه واحد بين جدة ومكة', image: '', images: [] },
-    { key: 'transfer-jetour', name: 'جيتور', price: '270', airportPrice: '160', note: 'اتجاه واحد بين جدة ومكة', image: '', images: [] },
-    { key: 'transfer-sclass', name: 'مرسيدس S Class', price: '1200', airportPrice: '550', note: 'خدمة مع سائق لمدة 12 ساعة', image: 'photo_2026-09-19_14-27-42.jpg', images: ['photo_2026-09-19_14-27-42.jpg', 'WhatsApp Image 2026-09-20 at 7.11.13 AM (2).jpeg'] },
-    { key: 'transfer-staria', name: 'Staria Van', price: '800', airportPrice: '160', note: 'خدمة مع سائق لمدة 12 ساعة', image: 'WhatsApp Image 2026-09-20 at 7.11.13 AM (3).jpeg', images: ['WhatsApp Image 2026-09-20 at 7.11.13 AM (3).jpeg', 'photo_2026-09-19_14-27-39.jpg'] },
-  ],
-};
-
-const API_BASE = environment.apiUrl || 'https://dashboard-nine-flame-50.vercel.app';
-
-/** Ensure every car has an `images` gallery; fall back to defaults then primary `image`. */
-function normalizeCarImages<T extends { key: string; image: string; images?: string[] }>(
-  cars: T[] | undefined,
-  defaults: T[],
-): T[] {
-  const list = cars?.length ? [...cars] : [];
-  const suppliedKeys = new Set(list.map((car) => car.key));
-  for (const car of defaults) {
-    if (!suppliedKeys.has(car.key)) list.push(car);
-  }
-  return list.map((car) => {
-    const fallback = defaults.find((d) => d.key === car.key);
+/** Normalize car images array: ensure `images` array is in sync with the primary `image` field. */
+function normalizeCarImages<T extends { image: string; images?: string[] }>(cars: T[] | undefined): T[] {
+  if (!cars?.length) return [];
+  return cars.map((car) => {
     const hasGallery = Array.isArray(car.images) && car.images.filter(Boolean).length > 0;
-
     let images: string[];
     if (hasGallery) {
       images = car.images!.filter(Boolean);
-    } else if (fallback?.images && fallback.images.length > 0) {
-      // Keep the live primary image first, then append other default gallery shots
-      const primary = (car.image || fallback.image || '').trim();
-      const rest = fallback.images.filter((src) => src && src !== primary);
-      images = primary ? [primary, ...rest] : [...fallback.images];
     } else if (car.image?.trim()) {
       images = [car.image.trim()];
     } else {
       images = [];
     }
-
     return {
       ...car,
       image: car.image?.trim() || images[0] || '',
@@ -113,12 +64,16 @@ function normalizeCarImages<T extends { key: string; image: string; images?: str
   });
 }
 
-@Injectable({ providedIn: 'root' })
+const FALLBACK_SECTION_ORDER: SectionId[] = ['hero', 'transfer', 'fleet', 'tours', 'testimonials', 'contact'];
+
+const API_BASE = environment.apiUrl || 'https://dashboard-nine-flame-50.vercel.app';
+
+@Service()
 export class SiteContentService {
   private readonly http = inject(HttpClient);
   private readonly platformId = inject(PLATFORM_ID);
 
-  readonly content = signal<SiteContent>(structuredClone(defaultContent));
+  readonly content = signal<SiteContent | null>(null);
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
 
@@ -126,7 +81,7 @@ export class SiteContentService {
     void this.load();
   }
 
-  async reload(): Promise<SiteContent> {
+  async reload(): Promise<SiteContent | null> {
     return this.load();
   }
 
@@ -152,18 +107,14 @@ export class SiteContentService {
         { sectionOrder }
       )
     );
-    this.content.update((prev) => ({
+    this.content.update((prev) => prev ? ({
       ...prev,
       sectionOrder: res?.sectionOrder || sectionOrder,
-    }));
+    }) : prev);
     this.error.set(null);
   }
 
-  async reset(): Promise<void> {
-    await this.save(defaultContent);
-  }
-
-  private async load(): Promise<SiteContent> {
+  private async load(): Promise<SiteContent | null> {
     if (!isPlatformBrowser(this.platformId)) {
       this.loading.set(false);
       return this.content();
@@ -174,30 +125,26 @@ export class SiteContentService {
     try {
       const remote = await firstValueFrom(this.http.get<SiteContent>(`${API_BASE}/api/site-content`));
       if (remote && typeof remote === 'object') {
-        const validSectionIds = new Set<SectionId>(defaultContent.sectionOrder);
+        const knownSectionIds = new Set<SectionId>(FALLBACK_SECTION_ORDER);
         const suppliedOrder = (Array.isArray(remote.sectionOrder) ? remote.sectionOrder : [])
-          .filter((id): id is SectionId => validSectionIds.has(id));
+          .filter((id): id is SectionId => knownSectionIds.has(id));
         const uniqueSuppliedOrder = [...new Set(suppliedOrder)];
-        const mergedSectionOrder = [
+        const mergedSectionOrder: SectionId[] = [
           ...uniqueSuppliedOrder,
-          ...defaultContent.sectionOrder.filter((id) => !uniqueSuppliedOrder.includes(id)),
+          ...FALLBACK_SECTION_ORDER.filter((id) => !uniqueSuppliedOrder.includes(id)),
         ];
 
-        const merged: SiteContent = {
-          ...structuredClone(defaultContent),
+        const loaded: SiteContent = {
           ...remote,
-          cars: normalizeCarImages(remote.cars, defaultContent.cars),
-          transferCars: normalizeCarImages(remote.transferCars, defaultContent.transferCars).map((car) => ({
-            ...car,
-            airportPrice: car.airportPrice || defaultContent.transferCars.find((item) => item.key === car.key)?.airportPrice,
-          })),
+          cars: normalizeCarImages(remote.cars),
+          transferCars: normalizeCarImages(remote.transferCars),
           sectionOrder: mergedSectionOrder,
         };
-        this.content.set(merged);
+        this.content.set(loaded);
       }
       this.error.set(null);
     } catch {
-      this.error.set('تعذر الاتصال بالخادم، يتم عرض البيانات الافتراضية مؤقتاً.');
+      this.error.set('تعذر الاتصال بالخادم. يرجى المحاولة مرة أخرى لاحقاً.');
     } finally {
       this.loading.set(false);
     }

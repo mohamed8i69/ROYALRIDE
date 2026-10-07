@@ -1,8 +1,8 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { Footer } from '../../components/footer/footer';
 import { BookingModal, ServiceType } from '../../components/booking-modal/booking-modal';
 import { CarLightbox, LightboxData } from '../../components/car-lightbox/car-lightbox';
-import { SiteContentService, SectionId } from '../../services/site-content.service';
+import { SiteContentService, SectionId, SiteContent } from '../../services/site-content.service';
 
 @Component({
   imports: [Footer, BookingModal, CarLightbox],
@@ -11,7 +11,17 @@ import { SiteContentService, SectionId } from '../../services/site-content.servi
 })
 export class Home {
   private readonly siteContent = inject(SiteContentService);
+
+  /** Raw nullable signal from the service */
   readonly content = this.siteContent.content;
+
+  /** Loading & error state from the service */
+  readonly loading = this.siteContent.loading;
+  readonly error = this.siteContent.error;
+
+  /** Non-null content for template use — only accessed when content() is not null */
+  readonly contentData = computed<SiteContent | null>(() => this.content());
+
   readonly activeCar = signal<string | null>(null);
   readonly activeTransfer = signal<string | null>(null);
 
@@ -64,9 +74,11 @@ export class Home {
     return `https://wa.me/966569038515?text=${encodeURIComponent(message)}`;
   }
 
-  /** Returns the 1-based position (1–5) of a section for Tailwind order-N class binding. */
+  /** Returns the 1-based position (1–6) of a section for CSS order class binding. */
   sectionPos(id: SectionId): number {
-    const idx = this.content().sectionOrder.indexOf(id);
-    return idx === -1 ? 5 : idx + 1;
+    const sectionOrder = this.content()?.sectionOrder;
+    if (!sectionOrder) return 6;
+    const idx = sectionOrder.indexOf(id);
+    return idx === -1 ? 6 : idx + 1;
   }
 }

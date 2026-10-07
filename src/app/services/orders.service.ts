@@ -1,5 +1,5 @@
-import { inject, Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { computed, inject, Service, signal } from '@angular/core';
+import { HttpClient, httpResource } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -53,18 +53,37 @@ export interface Order {
 
 const API_BASE = environment.apiUrl || 'https://dashboard-nine-flame-50.vercel.app';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class OrdersService {
   private readonly http = inject(HttpClient);
-  readonly orders = signal<Order[]>([]);
-  readonly loading = signal<boolean>(false);
+
+  /** Modern Angular httpResource: fetches orders reactively as Signals */
+  readonly ordersResource = httpResource<Order[]>(() => `${API_BASE}/api/orders`, {
+    defaultValue: [],
+    parse: (raw: unknown) => {
+      const list = (raw as Order[]) || [];
+      return [...list].sort(
+        (a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+      );
+    },
+  });
+
+  /** Exposed reactive Signals for backward compatibility with existing components */
+  readonly orders = computed(() => this.ordersResource.value() ?? []);
+  readonly loading = computed(() => this.ordersResource.isLoading());
   readonly submitting = signal<boolean>(false);
   readonly updatingId = signal<string | null>(null);
   readonly deletingId = signal<string | null>(null);
   readonly error = signal<string | null>(null);
 
+  /** Load/reload all orders reactively */
+  async loadOrders(): Promise<Order[]> {
+    this.ordersResource.reload();
+    return this.orders();
+  }
+
   /**
-   * Save a new order directly to MongoDB via Vercel backend API.
+   * Mutation: Save a new order using HttpClient (POST)
    */
   async createOrder(orderData: Partial<Order>): Promise<Order | null> {
     this.submitting.set(true);
@@ -76,6 +95,7 @@ export class OrdersService {
       );
 
       if (response && response.order) {
+        this.ordersResource.reload();
         return response.order;
       }
     } catch (err: unknown) {
@@ -89,32 +109,7 @@ export class OrdersService {
   }
 
   /**
-   * Load all orders directly from MongoDB via Vercel backend API.
-   */
-  async loadOrders(): Promise<Order[]> {
-    this.loading.set(true);
-    this.error.set(null);
-
-    try {
-      const remoteOrders = await firstValueFrom(this.http.get<Order[]>(`${API_BASE}/api/orders`));
-      const sorted = (remoteOrders || []).sort(
-        (a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
-      );
-      this.orders.set(sorted);
-      return sorted;
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'تعذر جلب الطلبات من خادم MongoDB API.';
-      this.error.set((err as { error?: { message?: string } })?.error?.message ?? msg);
-      console.error('Failed to load orders from API:', err);
-      this.orders.set([]);
-      return [];
-    } finally {
-      this.loading.set(false);
-    }
-  }
-
-  /**
-   * Update the status of an existing order in MongoDB.
+   * Mutation: Update order status using HttpClient (PATCH)
    */
   async updateStatus(orderIdOrRef: string, newStatus: OrderStatus): Promise<boolean> {
     this.updatingId.set(orderIdOrRef);
@@ -125,10 +120,7 @@ export class OrdersService {
         this.http.patch<{ ok: boolean }>(`${API_BASE}/api/orders/${orderIdOrRef}/status`, { status: newStatus })
       );
 
-      // Update in-memory signal
-      this.orders.update((list) =>
-        list.map((o) => (o._id === orderIdOrRef || o.bookingRef === orderIdOrRef ? { ...o, status: newStatus } : o))
-      );
+      this.ordersResource.reload();
       return true;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'تحديث حالة الطلب فشل.';
@@ -141,7 +133,7 @@ export class OrdersService {
   }
 
   /**
-   * Delete an order from MongoDB.
+   * Mutation: Delete an order using HttpClient (DELETE)
    */
   async deleteOrder(orderIdOrRef: string): Promise<boolean> {
     this.deletingId.set(orderIdOrRef);
@@ -149,7 +141,7 @@ export class OrdersService {
 
     try {
       await firstValueFrom(this.http.delete(`${API_BASE}/api/orders/${orderIdOrRef}`));
-      this.orders.update((list) => list.filter((o) => o._id !== orderIdOrRef && o.bookingRef !== orderIdOrRef));
+      this.ordersResource.reload();
       return true;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'حذف الطلب فشل.';

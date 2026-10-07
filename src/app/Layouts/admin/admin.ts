@@ -12,27 +12,11 @@ import {
   LucideCar,
   LucideTruck,
   LucideRefreshCw,
-  LucideSave,
   LucideSearch,
   LucidePhone,
   LucideTrash2,
   LucideX,
-  LucideCheck,
-  LucideClock,
-  LucideCheckCircle2,
-  LucideXCircle,
-  LucideArrowRight,
-  LucideLogOut,
-  LucideEye,
-  LucideCalendar,
-  LucideMapPin,
   LucideShield,
-  LucideCreditCard,
-  LucideBuilding2,
-  LucideShoppingBag,
-  LucideCoffee,
-  LucideDroplets,
-  LucidePlane,
 } from '@lucide/angular';
 
 @Component({
@@ -49,7 +33,6 @@ import {
     LucideSearch,
     LucidePhone,
     LucideX,
-    LucideTrash2,
     LucideShield,
   ],
   selector: 'app-admin',
@@ -102,7 +85,10 @@ export class Admin implements OnInit {
   readonly isRefreshing = signal<boolean>(false);
 
   constructor() {
-    const initial = structuredClone(this.siteContent.content());
+    const raw = this.siteContent.content();
+    const initial: SiteContent = raw
+      ? structuredClone(raw)
+      : { heroTitle: '', heroSubtitle: '', aboutTitle: '', aboutText: '', aboutSecondaryText: '', transferTitle: '', transferText: '', toursTitle: '', toursText: '', cars: [], transferCars: [], sectionOrder: ['hero', 'transfer', 'fleet', 'tours', 'testimonials', 'contact'] };
     this.ensureImagesOnDraft(initial);
     this.draft = signal<SiteContent>(initial);
   }
@@ -201,9 +187,11 @@ export class Admin implements OnInit {
 
   async ngOnInit(): Promise<void> {
     const latest = await this.siteContent.reload();
-    const cloned = structuredClone(latest);
-    this.ensureImagesOnDraft(cloned);
-    this.draft.set(cloned);
+    if (latest) {
+      const cloned = structuredClone(latest);
+      this.ensureImagesOnDraft(cloned);
+      this.draft.set(cloned);
+    }
     void this.ordersService.loadOrders();
   }
 
@@ -211,9 +199,11 @@ export class Admin implements OnInit {
     this.isRefreshing.set(true);
     try {
       const latest = await this.siteContent.reload();
-      const cloned = structuredClone(latest);
-      this.ensureImagesOnDraft(cloned);
-      this.draft.set(cloned);
+      if (latest) {
+        const cloned = structuredClone(latest);
+        this.ensureImagesOnDraft(cloned);
+        this.draft.set(cloned);
+      }
     } finally {
       this.isRefreshing.set(false);
     }
@@ -250,9 +240,12 @@ export class Admin implements OnInit {
         }
       });
       await this.siteContent.save(currentDraft);
-      const latest = structuredClone(this.siteContent.content());
-      this.ensureImagesOnDraft(latest);
-      this.draft.set(latest);
+      const savedContent = this.siteContent.content();
+      if (savedContent) {
+        const latest = structuredClone(savedContent);
+        this.ensureImagesOnDraft(latest);
+        this.draft.set(latest);
+      }
       this.saved.set(true);
       window.setTimeout(() => this.saved.set(false), 2500);
     } catch (err: any) {
@@ -267,10 +260,13 @@ export class Admin implements OnInit {
     this.saveError.set(null);
     try {
       await this.siteContent.saveSectionOrder(this.draft().sectionOrder);
-      this.draft.update((current) => ({
-        ...current,
-        sectionOrder: [...this.siteContent.content().sectionOrder],
-      }));
+      const updatedContent = this.siteContent.content();
+      if (updatedContent) {
+        this.draft.update((current) => ({
+          ...current,
+          sectionOrder: [...updatedContent.sectionOrder],
+        }));
+      }
       this.saved.set(true);
       window.setTimeout(() => this.saved.set(false), 2500);
     } catch (err: any) {
@@ -280,16 +276,19 @@ export class Admin implements OnInit {
     }
   }
 
+  /** Reload content from the database (no hardcoded defaults) */
   async reset(): Promise<void> {
     this.isResetting.set(true);
     this.saveError.set(null);
     try {
-      await this.siteContent.reset();
-      const latest = structuredClone(this.siteContent.content());
-      this.ensureImagesOnDraft(latest);
-      this.draft.set(latest);
+      const latest = await this.siteContent.reload();
+      if (latest) {
+        const cloned = structuredClone(latest);
+        this.ensureImagesOnDraft(cloned);
+        this.draft.set(cloned);
+      }
     } catch (err: any) {
-      this.saveError.set(err?.error?.message || err?.message || 'تعذر إعادة البيانات الافتراضية من الخادم.');
+      this.saveError.set(err?.error?.message || err?.message || 'تعذر تحديث البيانات من الخادم.');
     } finally {
       this.isResetting.set(false);
     }
