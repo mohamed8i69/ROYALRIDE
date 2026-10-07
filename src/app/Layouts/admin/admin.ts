@@ -34,6 +34,7 @@ import {
     LucidePhone,
     LucideX,
     LucideShield,
+    LucideTrash2
   ],
   selector: 'app-admin',
   templateUrl: './admin.html',
