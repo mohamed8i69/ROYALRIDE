@@ -5,7 +5,16 @@ import {
   getTrustProxyHeaders,
 } from '@netlify/angular-runtime/app-engine.js';
 
-const backendApiUrl = process.env['BACKEND_API_URL'] || 'https://dashboard-nine-flame-50.vercel.app';
+function getBackendApiUrl(): string {
+  const url = process.env['BACKEND_API_URL'];
+  if (!url) {
+    if (process.env['NODE_ENV'] === 'production') {
+      throw new Error('[RoyalRide SSR API Proxy] Missing required environment variable: BACKEND_API_URL in production.');
+    }
+    return 'https://dashboard-nine-flame-50.vercel.app';
+  }
+  return url;
+}
 
 const angularAppEngine = new AngularAppEngine({
   allowedHosts: getAllowedHosts(),
@@ -17,6 +26,7 @@ const angularAppEngine = new AngularAppEngine({
  */
 async function proxyApiRequest(request: Request, url: URL): Promise<Response> {
   try {
+    const backendApiUrl = getBackendApiUrl();
     const headers = new Headers(request.headers);
     headers.delete('host');
 

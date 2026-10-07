@@ -1,8 +1,7 @@
-import { inject, PLATFORM_ID, Service, signal } from '@angular/core';
+import { computed, inject, PLATFORM_ID, Service } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, httpResource } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { environment } from '../../environments/environment';
 
 export interface FleetCar {
   key: string;
@@ -66,23 +65,50 @@ function normalizeCarImages<T extends { image: string; images?: string[] }>(cars
 
 const FALLBACK_SECTION_ORDER: SectionId[] = ['hero', 'transfer', 'fleet', 'tours', 'testimonials', 'contact'];
 
-const API_BASE = environment.apiUrl || 'https://dashboard-nine-flame-50.vercel.app';
-
 @Service()
 export class SiteContentService {
   private readonly http = inject(HttpClient);
   private readonly platformId = inject(PLATFORM_ID);
 
-  readonly content = signal<SiteContent | null>(null);
-  readonly loading = signal(true);
-  readonly error = signal<string | null>(null);
+  /**
+   * Modern Angular httpResource: fetches site-content reactively as Signals.
+   * Runs in the browser against the same-origin /api/site-content endpoint.
+   */
+  readonly contentResource = httpResource<SiteContent | null>(
+    () => (isPlatformBrowser(this.platformId) ? '/api/site-content' : undefined),
+    {
+      defaultValue: null,
+      parse: (raw: unknown): SiteContent | null => {
+        if (!raw || typeof raw !== 'object') return null;
+        return this.normalizeContent(raw as Partial<SiteContent>);
+      },
+    }
+  );
 
-  constructor() {
-    void this.load();
-  }
+  /** Exposed reactive Signals for components */
+  readonly content = computed(() => this.contentResource.value() ?? null);
+  readonly loading = computed(() => this.contentResource.isLoading());
+  readonly error = computed(() =>
+    this.contentResource.error() ? 'تعذر الاتصال بالخادم. يرجى المحاولة مرة أخرى لاحقاً.' : null
+  );
 
   async reload(): Promise<SiteContent | null> {
-    return this.load();
+    if (!isPlatformBrowser(this.platformId)) {
+      return this.content();
+    }
+
+    this.contentResource.reload();
+    try {
+      const remote = await firstValueFrom(this.http.get<SiteContent>('/api/site-content'));
+      if (remote && typeof remote === 'object') {
+        const loaded = this.normalizeContent(remote);
+        this.contentResource.set(loaded);
+        return loaded;
+      }
+    } catch (error) {
+      console.error('SiteContentService.reload() failed:', error);
+    }
+    return this.content();
   }
 
   async save(nextContent: SiteContent): Promise<void> {
@@ -95,60 +121,39 @@ export class SiteContentService {
       });
     next.cars = syncGallery(next.cars || []);
     next.transferCars = syncGallery(next.transferCars || []);
-    await firstValueFrom(this.http.put<SiteContent>(`${API_BASE}/api/site-content`, next));
-    this.content.set(next);
-    this.error.set(null);
+
+    const saved = await firstValueFrom(this.http.put<SiteContent>('/api/site-content', next));
+    const normalized = this.normalizeContent(saved ?? next);
+    this.contentResource.set(normalized);
   }
 
   async saveSectionOrder(sectionOrder: SectionId[]): Promise<void> {
     const res = await firstValueFrom(
       this.http.patch<{ ok: boolean; sectionOrder: SectionId[] }>(
-        `${API_BASE}/api/site-content/section-order`,
+        '/api/site-content/section-order',
         { sectionOrder }
       )
     );
-    this.content.update((prev) => prev ? ({
-      ...prev,
-      sectionOrder: res?.sectionOrder || sectionOrder,
-    }) : prev);
-    this.error.set(null);
+    const updatedOrder = res?.sectionOrder || sectionOrder;
+    this.contentResource.update((prev) => (prev ? { ...prev, sectionOrder: updatedOrder } : prev));
   }
 
-  private async load(): Promise<SiteContent | null> {
-    if (!isPlatformBrowser(this.platformId)) {
-      this.loading.set(false);
-      return this.content();
-    }
+  private normalizeContent(remote: Partial<SiteContent>): SiteContent {
+    const knownSectionIds = new Set<SectionId>(FALLBACK_SECTION_ORDER);
+    const suppliedOrder = (Array.isArray(remote.sectionOrder) ? remote.sectionOrder : [])
+      .filter((id): id is SectionId => knownSectionIds.has(id));
+    const uniqueSuppliedOrder = [...new Set(suppliedOrder)];
+    const mergedSectionOrder: SectionId[] = [
+      ...uniqueSuppliedOrder,
+      ...FALLBACK_SECTION_ORDER.filter((id) => !uniqueSuppliedOrder.includes(id)),
+    ];
 
-    this.loading.set(true);
-
-    try {
-      const remote = await firstValueFrom(this.http.get<SiteContent>(`${API_BASE}/api/site-content`));
-      if (remote && typeof remote === 'object') {
-        const knownSectionIds = new Set<SectionId>(FALLBACK_SECTION_ORDER);
-        const suppliedOrder = (Array.isArray(remote.sectionOrder) ? remote.sectionOrder : [])
-          .filter((id): id is SectionId => knownSectionIds.has(id));
-        const uniqueSuppliedOrder = [...new Set(suppliedOrder)];
-        const mergedSectionOrder: SectionId[] = [
-          ...uniqueSuppliedOrder,
-          ...FALLBACK_SECTION_ORDER.filter((id) => !uniqueSuppliedOrder.includes(id)),
-        ];
-
-        const loaded: SiteContent = {
-          ...remote,
-          cars: normalizeCarImages(remote.cars),
-          transferCars: normalizeCarImages(remote.transferCars),
-          sectionOrder: mergedSectionOrder,
-        };
-        this.content.set(loaded);
-      }
-      this.error.set(null);
-    } catch {
-      this.error.set('تعذر الاتصال بالخادم. يرجى المحاولة مرة أخرى لاحقاً.');
-    } finally {
-      this.loading.set(false);
-    }
-
-    return this.content();
+    return {
+      ...(remote as SiteContent),
+      cars: normalizeCarImages(remote.cars),
+      transferCars: normalizeCarImages(remote.transferCars),
+      sectionOrder: mergedSectionOrder,
+    };
   }
 }
+

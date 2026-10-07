@@ -11,7 +11,12 @@ export const appConfig: ApplicationConfig = {
     provideRouter(
       routes,
       withComponentInputBinding(), // bind route params/data directly to @Input()
-      withViewTransitions(),        // enable the View Transitions API for route navigation
+      withViewTransitions({
+        skipInitialTransition: true,
+        onViewTransitionCreated: ({ transition }) => {
+          transition.finished.catch(() => {});
+        },
+      }),
     ),
     // Angular 19+: provideClientHydration must include withEventReplay()
     provideClientHydration(withEventReplay()),

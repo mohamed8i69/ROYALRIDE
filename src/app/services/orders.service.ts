@@ -1,7 +1,7 @@
 import { computed, inject, Service, signal } from '@angular/core';
 import { HttpClient, httpResource } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { AdminAuthService } from './admin-auth.service';
 
 export type OrderStatus = 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled';
 
@@ -51,22 +51,28 @@ export interface Order {
   updatedAt?: string;
 }
 
-const API_BASE = environment.apiUrl || 'https://dashboard-nine-flame-50.vercel.app';
-
 @Service()
 export class OrdersService {
   private readonly http = inject(HttpClient);
+  private readonly auth = inject(AdminAuthService);
 
-  /** Modern Angular httpResource: fetches orders reactively as Signals */
-  readonly ordersResource = httpResource<Order[]>(() => `${API_BASE}/api/orders`, {
-    defaultValue: [],
-    parse: (raw: unknown) => {
-      const list = (raw as Order[]) || [];
-      return [...list].sort(
-        (a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
-      );
-    },
-  });
+  /**
+   * Modern Angular httpResource: fetches orders reactively as Signals.
+   * Only triggers when the admin is authenticated. Unauthenticated guests
+   * visiting Home receive undefined, preventing unauthorized /api/orders requests.
+   */
+  readonly ordersResource = httpResource<Order[]>(
+    () => (this.auth.isAuthenticated() ? '/api/orders' : undefined),
+    {
+      defaultValue: [],
+      parse: (raw: unknown) => {
+        const list = (raw as Order[]) || [];
+        return [...list].sort(
+          (a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+        );
+      },
+    }
+  );
 
   /** Exposed reactive Signals for backward compatibility with existing components */
   readonly orders = computed(() => this.ordersResource.value() ?? []);
@@ -74,33 +80,34 @@ export class OrdersService {
   readonly submitting = signal<boolean>(false);
   readonly updatingId = signal<string | null>(null);
   readonly deletingId = signal<string | null>(null);
-  readonly error = signal<string | null>(null);
+  readonly error = computed(() => (this.ordersResource.error() ? 'تعذر تحميل الطلبات من الخادم.' : null));
 
-  /** Load/reload all orders reactively */
+  /** Load/reload all orders reactively (Admin feature) */
   async loadOrders(): Promise<Order[]> {
-    this.ordersResource.reload();
+    if (this.auth.isAuthenticated()) {
+      this.ordersResource.reload();
+    }
     return this.orders();
   }
 
   /**
-   * Mutation: Save a new order using HttpClient (POST)
+   * Mutation: Save a new order using HttpClient (POST) - Public Guest API
    */
   async createOrder(orderData: Partial<Order>): Promise<Order | null> {
     this.submitting.set(true);
-    this.error.set(null);
 
     try {
       const response = await firstValueFrom(
-        this.http.post<{ ok: boolean; order: Order }>(`${API_BASE}/api/orders`, orderData)
+        this.http.post<{ ok: boolean; order: Order }>('/api/orders', orderData)
       );
 
       if (response && response.order) {
-        this.ordersResource.reload();
+        if (this.auth.isAuthenticated()) {
+          this.ordersResource.reload();
+        }
         return response.order;
       }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'تعذر حفظ الطلب في خادم API.';
-      this.error.set((err as { error?: { message?: string } })?.error?.message ?? msg);
       console.error('Backend API order save error:', err);
     } finally {
       this.submitting.set(false);
@@ -109,22 +116,19 @@ export class OrdersService {
   }
 
   /**
-   * Mutation: Update order status using HttpClient (PATCH)
+   * Mutation: Update order status using HttpClient (PATCH) - Protected Admin API
    */
   async updateStatus(orderIdOrRef: string, newStatus: OrderStatus): Promise<boolean> {
     this.updatingId.set(orderIdOrRef);
-    this.error.set(null);
 
     try {
       await firstValueFrom(
-        this.http.patch<{ ok: boolean }>(`${API_BASE}/api/orders/${orderIdOrRef}/status`, { status: newStatus })
+        this.http.patch<{ ok: boolean }>(`/api/orders/${orderIdOrRef}/status`, { status: newStatus })
       );
 
       this.ordersResource.reload();
       return true;
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'تحديث حالة الطلب فشل.';
-      this.error.set((err as { error?: { message?: string } })?.error?.message ?? msg);
       console.error('API order status update failed:', err);
       return false;
     } finally {
@@ -133,19 +137,16 @@ export class OrdersService {
   }
 
   /**
-   * Mutation: Delete an order using HttpClient (DELETE)
+   * Mutation: Delete an order using HttpClient (DELETE) - Protected Admin API
    */
   async deleteOrder(orderIdOrRef: string): Promise<boolean> {
     this.deletingId.set(orderIdOrRef);
-    this.error.set(null);
 
     try {
-      await firstValueFrom(this.http.delete(`${API_BASE}/api/orders/${orderIdOrRef}`));
+      await firstValueFrom(this.http.delete(`/api/orders/${orderIdOrRef}`));
       this.ordersResource.reload();
       return true;
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'حذف الطلب فشل.';
-      this.error.set((err as { error?: { message?: string } })?.error?.message ?? msg);
       console.error('API order delete failed:', err);
       return false;
     } finally {
@@ -153,3 +154,4 @@ export class OrdersService {
     }
   }
 }
+

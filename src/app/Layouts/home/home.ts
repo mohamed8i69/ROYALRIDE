@@ -37,9 +37,14 @@ export class Home {
 
   openBookingModal(carKey?: string, serviceType?: ServiceType, city?: string, tour?: string): void {
     if (carKey) this.selectedCarKey.set(carKey);
+    else this.selectedCarKey.set(null); 
     if (serviceType) this.selectedServiceType.set(serviceType);
+    else this.selectedServiceType.set('transfer');
     if (city) this.selectedCity.set(city);
+    else this.selectedCity.set('جدة');
     if (tour) this.selectedTour.set(tour);
+    else this.selectedTour.set('جدة - مكة');
+    console.log(this.selectedCarKey(), this.selectedServiceType(), this.selectedCity(), this.selectedTour())
     this.isBookingModalOpen.set(true);
   }
 
