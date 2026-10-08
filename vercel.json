@@ -2,16 +2,25 @@
   "version": 2,
   "rewrites": [
     {
-      "source": "/admin",
-      "destination": "/index.csr.html"
-    },
-    {
-      "source": "/admin/(.*)",
-      "destination": "/index.csr.html"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "version": 2,
+      "rewrites": [
+        {
+          "source": "/api/(.*)",
+          "destination": "https://dashboard-nine-flame-50.vercel.app/api/$1"
+        },
+        {
+          "source": "/admin",
+          "destination": "/index.csr.html"
+        },
+        {
+          "source": "/admin/(.*)",
+          "destination": "/index.csr.html"
+        },
+        {
+          "source": "/(.*)",
+          "destination": "/index.html"
+        }
+      ]
     }
   ]
 }
