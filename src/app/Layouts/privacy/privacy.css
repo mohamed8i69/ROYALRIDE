@@ -1,0 +1,165 @@
+:host {
+    display: block;
+}
+
+.page {
+    --ink: #18222f;
+    --muted: #505e6d;
+    --line: #d8dfe7;
+    --navy: #1f2f4a;
+    --tint: #edf1f7;
+    --gold: #9a7a2e;
+    max-width: 1080px;
+    margin-inline: auto;
+    padding: 28px 20px 72px;
+    color: var(--ink);
+    font-family: inherit;
+    /* يرث خط الموقع الحالي */
+    font-size: 1rem;
+    line-height: 1.9;
+}
+
+a {
+    color: var(--navy);
+    text-underline-offset: 3px;
+}
+
+a:focus-visible,
+h2:focus-visible {
+    outline: 3px solid var(--navy);
+    outline-offset: 3px;
+}
+
+.back {
+    font-size: 0.9rem;
+}
+
+.intro {
+    max-width: 46rem;
+    margin: 20px 0 44px;
+    padding-top: 24px;
+    border-top: 3px solid var(--gold);
+}
+
+h1 {
+    margin: 0 0 12px;
+    font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2.2rem);
+    line-height: 1.45;
+    color: var(--navy);
+}
+
+.lead {
+    margin: 0;
+    color: var(--muted);
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 15rem minmax(0, 1fr);
+    gap: 56px;
+    align-items: start;
+}
+
+.toc {
+    position: sticky;
+    top: 24px;
+}
+
+.toc-title {
+    margin: 0 0 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.toc ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.toc a {
+    display: block;
+    padding: 8px 14px;
+    border-inline-start: 2px solid var(--line);
+    color: var(--ink);
+    text-decoration: none;
+    line-height: 1.6;
+}
+
+.toc a:hover {
+    border-inline-start-color: var(--gold);
+    color: var(--navy);
+}
+
+.content {
+    max-width: 46rem;
+}
+
+.content section {
+    scroll-margin-top: 24px;
+}
+
+.content section+section {
+    margin-top: 48px;
+}
+
+.content h2 {
+    margin: 0 0 16px;
+    padding-bottom: 10px;
+    font-size: 1.4rem;
+    line-height: 1.5;
+    color: var(--navy);
+    border-bottom: 1px solid var(--line);
+    scroll-margin-top: 24px;
+}
+
+.content h3 {
+    margin: 28px 0 8px;
+    font-size: 1.05rem;
+    color: var(--navy);
+}
+
+.content p {
+    margin: 0 0 12px;
+}
+
+.content ul {
+    margin: 0 0 12px;
+    padding-inline-start: 1.4rem;
+}
+
+.content li {
+    margin-block: 6px;
+}
+
+.rule {
+    padding: 14px 18px;
+    background: var(--tint);
+    border-inline-start: 4px solid var(--navy);
+}
+
+.num {
+    display: inline-block;
+    unicode-bidi: isolate;
+    font-weight: 600;
+}
+
+.org {
+    margin-top: 56px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+@media (max-width: 860px) {
+    .layout {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .toc {
+        position: static;
+    }
+}

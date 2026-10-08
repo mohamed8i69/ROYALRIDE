@@ -8,6 +8,7 @@ import { SiteContentService, SectionId, SiteContent } from '../../services/site-
   imports: [Footer, BookingModal, CarLightbox],
   selector: 'app-home',
   templateUrl: './home.html',
+  styleUrl : './home.css',
 })
 export class Home {
   private readonly siteContent = inject(SiteContentService);

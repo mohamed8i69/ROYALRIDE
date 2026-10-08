@@ -1,9 +1,14 @@
 <!-- Loading state -->
 @if (loading()) {
-<div dir="rtl" class="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#080808] text-[#f4ead8]">
-    <div class="h-12 w-12 animate-spin rounded-full border-4 border-[#d4ad67]/30 border-t-[#d4ad67]"></div>
-    <p class="text-sm text-[#c4b394]">جارٍ تحميل المحتوى…</p>
-</div>
+ <div
+    class="fixed top-0 left-0 z-[9999] h-[3px] w-full overflow-hidden"
+    role="progressbar"
+    aria-label="Loading"
+  >
+    <div
+      class="absolute top-0 left-[-40%] h-full w-[40%] animate-[loading-bar_1.2s_ease-in-out_infinite] bg-[#080808] "
+    ></div>
+  </div>
 } @else if (error() && !contentData()) {
 <!-- Error state — only shown if we also have no content at all -->
 <div dir="rtl" class="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#080808] px-4 text-center text-[#f4ead8]">
