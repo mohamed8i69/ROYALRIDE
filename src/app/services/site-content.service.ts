@@ -127,6 +127,38 @@ export class SiteContentService {
     this.contentResource.set(normalized);
   }
 
+  /** Save strictly the separated fleet cars document */
+  async saveFleetCars(cars: FleetCar[]): Promise<void> {
+    const filledCars = cars.map((car) => {
+      const filled = (car.images || []).map((s) => (s || '').trim()).filter(Boolean);
+      const images = filled.length > 0 ? filled : car.image?.trim() ? [car.image.trim()] : [];
+      return { ...car, images, image: images[0] || car.image || '' };
+    });
+
+    const res = await firstValueFrom(
+      this.http.put<{ ok: boolean; cars: FleetCar[] }>('/api/site-content/cars', { cars: filledCars })
+    );
+    const updatedCars = normalizeCarImages(res?.cars ?? filledCars);
+    this.contentResource.update((prev) => (prev ? { ...prev, cars: updatedCars } : prev));
+  }
+
+  /** Save strictly the separated transfer cars document */
+  async saveTransferCars(transferCars: TransferCar[]): Promise<void> {
+    const filledTransfer = transferCars.map((car) => {
+      const filled = (car.images || []).map((s) => (s || '').trim()).filter(Boolean);
+      const images = filled.length > 0 ? filled : car.image?.trim() ? [car.image.trim()] : [];
+      return { ...car, images, image: images[0] || car.image || '' };
+    });
+
+    const res = await firstValueFrom(
+      this.http.put<{ ok: boolean; transferCars: TransferCar[] }>('/api/site-content/transfer-cars', {
+        transferCars: filledTransfer,
+      })
+    );
+    const updatedTransfer = normalizeCarImages(res?.transferCars ?? filledTransfer);
+    this.contentResource.update((prev) => (prev ? { ...prev, transferCars: updatedTransfer } : prev));
+  }
+
   async saveSectionOrder(sectionOrder: SectionId[]): Promise<void> {
     const res = await firstValueFrom(
       this.http.patch<{ ok: boolean; sectionOrder: SectionId[] }>(

@@ -256,6 +256,62 @@ export class Admin implements OnInit {
     }
   }
 
+  async saveFleet(): Promise<void> {
+    this.isSaving.set(true);
+    this.saveError.set(null);
+    try {
+      const currentDraft = this.draft();
+      currentDraft.cars?.forEach((car) => {
+        if (car.images && car.images.length > 0) {
+          car.image = car.images[0];
+        } else if (car.image) {
+          car.images = [car.image];
+        }
+      });
+      await this.siteContent.saveFleetCars(currentDraft.cars || []);
+      const savedContent = this.siteContent.content();
+      if (savedContent) {
+        const latest = structuredClone(savedContent);
+        this.ensureImagesOnDraft(latest);
+        this.draft.set(latest);
+      }
+      this.saved.set(true);
+      window.setTimeout(() => this.saved.set(false), 2500);
+    } catch (err: any) {
+      this.saveError.set(err?.error?.message || err?.message || 'تعذر حفظ أسطول السيارات.');
+    } finally {
+      this.isSaving.set(false);
+    }
+  }
+
+  async saveTransferCars(): Promise<void> {
+    this.isSaving.set(true);
+    this.saveError.set(null);
+    try {
+      const currentDraft = this.draft();
+      currentDraft.transferCars?.forEach((car) => {
+        if (car.images && car.images.length > 0) {
+          car.image = car.images[0];
+        } else if (car.image) {
+          car.images = [car.image];
+        }
+      });
+      await this.siteContent.saveTransferCars(currentDraft.transferCars || []);
+      const savedContent = this.siteContent.content();
+      if (savedContent) {
+        const latest = structuredClone(savedContent);
+        this.ensureImagesOnDraft(latest);
+        this.draft.set(latest);
+      }
+      this.saved.set(true);
+      window.setTimeout(() => this.saved.set(false), 2500);
+    } catch (err: any) {
+      this.saveError.set(err?.error?.message || err?.message || 'تعذر حفظ سيارات التوصيل.');
+    } finally {
+      this.isSaving.set(false);
+    }
+  }
+
   async saveLayout(): Promise<void> {
     this.isSaving.set(true);
     this.saveError.set(null);

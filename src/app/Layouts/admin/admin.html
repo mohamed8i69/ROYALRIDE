@@ -324,7 +324,7 @@
           </article>
           }
         </div>
-        <button type="button" (click)="save()" [disabled]="isSaving()" class="save-button">{{ isSaving() ? 'جارٍ الحفظ...' : 'حفظ أسطول التأجير' }}</button>
+        <button type="button" (click)="saveFleet()" [disabled]="isSaving()" class="save-button">{{ isSaving() ? 'جارٍ الحفظ...' : 'حفظ أسطول التأجير' }}</button>
       </div>
       }
 
@@ -425,7 +425,7 @@
           </article>
           }
         </div>
-        <button type="button" (click)="save()" [disabled]="isSaving()" class="save-button">{{ isSaving() ? 'جارٍ الحفظ...' : 'حفظ أسعار التنقل' }}</button>
+        <button type="button" (click)="saveTransferCars()" [disabled]="isSaving()" class="save-button">{{ isSaving() ? 'جارٍ الحفظ...' : 'حفظ أسعار التنقل' }}</button>
       </div>
       }
 
