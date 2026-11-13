@@ -190,8 +190,8 @@ body {
 /* Responsive — wider cards on larger screens */
 @media (min-width: 640px) {
   @keyframes marquee-scroll {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(calc(-10 * (340px + 1.25rem))); }
+   0%   { transform: translateX(calc(10 * (280px + 1rem))); }
+  100% { transform: translateX(0); }
   }
 
   .testimonial-card {
