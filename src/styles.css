@@ -2,6 +2,15 @@
 
 @import 'tailwindcss';
 
+/* ── Global overflow guard: prevents any full-bleed element from triggering
+   a horizontal scrollbar (and the white/light strip it causes on the left
+   in RTL layouts on Windows due to scrollbar width ≈ 17px) ── */
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
 .booking-modal :is([class~="text-[8px]"], [class~="text-[9px]"], [class~="text-[10px]"], [class~="text-[11px]"]),
 .car-lightbox :is([class~="text-[8px]"], [class~="text-[9px]"], [class~="text-[10px]"], [class~="text-[11px]"]) {
   font-size: 0.75rem;
@@ -65,8 +74,8 @@
    ═══════════════════════════════════════════ */
 
 @keyframes marquee-scroll {
-  0%   { transform: translateX(calc(10 * (280px + 1rem))); }
-  100% { transform: translateX(0); }
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(calc(-10 * (280px + 1rem))); }
 }
 
 .testimonials-track-wrapper {
@@ -181,8 +190,8 @@
 /* Responsive — wider cards on larger screens */
 @media (min-width: 640px) {
   @keyframes marquee-scroll {
-    0%   { transform: translateX(calc(10 * (340px + 1.25rem))); }
-    100% { transform: translateX(0); }
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(calc(-10 * (340px + 1.25rem))); }
   }
 
   .testimonial-card {
